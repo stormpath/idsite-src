@@ -7,8 +7,24 @@ angular
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        templateUrl: 'views/login.html',
+        controller: 'LoginCtrl'
+      })
+      .when('/register', {
+        templateUrl: 'views/registration.html',
+        controller: 'RegistrationCtrl'
+      })
+      .when('/forgot', {
+        templateUrl: 'views/forgot.html',
+        controller: 'ForgotCtrl'
+      })
+      .when('/reset', {
+        templateUrl: 'views/reset.html',
+        controller: 'ResetCtrl'
+      })
+      .when('/verify', {
+        templateUrl: 'views/verify.html',
+        controller: 'VerifyCtrl'
       })
       .otherwise({
         redirectTo: '/'

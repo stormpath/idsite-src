@@ -14,8 +14,20 @@
     <!-- endbuild -->
   </head>
   <body ng-app="stormpathIdpApp">
-    <script type="text/ng-template" id="views/main.html">
-      include "views/main.html"
+    <script type="text/ng-template" id="views/login.html">
+      include "views/login.html"
+    </script>
+    <script type="text/ng-template" id="views/registration.html">
+      include "views/registration.html"
+    </script>
+    <script type="text/ng-template" id="views/forgot.html">
+      include "views/forgot.html"
+    </script>
+    <script type="text/ng-template" id="views/reset.html">
+      include "views/reset.html"
+    </script>
+    <script type="text/ng-template" id="views/verify.html">
+      include "views/verify.html"
     </script>
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
@@ -52,6 +64,10 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/registration.js"></script>
+        <script src="scripts/controllers/forgot.js"></script>
+        <script src="scripts/controllers/reset.js"></script>
+        <script src="scripts/controllers/verify.js"></script>
         <!-- endbuild -->
 </body>
 </html>
