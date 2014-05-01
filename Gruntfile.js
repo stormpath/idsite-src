@@ -49,6 +49,10 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
+      html: {
+        files: ['<%= yeoman.app %>/{,*/}*.html'],
+        tasks: ['includes:html']
+      },
       livereload: {
         options: {
           livereload: '<%= connect.options.livereload %>'
@@ -279,8 +283,8 @@ module.exports = function (grunt) {
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
-            '*.html',
-            'views/{,*/}*.html',
+            // '*.html',
+            // 'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
@@ -289,27 +293,48 @@ module.exports = function (grunt) {
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
+        },{
+          expand: true,
+          cwd: '.tmp',
+          dest: '<%= yeoman.dist %>',
+          src: ['*.html']
         }]
       },
-      styles: {
+      less: {
         expand: true,
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
-        src: '{,*/}*.{css,less}'
+        src: '{,*/}*.{less}'
+      }
+    },
+
+    includes: {
+      html:{
+
+        src: ['<%= yeoman.app %>/index.html'], // Source files
+        dest: '.tmp/index.html', // Destination directory
+        options: {
+          // flatten: true,
+          silent: false,
+          banner: '<!-- I am a banner -->'
+        }
       }
     },
 
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'copy:styles'
+        'copy:less',
+        'less',
+        'includes:html'
       ],
       test: [
-        'copy:styles'
+        'copy:less'
       ],
       dist: [
-        'copy:styles',
+        'copy:less',
         'less',
+        'includes:html',
         'imagemin',
         'svgmin'
       ]
