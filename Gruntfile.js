@@ -33,14 +33,14 @@ module.exports = function (grunt) {
       },
       js: {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-        tasks: ['newer:jshint:all'],
+        tasks: ['newer:jshint:all','karma:liveunit:run'],
         options: {
           livereload: true
         }
       },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
-        tasks: ['newer:jshint:test', 'karma']
+        tasks: ['newer:jshint:test', 'karma:liveunit:run']
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{less,css}'],
@@ -367,12 +367,17 @@ module.exports = function (grunt) {
     // },
 
     // Test settings
+
     karma: {
       unit: {
         configFile: 'karma.conf.js',
         singleRun: true
+      },
+      liveunit: { // starts a karma server in the background
+        configFile: 'karma.conf.js',
+        background: true
       }
-    }
+    },
   });
 
 
@@ -387,6 +392,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
+      'karma:liveunit',
       'watch'
     ]);
   });
