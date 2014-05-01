@@ -43,8 +43,8 @@ module.exports = function (grunt) {
         tasks: ['newer:jshint:test', 'karma']
       },
       styles: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'autoprefixer']
+        files: ['<%= yeoman.app %>/styles/{,*/}*.{less,css}'],
+        tasks: ['less','autoprefixer']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -95,6 +95,14 @@ module.exports = function (grunt) {
       }
     },
 
+    less: {
+      development:{
+        files: {
+          '.tmp/styles/main.css':'<%= yeoman.app %>/styles/main.less'
+        }
+      }
+    },
+
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
       options: {
@@ -131,7 +139,7 @@ module.exports = function (grunt) {
     // Add vendor prefixed styles
     autoprefixer: {
       options: {
-        browsers: ['last 1 version']
+        browsers: ['last 3 versions']
       },
       dist: {
         files: [{
@@ -287,7 +295,7 @@ module.exports = function (grunt) {
         expand: true,
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
-        src: '{,*/}*.css'
+        src: '{,*/}*.{css,less}'
       }
     },
 
