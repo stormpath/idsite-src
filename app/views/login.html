@@ -1,44 +1,46 @@
 <div class="view login-view">
-  <div class="box">
-    <div class="email-password-area" ng-class="{size:hasSocial ? 'small' : 'large'}">
+  <div class="box row">
+    <div class="email-password-area  col-xs-12" ng-class="[hasSocial ? 'small col-sm-8' : 'large col-sm-12']">
       <div class="header">
-        <span>Login or </span>
+        <span>Log In or </span>
         <a href="#register">Create an Account</a>
       </div>
-      <form class="login-form">
-        <div class="form-control-group">
-          <label>Email:</label>
-          <div>
-            <input type="text" name="username" />
+      <form class="login-form form-horizontal" role="form">
+        <div class="form-group group-email">
+          <label ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-4']">Email</label>
+          <div ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-8']">
+            <input class="form-control" type="text" name="username" />
           </div>
         </div>
-        <div class="form-control-group">
-          <label>Password:</label>
-          <div>
-            <input type="password" name="password" />
+        <div class="form-group group-password">
+          <label ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-4']">Password</label>
+          <div ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-8']">
+            <input class="form-control" type="password" name="password" />
           </div>
         </div>
-        <div class="form-control-group">
-          <div>
-            <input type="checkbox" name="remember" />
+        <div class="form-group group-remember-me">
+          <div class="col-sm-8" ng-class="[hasSocial ? '' : 'col-sm-offset-4']">
+            <input type="checkbox">
+            <label>Remember me</label>
           </div>
-          <span> Remember Me</span>
         </div>
         <div>
-          <button class="login" type="submit">Log In</button>
+          <button class="login btn" type="submit">Log In</button>
         </div>
       </form>
     </div>
 
-    <div class="social-area" ng-show="hasSocial">
-      <label>Easy 1-click login:</label>
-      <button class="google">Google</button>
-      <button class="facebook">Facebook</button>
+    <div class="social-area  col-xs-12 col-sm-4" ng-show="hasSocial">
+      <div class="header">&nbsp;</div>
+      <label>Easy 1-click login</label>
+      <button class="btn google">Google</button>
+      <button class="btn facebook">Facebook</button>
     </div>
     <!-- <div class="cb"></div> -->
   </div>
 
-  <a href="#forgot">Forgot Password</a>
+  <a class="forgot" href="#forgot">Forgot Password</a>
+  <button ng-click="hasSocial=!hasSocial">hasSocial</button>
 </div>
 
 
