@@ -35,14 +35,21 @@
 @boxBorderRadius: 3px;
 @inputHeight: 45px;
 @gray1: #f6f6f6;
+@baseFontSize: 14px;
+@boxGutter: 30px;
 
 html,body
 {
   height: 100%;
+
+  @media (max-width: @screen-xs-max){
+    padding: 0 4px;
+  }
 }
 
 body,div,p,a,label {
   font-family: "Open Sans";
+  font-size: @baseFontSize;
   font-weight: 400;
   color: #484848;
 }
@@ -61,8 +68,9 @@ a{
   .header{
     & , & a{
       font-weight: 300;
+      font-size: 21px;
     }
-    font-size: 21px;
+
     padding: 34px 0;
   }
   input[type="text"],
@@ -82,6 +90,11 @@ a{
     button{
       display: block;
       float: right;
+      margin-bottom: 20px;
+    }
+    label{
+      height: @inputHeight;
+      line-height: @inputHeight;
     }
   }
 }
@@ -89,16 +102,13 @@ a{
 .box{
   box-shadow: 0 0px 3px rgba(0,0,0,.3);
   border-radius: 3px;
-  padding: 0 30px;
+  padding: 0 @boxGutter;
 }
 
 .registration-view{
 
   .registration-form{
-    label{
-      height: @inputHeight;
-      line-height: @inputHeight;
-    }
+
 
 
   }
@@ -115,27 +125,41 @@ a{
 
   .email-password-area{
 
+    @media (min-width: @screen-xs-max){
+      padding: 0 @boxGutter;
+    }
+
+    background-color: white;
+
     border-top-left-radius: @boxBorderRadius;
     border-bottom-left-radius: @boxBorderRadius;
-    padding: 0 50px;
+
+
+    label{
+      height: @baseFontSize;
+      line-height: @baseFontSize;
+    }
 
     & {
       &.small {
-        padding: 0 30px;
+
         @media (min-width: @screen-xs-max){
           border-right: @dividingBorder;
         }
 
         @media (max-width: @screen-xs-max){
+
           border-bottom: @dividingBorder;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
         }
       }
       &.large{
+
         border-top-right-radius: @boxBorderRadius;
         border-bottom-right-radius: @boxBorderRadius;
         @media (min-width: @screen-xs-max){
+          padding: 0 50px;
           .group-email,
           .group-password{
             label{
@@ -147,17 +171,8 @@ a{
       }
     }
 
-    background-color: white;
-    padding-bottom: 20px;
 
-    button{
-      float: right;
-      margin: 10px 0;
-    }
-    input[type='text'],
-    input[type='password']{
-      width: 100%;
-    }
+
   }
   .social-area{
     border-top-right-radius: @boxBorderRadius;
@@ -178,9 +193,4 @@ a{
       margin-bottom: 10px;
     }
   }
-
-}
-
-.cb{
-  clear:both;
 }
