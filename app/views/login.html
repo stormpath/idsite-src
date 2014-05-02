@@ -1,15 +1,44 @@
 <div class="view login-view">
-  <form>
-    <p class="header">
-      <span>Login or </span>
-      <a href="#register">Create an Account</a>
-    </p>
-    Email:
-    <input type="text" name="username" />
-    Password:
-    <input type="password" name="password" />
-    <button type="submit">Login</button>
-  </form>
+  <div class="box">
+    <div class="email-password-area" ng-class="{size:hasSocial ? 'small' : 'large'}">
+      <div class="header">
+        <span>Login or </span>
+        <a href="#register">Create an Account</a>
+      </div>
+      <form class="login-form">
+        <div class="form-control-group">
+          <label>Email:</label>
+          <div>
+            <input type="text" name="username" />
+          </div>
+        </div>
+        <div class="form-control-group">
+          <label>Password:</label>
+          <div>
+            <input type="password" name="password" />
+          </div>
+        </div>
+        <div class="form-control-group">
+          <div>
+            <input type="checkbox" name="remember" />
+          </div>
+          <span> Remember Me</span>
+        </div>
+        <div>
+          <button class="login" type="submit">Log In</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="social-area" ng-show="hasSocial">
+      <label>Easy 1-click login:</label>
+      <button class="google">Google</button>
+      <button class="facebook">Facebook</button>
+    </div>
+    <!-- <div class="cb"></div> -->
+  </div>
 
   <a href="#forgot">Forgot Password</a>
 </div>
+
+

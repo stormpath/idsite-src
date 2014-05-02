@@ -1,3 +1,66 @@
 body {
 
 }
+
+div{
+  box-sizing: border-box;
+}
+
+@viewBoxSize: 650px;
+
+.view{
+  width: @viewBoxSize;
+  margin: 0 auto;
+  .header{
+    font-family: "Open Sans";
+    font-weight: 400;
+    font-size: 21px;
+    color: #484848;
+  }
+}
+
+.box{
+  box-shadow: 0 0px 3px rgba(0,0,0,.3);
+  width: @viewBoxSize;
+  position: relative;
+  border-radius: 3px;
+}
+
+.login-view{
+  @sidebarSize: 250px;
+  .box{
+    height: 300px;
+  }
+  .email-password-area{
+    @padding: 34px;
+
+    position: absolute;
+    padding: @padding;
+    width: @viewBoxSize - @sidebarSize;
+
+    button{
+      float: right;
+    }
+    input{
+      width: 100%;
+    }
+  }
+  .social-area{
+    border-left: 1px solid #d7d7d7;
+    position: absolute;
+    right: 0;
+    top:0;
+    bottom: 0;
+    width: @sidebarSize;
+    background-color: #f6f6f6;
+    padding: 30px;
+    button{
+      display: block;
+      width: 100%;
+    }
+  }
+}
+
+.cb{
+  clear:both;
+}
