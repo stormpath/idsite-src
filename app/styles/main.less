@@ -33,7 +33,7 @@
 
 
 @boxBorderRadius: 3px;
-
+@inputHeight: 45px;
 @gray1: #f6f6f6;
 
 html,body
@@ -53,7 +53,6 @@ a{
 
 .container{
   max-width: 620px;
-
 }
 
 .view{
@@ -66,20 +65,55 @@ a{
     font-size: 21px;
     padding: 34px 0;
   }
+  input[type="text"],
+  input[type="password"]{
+    background-color: @gray1;
+    height: @inputHeight;
+  }
+  a{
+    &.forgot,
+    &.to-login{
+      float:right;
+      padding: 17px 0;
+      font-size: 13px;
+    }
+  }
 }
 
 .box{
   box-shadow: 0 0px 3px rgba(0,0,0,.3);
   border-radius: 3px;
-  background-color: @gray1;
+
+}
+
+.registration-view{
+  & .box{
+    padding: 0 45px;
+  }
+
+  .registration-form{
+    label{
+      height: @inputHeight;
+      line-height: @inputHeight;
+    }
+    button{
+      display: block;
+      float: right;
+    }
+
+  }
 }
 
 .login-view{
 
+  & .box{
+    background-color: @gray1;
+  }
+
   @dividingBorder: 1px solid #d7d7d7;
 
   .email-password-area{
-    @inputHeight: 40px;
+
     border-top-left-radius: @boxBorderRadius;
     border-bottom-left-radius: @boxBorderRadius;
     padding: 0 50px;
@@ -122,8 +156,6 @@ a{
     input[type='text'],
     input[type='password']{
       width: 100%;
-      background-color: @gray1;
-      height: @inputHeight;
     }
   }
   .social-area{
@@ -145,10 +177,7 @@ a{
       margin-bottom: 10px;
     }
   }
-  .forgot{
-    float:right;
-    padding: 17px 0;
-  }
+
 }
 
 .cb{
