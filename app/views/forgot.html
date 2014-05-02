@@ -1,10 +1,22 @@
 <div class="view forgot-view">
-  <form>
-    <p class="header">Password Reset</p>
-    <label>Send password reset instructions to:</label>
-    <input type="text" name="email" />
-    <button type="submit">Reset Password</button>
-  </form>
+  <div class="box row">
+    <div class="col-sm-12">
+      <div class="header">
+        <span>Password Reset</span>
+        <!-- <a href="#register">Create an Account</a> -->
+      </div>
+      <form class="forgot-form form-horizontal" role="form">
 
-  <a href="#">Back to Log In</a>
+
+        <div class="form-group group-email">
+          <label class="col-sm-6">Send password reset instructions to:</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" name="email" />
+          </div>
+        </div>
+        <button class="btn btn-reset" type="submit">Send Instructions</button>
+      </form>
+    </div>
+  </div>
+  <a class="to-login" href="#">Back to Log In</a>
 </div>

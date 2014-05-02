@@ -78,28 +78,28 @@ a{
       font-size: 13px;
     }
   }
+  form{
+    button{
+      display: block;
+      float: right;
+    }
+  }
 }
 
 .box{
   box-shadow: 0 0px 3px rgba(0,0,0,.3);
   border-radius: 3px;
-
+  padding: 0 30px;
 }
 
 .registration-view{
-  & .box{
-    padding: 0 45px;
-  }
 
   .registration-form{
     label{
       height: @inputHeight;
       line-height: @inputHeight;
     }
-    button{
-      display: block;
-      float: right;
-    }
+
 
   }
 }
@@ -108,6 +108,7 @@ a{
 
   & .box{
     background-color: @gray1;
+    padding: 0;
   }
 
   @dividingBorder: 1px solid #d7d7d7;
