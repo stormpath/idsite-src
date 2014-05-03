@@ -1,3 +1,26 @@
 <div class="view verify-view">
-  <p>This is the verify view.</p>
+  <div class="box row">
+    <div class="col-sm-12">
+      <div class="header">
+        <span ng-show="status=='verified'">Your account has been successfully created</span>
+        <span ng-show="status=='failed'">Sorry, there was an error while verifying your account</span>
+      </div>
+      <div ng-show="status=='verified'">
+        <p>
+          <span>Success!  Your account is ready, please </span>
+          <a href="#/">log in</a>
+        </p>
+      </div>
+      <div ng-show="status=='failed'">
+        <p>
+          <span>Please try again by clicking on the verification link that was sent to your email address.</span>
+        </p>
+        <p>
+          <span>If you continue to have problems you may need to</span>
+          <a href="#/register">register</a>
+          <span>again.</span>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
