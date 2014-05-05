@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('SsoLoginCtrl', function ($scope,Stormpath) {
+  .controller('IdpAppCtrl', function ($scope,Stormpath) {
     $scope.error = '';
     Stormpath.getAppConfig(function(err,config){
       if(err){
