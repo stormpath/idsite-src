@@ -71,6 +71,63 @@ p{
   display: block;
 }
 
+.btn-sp-green{
+  height: 45px;
+  line-height: 45px/2;
+  padding: 0 40px;
+  color: #fff;
+  font-size: 17px;
+  background: linear-gradient(
+    #42c41a 50%,
+    #2dbd00 50%
+  );
+  &:hover{
+    color: #fff;
+    background: linear-gradient(
+      #43cd1a 50%,
+      #2ec700 50%
+    );
+  }
+}
+
+.flatTwoColorGradient(@topColor,@bottomColor,@hoverTopColor,@hoverBottomColor){
+  background: linear-gradient(
+    @topColor 50%,
+    @bottomColor 50%
+  );
+  &:hover{
+    color: #fff;
+    background: linear-gradient(
+      @hoverTopColor 50%,
+      @hoverBottomColor 50%
+    );
+  }
+}
+
+.btn-social{
+  @height: 37px;
+  height: @height;
+  line-height: @height/2;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 3px;
+  &:hover{
+    color: #fff;
+  }
+}
+
+.btn-facebook{
+  .flatTwoColorGradient(#4c6fc5,#3d63c0,#4773de,#3767db);
+}
+
+.btn-google{
+  .flatTwoColorGradient(#e05b4b,#dd4b39,#ea604e,#e8503c);
+}
+
+.btn-register{
+  font-size: 16px;
+}
+
 .view{
 
   .header{
