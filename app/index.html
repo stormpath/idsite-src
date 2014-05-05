@@ -40,7 +40,11 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="container" ng-view=""></div>
+
+    <div class="container" ng-controller="SsoLoginCtrl">
+      <img class= "logo img-responsive" ng-src="{{logoUrl}}"/>
+      <div ng-view=""></div>
+    </div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
@@ -76,6 +80,8 @@
         <script src="scripts/controllers/forgot.js"></script>
         <script src="scripts/controllers/reset.js"></script>
         <script src="scripts/controllers/verify.js"></script>
+        <script src="scripts/controllers/ssologin.js"></script>
+        <script src="scripts/services/stormpath.js"></script>
         <!-- endbuild -->
 </body>
 </html>
