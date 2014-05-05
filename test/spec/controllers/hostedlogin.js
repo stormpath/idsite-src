@@ -1,17 +1,17 @@
 'use strict';
 
-describe('Controller: IdpAppCtrl', function () {
+describe('Controller: ErrorCtrl', function () {
 
   // load the controller's module
   beforeEach(module('stormpathIdpApp'));
 
-  var IdpAppCtrl,
+  var ErrorCtrl,
     scope;
 
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    IdpAppCtrl = $controller('IdpAppCtrl', {
+    ErrorCtrl = $controller('ErrorCtrl', {
       $scope: scope
     });
   }));

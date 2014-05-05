@@ -16,6 +16,14 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
     <script src="vendor/stormpath.min.js"></script>
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
   </head>
   <body ng-app="stormpathIdpApp">
     <script type="text/ng-template" id="views/login.html">
@@ -42,8 +50,8 @@
 
     <!-- Add your site or application content here -->
 
-    <div class="container" ng-controller="IdpAppCtrl">
-      <img class= "logo img-responsive" ng-src="{{logoUrl}}"/>
+    <div class="container" ng-cloak>
+      <img class="logo img-responsive" ng-src="{{logoUrl}}"/>
       <div ng-view=""></div>
     </div>
 
@@ -65,14 +73,7 @@
     <![endif]-->
     <!-- endbuild -->
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/angular/angular.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
+
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
 
@@ -82,7 +83,7 @@
         <script src="scripts/controllers/forgot.js"></script>
         <script src="scripts/controllers/reset.js"></script>
         <script src="scripts/controllers/verify.js"></script>
-        <script src="scripts/controllers/idpapp.js"></script>
+        <script src="scripts/controllers/error.js"></script>
         <script src="scripts/services/stormpath.js"></script>
         <!-- endbuild -->
 </body>
