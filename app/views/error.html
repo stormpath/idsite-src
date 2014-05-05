@@ -2,9 +2,11 @@
   <div class="row">
     <div class="col-sm-12">
       <div class="alert alert-warning">
-        <p>Sorry, there is a problem with the configuration of this IdP Site. The error is:</p>
+        <p>Sorry, there is a problem with this Idp Site. The error is:</p>
         <br/>
-        <p><pre class="alert alert-danger">{{error}}</pre></p>
+        <p class="alert alert-danger" ng-repeat="e in errors">
+          <span>{{e}}</span>
+        </p>
       </div>
     </div>
   </div>

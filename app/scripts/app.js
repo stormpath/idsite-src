@@ -37,19 +37,19 @@ angular
         redirectTo: '/'
       });
   })
-  .run(function($routeParams,$location){
+  .run(function($routeParams,$location,Stormpath){
     function getParam(param,url) {
       var m = url.match(new RegExp(param + '=[^/&#]+','g'));
       return (m && m.length > 0) ? m[0].split('=')[1] : null;
     }
 
-    if(getParam('emailVerificationToken',$location.absUrl())){
-      $location.path('verify');
-    }
-    if(getParam('passwordResetToken',$location.absUrl())){
-      $location.path('reset');
-    }
-
+    Stormpath.init(function(err){
+      if(err){
+        $location.path('/error');
+      }else if(getParam('emailVerificationToken',$location.absUrl())){
+        $location.path('verify');
+      }else if(getParam('passwordResetToken',$location.absUrl())){
+        $location.path('reset');
+      }
+    });
   });
-
-

@@ -2,11 +2,10 @@
 
 angular.module('stormpathIdpApp')
   .controller('ErrorCtrl', function ($scope,Stormpath,$location) {
-    Stormpath.getAppConfig(function(err){
-      if(err){
-        $scope.error = err.message;
-      }else{
-        $location.path('/');
-      }
-    });
+    $scope.errors = angular.copy(Stormpath.errors);
+    if($scope.errors.length===0){
+      $location.path('/');
+    }else{
+      Stormpath.errors = [];
+    }
   });

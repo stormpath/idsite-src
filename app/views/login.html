@@ -5,7 +5,7 @@
         <span>Log In or </span>
         <a href="#register">Create an Account</a>
       </div>
-      <form class="login-form form-horizontal" role="form">
+      <form class="login-form form-horizontal" role="form" ng-submit="submit()">
         <div class="form-group group-email">
           <label ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-4']">Email</label>
           <div ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-8']">
