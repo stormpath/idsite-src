@@ -194,6 +194,10 @@ p{
     padding: 0;
   }
 
+  label{
+    margin-bottom: 7px;
+  }
+
   @dividingBorder: 1px solid #d7d7d7;
 
   .email-password-area{
@@ -213,26 +217,33 @@ p{
       line-height: @baseFontSize;
     }
 
+
+
     & {
       &.small {
 
         @media (min-width: @screen-xs-max){
+          // has the social area to the right, is not mobile
           border-right: @dividingBorder;
+          .group-email{
+            margin-bottom: 21px;
+          }
         }
 
         @media (max-width: @screen-xs-max){
-
+          // has the social area to the right, is mobile
           border-bottom: @dividingBorder;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
         }
       }
       &.large{
-
+        // does not have the social area to the right
         border-top-right-radius: @boxBorderRadius;
         border-bottom-right-radius: @boxBorderRadius;
         @media (min-width: @screen-xs-max){
           padding: 0 50px;
+          // does not have the social area to the right, it not mobile
           .group-email,
           .group-password{
             label{
@@ -250,6 +261,9 @@ p{
   .social-area{
     border-top-right-radius: @boxBorderRadius;
     border-bottom-right-radius: @boxBorderRadius;
+    .header{
+      margin-bottom: -6px;
+    }
     @media (max-width: @screen-xs-max) {
       .header{
         padding: 0px;
@@ -263,7 +277,7 @@ p{
     button{
       display: block;
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
   }
 }
