@@ -5,6 +5,16 @@
         <span>Log In or </span>
         <a href="#register">Create an Account</a>
       </div>
+      <div class="alert alert-danger" ng-show="errors.badLogin">
+        Invalid username or password.
+      </div>
+      <div class="alert alert-danger" ng-show="errors.notFound">
+        <span>Account does not exist. Do you need to </span>
+        <a href="#/register">create an account</a>
+        <span>?</span>
+      </div>
+      <div class="alert alert-danger" ng-show="errors.userMessage">{{errors.userMessage}}</div>
+      <div class="alert alert-danger" ng-show="errors.unknown">An unkown error has occurred</div>
       <form class="login-form form-horizontal" role="form" ng-submit="submit()">
         <div class="form-group group-email">
           <label ng-class="[hasSocial ? 'col-sm-12' : 'col-sm-4']">Email</label>

@@ -92,6 +92,22 @@ function MockStormpath(){
     );
   }
 
+  function respondWithOtherError(xhr){
+    var response = {
+      status: 499,
+      code: 499,
+      userMessage: 'Something bad happened, and I\'m telling you about it',
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+    xhr.respond(
+      499,
+      {'Content-Type': 'application/json'},
+      JSON.stringify(response)
+    );
+  }
+
   var sinon = window.sinon;
 
 
@@ -117,10 +133,15 @@ function MockStormpath(){
     function(xhr){
       var validLogin = '{"type":"basic","value":"MTox"}'; // use '1' for username and password
       var badLogin = '{"type":"basic","value":"Mjoy"}'; // use '2' for username and password
+      // use '3' for account not found
+      var niceError = '{"type":"basic","value":"NDo0"}'; // use '4' for some other error
+
       if(xhr.requestBody===validLogin){
         respondWithLoginSuccess('https://api.stormpath.com/v1/applications/1234',xhr);
       }else if(xhr.requestBody===badLogin){
         respondWithLoginFailure(xhr);
+      }else if(xhr.requestBody===niceError){
+        respondWithOtherError(xhr);
       }else{
         respondWithUserNotFound(xhr);
       }

@@ -3681,7 +3681,6 @@ if (typeof sinon == "undefined") {
         async: true,
 
         open: function open(method, url, async, username, password) {
-            console.log("open",url)
             this.method = method;
             this.url = url;
             this.async = typeof async == "boolean" ? async : true;
