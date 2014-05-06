@@ -175,6 +175,30 @@ p{
 
 .registration-view{
   .registration-form{
+    .form-group{
+      margin-bottom: 21px;
+
+    }
+    input[type="text"],
+    input[type="password"]{
+      position: relative;
+    }
+    .help-block{
+      font-size: 11px;
+      position: absolute;
+      top: @inputHeight - 2px;
+    }
+    .has-error{
+      @errorColor: #ec3e3e;
+      & , & .help-block{
+        color: @errorColor;
+        font-weight: 600;
+      }
+      input[type="text"],
+      input[type="password"]{
+        border-color: @errorColor;
+      }
+    }
   }
 }
 

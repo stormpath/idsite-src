@@ -4,41 +4,44 @@
       <div class="header">
         <span>Create an Account</span>
       </div>
-      <form class="registration-form form-horizontal" role="form">
-
-
-        <div class="form-group group-first-name">
-          <label class="col-sm-4">First Name</label>
+      <form class="registration-form form-horizontal" role="form" ng-controller="RegistrationFormCtrl" ng-submit="submit()">
+        <div class="form-group group-first-name" form-group>
+          <label class="col-sm-4">First Name ?{{valid}}</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" name="givenName" />
+            <input type="text" class="form-control" name="givenName" form-control name-validation validate-on-blur/>
+            <small class="help-block" ng-show="validationError">First name is required</small>
           </div>
         </div>
 
-        <div class="form-group group-last-name">
+        <div class="form-group group-last-name has-error" form-group>
           <label class="col-sm-4">Last Name</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" name="surname" />
+            <input type="text" class="form-control" name="surname" form-control name-validation validate-on-blur/>
+            <small class="help-block" ng-show="validationError">Last name is required</small>
           </div>
         </div>
 
-        <div class="form-group group-email">
+        <div class="form-group group-email has-error" form-group>
           <label class="col-sm-4">Email</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" name="email" />
+            <input type="text" class="form-control" name="email" form-control email-validation validate-on-blur/>
+            <small class="help-block" ng-show="validationError">Invalid email address</small>
           </div>
         </div>
 
-        <div class="form-group group-password">
+        <div class="form-group group-password has-error" form-group>
           <label class="col-sm-4">Password</label>
           <div class="col-sm-8">
-            <input type="password" class="form-control" name="password" />
+            <input type="password" class="form-control" name="password" form-control name-validation/>
+            <small class="help-block" ng-show="validationError">Password is required</small>
           </div>
         </div>
 
-        <div class="form-group group-confirm-password">
+        <div class="form-group group-confirm-password has-error" form-group>
           <label class="col-sm-4">Confirm Password</label>
           <div class="col-sm-8">
-            <input type="password" class="form-control" name="passwordConfirm" />
+            <input type="password" class="form-control" name="passwordConfirm" form-control password-match-validation validate-on-blur/>
+            <small class="help-block" ng-show="validationError">Password does not match</small>
           </div>
         </div>
         <button class="btn btn-register btn-sp-green" type="submit">Create Account</button>
