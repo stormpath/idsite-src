@@ -14,7 +14,8 @@ angular.module('stormpathIdpApp')
     });
 
     $scope.submit = function(){
-      Stormpath.login($scope.username,$scope.password,function(){
+      Stormpath.login($scope.username,$scope.password,function(err,resp){
+        console.log('login response',err,resp);
         // do stuff with errors
         // or redirect back to service provider
       });

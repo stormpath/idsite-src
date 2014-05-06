@@ -25,7 +25,7 @@ angular.module('stormpathIdpApp')
           appConfig = {
             logoUrl: '/images/logo.png',
             hasSocial: $routeParams.hasSocial === 'false' ? false : true,
-            appHref: 'https://api.stormpath.com//v1/applications/1234'
+            appHref: 'https://api.stormpath.com/v1/applications/1234'
           };
           // appConfigError = {message:'something went wrong!'};
           if(appConfigError){
@@ -60,7 +60,10 @@ angular.module('stormpathIdpApp')
 
           try{
             client = new stormpath.Client({
-              appHref: appConfig.appHref
+              appHref: appConfig.appHref,
+              headers:{
+                'User-Agent': $window.navigator.userAgent
+              }
             });
           }catch(e){
             showError(err);
