@@ -98,6 +98,19 @@ angular.module('stormpathIdpApp')
         showError(e);
       }
     };
+
+    this.register = function(data,cb){
+      try{
+        application.createAccount(data,function(err,result){
+          $rootScope.$apply(function(){
+            cb(err,result);
+          });
+        });
+      }
+      catch(e){
+        showError(e);
+      }
+    };
     this.Client = stormpath.Client;
     return this;
   });

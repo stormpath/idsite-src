@@ -12,11 +12,17 @@ angular.module('stormpathIdpApp')
         scope.fields[fieldname] = {
           value: element.val(),
           validationError: false,
+          errors: scope.errors || {},
           validate: function(){
             if(scope.validate){
               scope.validate(element);
+              // scope.fields[fieldname].validationError = scope.validationError;
             }
           }
+        };
+
+        scope.clearErrors = function(){
+          Object.keys(scope.errors).map(function(k){scope.errors[k]=false;});
         };
 
         element.on('input',function(){
@@ -26,6 +32,9 @@ angular.module('stormpathIdpApp')
         });
         scope.$watchCollection('fields.'+fieldname,function(a){
           element.val(a.value);
+        });
+        scope.$watchCollection('fields.'+fieldname+'.errors',function(a){
+          angular.extend(scope.errors,a||{});
         });
       }
     };

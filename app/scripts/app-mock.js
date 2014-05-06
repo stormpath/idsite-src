@@ -93,6 +93,63 @@ function MockStormpath(){
     );
   }
 
+  function respondWithNewAccount(account,xhr){
+    var id = uuid();
+    var response = {
+      'href' : 'https://api.stormpath.com/v1/accounts/' + id,
+      'username' : account.username,
+      'email' : account.email || account.username,
+      'fullName' : account.givenName + ' ' + account.surname,
+      'givenName' : account.givenName,
+      'middleName' : '',
+      'surname' : account.surname,
+      'status' : 'UNVERIFIED',
+      'customData': {
+        'href': 'https://api.stormpath.com/v1/accounts/'+id+'/customData'
+      },
+      'groups' : {
+        'href' : 'https://api.stormpath.com/v1/accounts/'+id+'/groups'
+      },
+      'groupMemberships' : {
+        'href' : 'https://api.stormpath.com/v1/accounts/'+id+'/groupMemberships'
+      },
+      'directory' : {
+        'href' : 'https://api.stormpath.com/v1/directories/' + uuid()
+      },
+      'tenant' : {
+        'href' : 'https://api.stormpath.com/v1/tenants/' + uuid()
+      },
+      'emailVerificationToken' : {
+        'href' : 'https://api.stormpath.com/v1/accounts/emailVerificationTokens/' + uuid()
+      },
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+
+    xhr.respond(201,{'Content-Type': 'application/json'},JSON.stringify(response));
+  }
+
+  function respondWithDuplicateUser(xhr){
+
+    var response = {
+      status: 409,
+      code: 2001,
+      userMessage: 'Account with that username already exists.  Please choose another username.',
+      developerMessage: 'Account with that username already exists.  Please choose another username.',
+      moreInfo: 'http://docs.stormpath.com/errors/2001',
+      message: 'HTTP 409, Stormpath 2001 (http://docs.stormpath.com/errors/2001): Account with that username already exists.  Please choose another username.',
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+    xhr.respond(
+      409,
+      {'Content-Type': 'application/json'},
+      JSON.stringify(response)
+    );
+  }
+
   function respondWithOtherError(xhr){
     var response = {
       status: 499,
@@ -145,6 +202,25 @@ function MockStormpath(){
         respondWithOtherError(xhr);
       }else{
         respondWithUserNotFound(xhr);
+      }
+
+    }
+
+  );
+
+  server.respondWith(
+    'POST',
+    'https://api.stormpath.com/v1/applications/1234/accounts',
+    function(xhr){
+      // respondWithOtherError(xhr);
+      // debugger
+      if(xhr.requestBody.match(/stormpath/)){
+        respondWithDuplicateUser(xhr);
+      // }else if(xhr.requestBody.match(/499/)){
+      //   respondWithOtherError(xhr);
+      }else{
+        // xhr.respond(201,{ 'Content-Type': 'application/json' },xhr.requestBody);
+        respondWithNewAccount(JSON.parse(xhr.requestBody),xhr);
       }
 
     }

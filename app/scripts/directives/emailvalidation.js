@@ -7,6 +7,7 @@ angular.module('stormpathIdpApp')
       restrict: 'A',
       link: function postLink(scope) {
         scope.validate = function(element){
+          scope.clearErrors();
           scope.validationError = !(element.val()!=='' &&re.test(element.val()));
         };
       }
