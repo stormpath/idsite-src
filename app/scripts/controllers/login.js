@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('LoginCtrl', function ($scope,Stormpath) {
+  .controller('LoginCtrl', function ($scope,Stormpath,$window) {
     $scope.ready = false;
     $scope.errors = {
       badLogin: false,
@@ -40,7 +40,7 @@ angular.module('stormpathIdpApp')
             $scope.errors.unknown = true;
           }
         }else{
-          // or redirect back to service provider
+          $window.location.replace(resp.redirectTo);
         }
       });
     };

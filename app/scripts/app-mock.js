@@ -44,6 +44,7 @@ function MockStormpath(){
       'account': {
         'href' : accountHref
       },
+      'redirectTo': 'https://stormpath.com',
       'csrfToken': uuid(),
       'hpValue': uuid(),
       'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
