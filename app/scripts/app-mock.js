@@ -342,6 +342,32 @@ function MockStormpath(){
     }
   );
 
+  server.respondWith(
+    'GET',
+    'https://api.stormpath.com/v1/applications/1234/passwordResetTokens/1',
+    function(xhr){
+      respondWithNewAccount({
+        email: 'joe@somebody.com'
+      },true,xhr);
+    }
+  );
+
+  server.respondWith(
+    'GET',
+    'https://api.stormpath.com/v1/applications/1234/passwordResetTokens/2',
+    function(xhr){
+      respondWithNotFound(xhr);
+    }
+  );
+
+  server.respondWith(
+    'GET',
+    'https://api.stormpath.com/v1/applications/1234/passwordResetTokens/3',
+    function(xhr){
+      respondWithOtherError(xhr);
+    }
+  );
+
   server.autoRespond = true;
   server.autoRespondAfter = 200;
   return server;

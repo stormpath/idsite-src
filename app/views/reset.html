@@ -1,10 +1,24 @@
-<div class="view reset-view">
+<div class="view reset-view" ng-show="status!=='loading'">
   <div class="box row">
     <div class="col-sm-12">
       <div class="header">
-        <span>Password Reset</span>
+        <span ng-show="status=='verified'">Password Reset</span>
+        <span ng-show="status=='expired'">Reset link has expired</span>
+        <span ng-show="status=='failed'">Sorry! Something went wrong.</span>
       </div>
-      <form class="forgot-form form-horizontal" role="form">
+      <div ng-show="status==='expired' || status=='failed'">
+        <p>
+          <span>You will need to make a new password reset request.</span>
+          <a href="#/forgot">Click here to try again</a>
+        </p>
+        <p>&nbsp;</p>
+      </div>
+      <div ng-show="error" class="alert alert-danger">
+        <p><strong>The error was:</strong></p>
+        <p>{{error}}</p>
+      </div>
+
+      <form class="forgot-form form-horizontal" role="form" ng-show="status=='verified'">
         <div class="form-group group-password">
           <label class="col-sm-4">New Password</label>
           <div class="col-sm-8">

@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 angular.module('stormpathIdpApp')
   .controller('VerifyCtrl', function ($scope, $location,Stormpath) {
 
@@ -23,6 +21,4 @@ angular.module('stormpathIdpApp')
         }
       });
     });
-
-    return $scope;
   });

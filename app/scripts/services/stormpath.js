@@ -167,5 +167,18 @@ angular.module('stormpathIdpApp')
       }
     };
 
+    this.verifyPasswordToken = function(token,cb){
+      try{
+        application.verifyPasswordResetToken(token,function(err, account) {
+          $rootScope.$apply(function(){
+            cb(err,account);
+          });
+        });
+      }
+      catch(e){
+        showError(e);
+      }
+    };
+
     return this;
   });
