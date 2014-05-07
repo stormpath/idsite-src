@@ -6,7 +6,9 @@ angular.module('stormpathIdpApp')
       restrict: 'A',
       link: function postLink(scope) {
         scope.validate = function(element){
-          scope.validationError = (scope.fields.password.value !== '' && (element.val()!==scope.fields.password.value));
+          var t = (scope.fields.password.value !== '' && (element.val()!==scope.fields.password.value));
+          scope.validationError = t;
+          return t;
         };
       }
     };

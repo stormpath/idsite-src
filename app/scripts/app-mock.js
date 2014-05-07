@@ -93,7 +93,7 @@ function MockStormpath(){
     );
   }
 
-  function respondWithNewAccount(account,xhr){
+  function respondWithNewAccount(account,verified,xhr){
     var id = uuid();
     var response = {
       'href' : 'https://api.stormpath.com/v1/accounts/' + id,
@@ -103,7 +103,7 @@ function MockStormpath(){
       'givenName' : account.givenName,
       'middleName' : '',
       'surname' : account.surname,
-      'status' : 'UNVERIFIED',
+      'status' : verified? 'VERIFIED':'UNVERIFIED',
       'customData': {
         'href': 'https://api.stormpath.com/v1/accounts/'+id+'/customData'
       },
@@ -126,6 +126,10 @@ function MockStormpath(){
       'hpValue': uuid(),
       'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
     };
+
+    if(verified){
+      response.redirectTo = 'https://stormpath.com';
+    }
 
     xhr.respond(201,{'Content-Type': 'application/json'},JSON.stringify(response));
   }
@@ -161,6 +165,63 @@ function MockStormpath(){
     };
     xhr.respond(
       499,
+      {'Content-Type': 'application/json'},
+      JSON.stringify(response)
+    );
+  }
+
+  function respondWithPasswordTooShortError(xhr){
+    var response = {
+      status: 400,
+      code: 2007,
+      userMessage: 'Account password minimum length not satisfied.',
+      developerMessage: 'Account password minimum length not satisfied.',
+      moreInfo: 'http://docs.stormpath.com/errors/2007',
+      message: 'HTTP 400, Stormpath 2007 (http://docs.stormpath.com/errors/2007): Account password minimum length not satisfied.',
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+    xhr.respond(
+      response.status,
+      {'Content-Type': 'application/json'},
+      JSON.stringify(response)
+    );
+  }
+
+  function respondWithPasswordRequiresUppercaseError(xhr){
+    var response = {
+      status: 400,
+      code: 400,
+      userMessage: 'Password requires an uppercase character!',
+      developerMessage: 'Password requires an uppercase character!',
+      moreInfo: 'mailto:support@stormpath.com',
+      message: 'HTTP 400, Stormpath 400 (mailto:support@stormpath.com): Password requires an uppercase character!',
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+    xhr.respond(
+      response.status,
+      {'Content-Type': 'application/json'},
+      JSON.stringify(response)
+    );
+  }
+
+  function respondWithPasswordRequiresNumberError(xhr){
+    var response = {
+      status: 400,
+      code: 400,
+      userMessage: 'Password requires a numeric character!',
+      developerMessage: 'Password requires a numeric character!',
+      moreInfo: 'mailto:support@stormpath.com',
+      message: 'HTTP 400, Stormpath 400 (mailto:support@stormpath.com): Password requires a numeric character!',
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+    xhr.respond(
+      response.status,
       {'Content-Type': 'application/json'},
       JSON.stringify(response)
     );
@@ -212,19 +273,22 @@ function MockStormpath(){
     'POST',
     'https://api.stormpath.com/v1/applications/1234/accounts',
     function(xhr){
-      // respondWithOtherError(xhr);
-      // debugger
+      var data = JSON.parse(xhr.requestBody);
       if(xhr.requestBody.match(/stormpath/)){
         respondWithDuplicateUser(xhr);
-      // }else if(xhr.requestBody.match(/499/)){
-      //   respondWithOtherError(xhr);
+      }else if(data.password.length===1){
+        respondWithPasswordTooShortError(xhr);
+      }else if(!data.password.match(/[A-Z]+/)){
+        respondWithPasswordRequiresUppercaseError(xhr);
+      }else if(!data.password.match(/[0-9]+/)){
+        respondWithPasswordRequiresNumberError(xhr);
+      }else if(xhr.requestBody.match(/499/)){
+        respondWithOtherError(xhr);
       }else{
-        // xhr.respond(201,{ 'Content-Type': 'application/json' },xhr.requestBody);
-        respondWithNewAccount(JSON.parse(xhr.requestBody),xhr);
+        var verified = xhr.requestBody.match(/verified/) !== null;
+        respondWithNewAccount(JSON.parse(xhr.requestBody),verified,xhr);
       }
-
     }
-
   );
 
   server.respondWith(
