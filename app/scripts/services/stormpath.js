@@ -37,6 +37,7 @@ angular.module('stormpathIdpApp')
               cb(appConfigError);
             });
           }else{
+            $rootScope.logoUrl = appConfig.logoUrl;
             $rootScope.$apply(function(){
               cb(null,appConfig);
             });
