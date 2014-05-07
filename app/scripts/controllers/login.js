@@ -21,8 +21,33 @@ angular.module('stormpathIdpApp')
         appConfig = result;
         $scope.ready = true;
         $scope.hasSocial = appConfig.hasSocial;
+        if(appConfig.facebookAppId){
+          initFB();
+        }
       }
     });
+
+    function initFB(){
+      $window.fbAsyncInit = function() {
+        var FB = $window.FB;
+        FB.init({
+          appId: appConfig.facebookAppId,
+          xfbml: true,
+          status: true,
+          version: 'v2.0'
+        });
+      };
+      (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+          return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = '//connect.facebook.net/es_LA/sdk.js';
+        fjs.parentNode.insertBefore(js, fjs);
+      }($window.document, 'script', 'facebook-jssdk'));
+    }
 
     if(Stormpath.verifiedAccount){
       $scope.username = Stormpath.verifiedAccount.email;
@@ -85,6 +110,23 @@ angular.module('stormpathIdpApp')
       };
 
       gapi.auth.signIn(params);
+    };
+
+    $scope.facebookLogin = function(){
+      var FB = $window.FB;
+
+      FB.getLoginStatus(function(response) {
+        if(response.status === 'connected'){
+          Stormpath.facebookLogin(response.authResponse.accessToken,errOrRedirect);
+        }else{
+          FB.login(function(response) {
+            if(response.status === 'connected'){
+              Stormpath.facebookLogin(response.authResponse.accessToken,errOrRedirect);
+            }
+          });
+        }
+      });
+
     };
 
     return $scope;

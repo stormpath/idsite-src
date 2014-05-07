@@ -27,7 +27,8 @@ angular.module('stormpathIdpApp')
             logoUrl: '/images/logo.png',
             hasSocial: $routeParams.hasSocial === 'false' ? false : true,
             appHref: 'https://api.stormpath.com/v1/applications/1234',
-            googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com'
+            googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
+            facebookAppId: '711511582223538'
           };
           // appConfigError = {message:'something went wrong!'};
           if(appConfigError){
@@ -215,6 +216,28 @@ angular.module('stormpathIdpApp')
         var data = {
           providerData: {
             providerId: 'google',
+            code: accessToken
+          }
+        };
+        application.createAccount(data,function(err,result){
+          if(!err){
+            self.registeredAccount = result;
+          }
+          $rootScope.$apply(function(){
+            cb(err,result);
+          });
+        });
+      }
+      catch(e){
+        showError(e);
+      }
+    };
+
+    this.facebookLogin = function(accessToken,cb){
+      try{
+        var data = {
+          providerData: {
+            providerId: 'facebook',
             code: accessToken
           }
         };
