@@ -180,6 +180,19 @@ angular.module('stormpathIdpApp')
       }
     };
 
+    this.sendPasswordResetEmail = function(email,cb){
+      try{
+        application.sendPasswordResetEmail(email,function(err, resp) {
+          $rootScope.$apply(function(){
+            cb(err,resp);
+          });
+        });
+      }
+      catch(e){
+        showError(e);
+      }
+    };
+
     this.saveAccount = function(account,cb){
       try{
         account.save(function(err, account) {

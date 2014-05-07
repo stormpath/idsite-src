@@ -227,6 +227,24 @@ function MockStormpath(){
     );
   }
 
+  function respondWithPasswordResetToken(email,xhr){
+    var response = {
+      status: 200,
+      code: 200,
+      href: 'https://api.stormpath.com/v1/applications/1h72PFWoGxHKhysKjYIkir/passwordResetTokens/QnKDpz3jxWYrnX9UzOStjgR5S6XBLyhEHRaUgpnKUUrb8GqWWGxcYC8CjcBCchKO3n0quuAZe9',
+      email: 'robert@robertjd.com',
+      account: { href: 'https://api.stormpath.com/v1/accounts/' + uuid() },
+      'csrfToken': uuid(),
+      'hpValue': uuid(),
+      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+    };
+    xhr.respond(
+      response.status,
+      {'Content-Type': 'application/json'},
+      JSON.stringify(response)
+    );
+  }
+
   var sinon = window.sinon;
 
 
@@ -366,6 +384,21 @@ function MockStormpath(){
     'https://api.stormpath.com/v1/applications/1234/passwordResetTokens/3',
     function(xhr){
       respondWithOtherError(xhr);
+    }
+  );
+
+  server.respondWith(
+    'POST',
+    'https://api.stormpath.com/v1/applications/1234/passwordResetTokens',
+    function(xhr){
+      var data = JSON.parse(xhr.requestBody);
+      if(data.email.match(/robert@stormpath.com/)){
+        respondWithPasswordResetToken(data.email,xhr);
+      }else if(data.email.match(/499/)){
+        respondWithOtherError(xhr);
+      }else{
+        respondWithNotFound(xhr);
+      }
     }
   );
 
