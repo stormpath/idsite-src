@@ -7,6 +7,7 @@ angular.module('stormpathIdpApp')
     var appConfig = null;
     var appConfigError = null;
 
+
     var client;
     var application;
 
@@ -45,6 +46,8 @@ angular.module('stormpathIdpApp')
 
     };
     var self = this;
+
+    self.registeredAccount = null;
 
     function showError(error){
       self.errors.push(error.message || 'Unknown');
@@ -102,6 +105,9 @@ angular.module('stormpathIdpApp')
     this.register = function(data,cb){
       try{
         application.createAccount(data,function(err,result){
+          if(!err){
+            self.registeredAccount = result;
+          }
           $rootScope.$apply(function(){
             cb(err,result);
           });

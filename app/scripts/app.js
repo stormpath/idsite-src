@@ -31,7 +31,8 @@ angular
         controller: 'VerifyCtrl'
       })
       .when('/unverified', {
-        templateUrl: 'views/unverified.html'
+        templateUrl: 'views/unverified.html',
+        controller: 'UnverifiedCtrl'
       })
       .otherwise({
         redirectTo: '/'
