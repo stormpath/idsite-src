@@ -1,4 +1,4 @@
-<div class="view verify-view">
+<div class="view verify-view" ng-show="status!=='loading'">
   <div class="box row">
     <div class="col-sm-12">
       <div class="header">
@@ -20,6 +20,10 @@
           <a href="#/register">register</a>
           <span>again.</span>
         </p>
+        <div ng-show="error" class="alert alert-danger">
+          <p><strong>The error was:</strong></p>
+          <p>{{error}}</p>
+        </div>
       </div>
     </div>
   </div>

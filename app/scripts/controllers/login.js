@@ -19,6 +19,10 @@ angular.module('stormpathIdpApp')
       }
     });
 
+    if(Stormpath.verifiedAccount){
+      $scope.username = Stormpath.verifiedAccount.email;
+    }
+
     function clearErrors(){
       Object.keys($scope.errors).map(function(k){$scope.errors[k]=false;});
     }

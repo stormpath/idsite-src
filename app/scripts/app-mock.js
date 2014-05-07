@@ -75,7 +75,7 @@ function MockStormpath(){
   }
 
 
-  function respondWithUserNotFound(xhr){
+  function respondWithNotFound(xhr){
     var response = {
       status: 404,
       code: 404,
@@ -262,7 +262,7 @@ function MockStormpath(){
       }else if(xhr.requestBody===niceError){
         respondWithOtherError(xhr);
       }else{
-        respondWithUserNotFound(xhr);
+        respondWithNotFound(xhr);
       }
 
     }
@@ -298,6 +298,48 @@ function MockStormpath(){
       respondWithApplication('https://api.stormpath.com/v1/applications/1234',xhr);
     }
 
+  );
+
+  server.respondWith(
+    'GET',
+    'https://api.stormpath.com/v1/tenants/current',
+    function(xhr){
+      var tenantId = Math.floor(Math.random()*100000);
+      xhr.respond(
+        200,
+        {'Content-Type': 'application/json'},
+        JSON.stringify({
+          href: 'https://api.stormpath.com/v1/tenants/'+tenantId
+        })
+      );
+    }
+
+  );
+
+  server.respondWith(
+    'POST',
+    'https://api.stormpath.com/v1/accounts/emailVerificationTokens/1',
+    function(xhr){
+      respondWithNewAccount({
+        email: 'joe@somebody.com'
+      },true,xhr);
+    }
+  );
+
+  server.respondWith(
+    'POST',
+    'https://api.stormpath.com/v1/accounts/emailVerificationTokens/2',
+    function(xhr){
+      respondWithNotFound(xhr);
+    }
+  );
+
+  server.respondWith(
+    'POST',
+    'https://api.stormpath.com/v1/accounts/emailVerificationTokens/3',
+    function(xhr){
+      respondWithOtherError(xhr);
+    }
   );
 
   server.autoRespond = true;

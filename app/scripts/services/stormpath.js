@@ -48,19 +48,38 @@ angular.module('stormpathIdpApp')
     var self = this;
 
     self.registeredAccount = null;
+    self.verifiedAccount = null;
 
     function showError(error){
       self.errors.push(error.message || 'Unknown');
       $location.path('/error');
     }
+
+    var initializing = false;
+    var initialized = false;
+
+    var onready = [];
+
     this.init = function(cb){
+
+      if(initializing){
+        onready.push(cb);
+        return;
+      }
+
+      if(initialized){
+        cb(null);
+      }
+
+      onready.push(cb);
+
+      initializing = true;
 
       self.getAppConfig(function(err,appConfig){
 
         if(err){
           showError(err);
         }else{
-
           try{
             client = new stormpath.Client({
               appHref: appConfig.appHref,
@@ -78,7 +97,11 @@ angular.module('stormpathIdpApp')
                 showError(err);
               }else{
                 application = spApp;
-                cb(null);
+                initializing = false;
+                initialized = true;
+                onready.map(function(fn){
+                  fn(null);
+                });
               }
             });
           });
@@ -117,6 +140,32 @@ angular.module('stormpathIdpApp')
         showError(e);
       }
     };
-    this.Client = stormpath.Client;
+
+    this.verifyEmailToken = function(token,cb){
+      if(self.verifiedAccount){
+        cb(null,self.verifiedAccount);
+        return;
+      }
+      try{
+        client.getCurrentTenant(function(err, tenant) {
+          if (err){
+            throw err;
+          }else{
+            tenant.verifyAccountEmail(token,function(err,account){
+              if(!err){
+                self.verifiedAccount = account;
+              }
+              $rootScope.$apply(function(){
+                cb(err,account);
+              });
+            });
+          }
+        });
+      }
+      catch(e){
+        showError(e);
+      }
+    };
+
     return this;
   });
