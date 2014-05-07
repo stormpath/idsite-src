@@ -293,18 +293,19 @@ function MockStormpath(){
     'https://api.stormpath.com/v1/applications/1234/accounts',
     function(xhr){
       var data = JSON.parse(xhr.requestBody);
+      var p = data.password;
       if(xhr.requestBody.match(/stormpath/)){
         respondWithDuplicateUser(xhr);
-      }else if(data.password.length===1){
+      }else if(p && p.length===1){
         respondWithPasswordTooShortError(xhr);
-      }else if(!data.password.match(/[A-Z]+/)){
+      }else if(p && !p.match(/[A-Z]+/)){
         respondWithPasswordRequiresUppercaseError(xhr);
-      }else if(!data.password.match(/[0-9]+/)){
+      }else if(p && !p.match(/[0-9]+/)){
         respondWithPasswordRequiresNumberError(xhr);
       }else if(xhr.requestBody.match(/499/)){
         respondWithOtherError(xhr);
       }else{
-        var verified = xhr.requestBody.match(/verified/) !== null;
+        var verified = xhr.requestBody.match(/verified|google|facebook/) !== null;
         respondWithNewAccount(JSON.parse(xhr.requestBody),verified,xhr);
       }
     }

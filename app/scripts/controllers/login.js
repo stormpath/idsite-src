@@ -7,13 +7,18 @@ angular.module('stormpathIdpApp')
       badLogin: false,
       notFound: false,
       userMessage: false,
-      unknown: false
+      unknown: false,
+      googleReject: false,
+      facebookReject: false
     };
 
-    Stormpath.getAppConfig(function(err,appConfig){
+    var appConfig;
+
+    Stormpath.getAppConfig(function(err,result){
       if(err){
         return;
       }else{
+        appConfig = result;
         $scope.ready = true;
         $scope.hasSocial = appConfig.hasSocial;
       }
@@ -27,26 +32,59 @@ angular.module('stormpathIdpApp')
       Object.keys($scope.errors).map(function(k){$scope.errors[k]=false;});
     }
 
+    function showError(err){
+      if(err.status===400){
+        $scope.errors.badLogin = true;
+      }
+      else if(err.status===404){
+        $scope.errors.notFound = true;
+      }
+      else if(err.userMessage || err.message){
+        $scope.errors.userMessage = err.userMessage || err.message;
+      }else{
+        $scope.errors.unknown = true;
+      }
+    }
+
+    function errOrRedirect(err,resp){
+      if(err){
+        showError(err);
+      }else{
+        redirect(resp.redirectTo);
+      }
+    }
+
+    function redirect(url){
+      $window.location.replace(url);
+    }
+
     $scope.submit = function(){
-      Stormpath.login($scope.username,$scope.password,function(err,resp){
-        console.log('login response',err,resp);
-        clearErrors();
-        if(err){
-          if(err.status===400){
-            $scope.errors.badLogin = true;
+      clearErrors();
+      Stormpath.login($scope.username,$scope.password,errOrRedirect);
+    };
+
+    $scope.googleLogin = function(){
+      var gapi = $window.gapi;
+      if(!gapi){
+        return;
+      }
+      clearErrors();
+      var params = {
+        clientid: appConfig.googleClientId,
+        scope: 'https://www.googleapis.com/auth/plus.profile.emails.read',
+        cookiepolicy: 'single_host_origin',
+        callback: function(authResult){
+          if (authResult.status.signed_in) {
+            Stormpath.googleLogin(authResult.access_token,errOrRedirect);
+          } else {
+            if(authResult.error==='access_denied'){
+              $scope.errors.googleReject = true;
+            }
           }
-          else if(err.status===404){
-            $scope.errors.notFound = true;
-          }
-          else if(err.userMessage || err.message){
-            $scope.errors.userMessage = err.userMessage || err.message;
-          }else{
-            $scope.errors.unknown = true;
-          }
-        }else{
-          $window.location.replace(resp.redirectTo);
         }
-      });
+      };
+
+      gapi.auth.signIn(params);
     };
 
     return $scope;
