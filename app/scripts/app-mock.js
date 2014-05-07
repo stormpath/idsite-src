@@ -269,6 +269,7 @@ function MockStormpath(){
 
   );
 
+
   server.respondWith(
     'POST',
     'https://api.stormpath.com/v1/applications/1234/accounts',
@@ -365,6 +366,25 @@ function MockStormpath(){
     'https://api.stormpath.com/v1/applications/1234/passwordResetTokens/3',
     function(xhr){
       respondWithOtherError(xhr);
+    }
+  );
+
+  server.respondWith(
+    'POST',
+    new RegExp('https://api.stormpath.com/v1/accounts/[0-9]+$'),
+    function(xhr){
+      var data = JSON.parse(xhr.requestBody);
+      if(data.password.length===1){
+        respondWithPasswordTooShortError(xhr);
+      }else if(!data.password.match(/[A-Z]+/)){
+        respondWithPasswordRequiresUppercaseError(xhr);
+      }else if(!data.password.match(/[0-9]+/)){
+        respondWithPasswordRequiresNumberError(xhr);
+      }else if(xhr.requestBody.match(/499/)){
+        respondWithOtherError(xhr);
+      }else{
+        respondWithNewAccount(JSON.parse(xhr.requestBody),true,xhr);
+      }
     }
   );
 

@@ -180,5 +180,28 @@ angular.module('stormpathIdpApp')
       }
     };
 
+    this.saveAccount = function(account,cb){
+      try{
+        account.save(function(err, account) {
+          if(!err){
+            self.verifiedAccount = account;
+          }
+          $rootScope.$apply(function(){
+            cb(err,account);
+          });
+        });
+      }
+      catch(e){
+        showError(e);
+      }
+    };
+
+    this.nicePasswordErrors = {
+      'Password requires a numeric character!': 'Password requires a number',
+      'Password requires an uppercase character!': 'Password requires an uppercase letter',
+      'Account password minimum length not satisfied.': 'Password is too short',
+      'Password requires a lowercase character!': 'Password requires a lowercase letter'
+    };
+
     return this;
   });

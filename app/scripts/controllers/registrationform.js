@@ -17,12 +17,6 @@ angular.module('stormpathIdpApp')
 
     $scope.fields = {};
 
-    var nicePasswordErrors = {
-      'Password requires a numeric character!': 'Password requires a number',
-      'Password requires an uppercase character!': 'Password requires an uppercase letter',
-      'Account password minimum length not satisfied.': 'Password is too short',
-      'Password requires a lowercase character!': 'Password requires a lowercase letter'
-    };
     $scope.submit = function(){
       $scope.unknownError = false;
       var inError = Object.keys($scope.fields).filter(function(f){
@@ -38,7 +32,8 @@ angular.module('stormpathIdpApp')
         Stormpath.register(data,function(err,account){
 
           if(err){
-            var nicePasswordError = nicePasswordErrors[err.userMessage] || nicePasswordErrors[err.developerMessage];
+            var nicePasswordError = Stormpath.nicePasswordErrors[err.userMessage] ||
+              Stormpath.nicePasswordErrors[err.developerMessage];
             if(err.status===409){
               $scope.fields.username.errors.duplicateUser = true;
             }else if(nicePasswordError){
