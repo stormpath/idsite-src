@@ -340,6 +340,24 @@ module.exports = function (grunt) {
       ]
     },
 
+    protractor: {
+      options: {
+        configFile: 'protractor.conf.js', // Default config file
+        keepAlive: false, // If false, the grunt process stops when the test fails.
+        noColor: false, // If true, protractor will not use colors in its output.
+      },
+      dev: {
+        options: {
+          args: {
+            baseUrl: 'http://<%= connect.options.hostname %>:<%=connect.options.port %>',
+            params: {
+              appUrl: '/'
+            }
+          }
+        }
+      }
+    },
+
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
