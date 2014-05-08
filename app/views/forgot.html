@@ -7,7 +7,7 @@
         <span ng-show="sent">Check your email</span>
 
       </div>
-      <div ng-show="sent">
+      <div class="wd-sent" ng-show="sent">
         <p>
           <span>We've sent a password reset link to </span>
           <strong>{{fields.email.value}}</span>
@@ -22,8 +22,8 @@
           <label class="col-sm-6" ng-show="retry">Send new password reset email to:</label>
           <div class="col-sm-6">
             <input type="text" class="form-control" name="email" form-control email-validation validate-on-blur/>
-            <small class="help-block" ng-show="validationError">Invalid email address</small>
-            <small class="help-block" ng-show="notFound"><span>Account does not exist.</span></small>
+            <small class="help-block wd-invalid-email" ng-show="validationError">Invalid email address</small>
+            <small class="help-block wd-not-found" ng-show="notFound"><span>Account does not exist.</span></small>
           </div>
         </div>
         <div class="alert alert-danger" ng-show="unknownError">
