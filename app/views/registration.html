@@ -5,6 +5,12 @@
         <span>Create an Account</span>
       </div>
       <form class="registration-form form-horizontal sp-form" role="form" ng-controller="RegistrationFormCtrl" ng-submit="submit()">
+        <div class="alert alert-danger" ng-show="unknownError">
+          <strong>Sorry, an error occured.  Please reload the page and try again.</strong>
+          <br/>
+          <br/>
+          <p>{{unknownError}}</p>
+        </div>
         <div class="form-group group-first-name" form-group>
           <label class="col-sm-4">First Name</label>
           <div class="col-sm-8">
@@ -45,13 +51,6 @@
             <input type="password" class="form-control" name="passwordConfirm" form-control password-match-validation validate-on-blur/>
             <small class="help-block" ng-show="validationError">Password does not match</small>
           </div>
-        </div>
-
-        <div class="alert alert-danger" ng-show="unknownError">
-          <strong>Sorry, an error occured.  Please reload the page and try again.</strong>
-          <br/>
-          <br/>
-          <p>{{unknownError}}</p>
         </div>
 
         <button class="btn btn-register btn-sp-green" type="submit">Create Account</button>
