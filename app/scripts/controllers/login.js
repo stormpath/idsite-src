@@ -80,12 +80,14 @@ angular.module('stormpathIdpApp')
     }
 
     function redirect(url){
-      $window.location.replace(url);
+      $window.location=url;
     }
 
     $scope.submit = function(){
       clearErrors();
-      Stormpath.login($scope.username,$scope.password,errOrRedirect);
+      if($scope.username && $scope.password){
+        Stormpath.login($scope.username,$scope.password,errOrRedirect);
+      }
     };
 
     $scope.googleLogin = function(){

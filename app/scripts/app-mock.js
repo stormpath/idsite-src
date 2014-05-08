@@ -268,10 +268,11 @@ function MockStormpath(){
     'POST',
     'https://api.stormpath.com/v1/applications/1234/loginAttempts?expand=account',
     function(xhr){
-      var validLogin = '{"type":"basic","value":"MTox"}'; // use '1' for username and password
-      var badLogin = '{"type":"basic","value":"Mjoy"}'; // use '2' for username and password
+      console.log(xhr.requestBody);
+      var validLogin = '{"type":"basic","value":"cm9iZXJ0QHN0b3JtcGF0aC5jb206cm9iZXJ0QHN0b3JtcGF0aC5jb20="}'; // robert@stormpath.com , robert@stormpath.com
+      var badLogin = '{"type":"basic","value":"cm9iZXJ0QHN0b3JtcGF0aC5jb206MQ=="}'; // robert@stormpath.com , 1
       // use '3' for account not found
-      var niceError = '{"type":"basic","value":"NDo0"}'; // use '4' for some other error
+      var niceError = '{"type":"basic","value":"NDk5OjQ5OQ=="}'; // 499 , 499
 
       if(xhr.requestBody===validLogin){
         respondWithLoginSuccess('https://api.stormpath.com/v1/applications/1234',xhr);
