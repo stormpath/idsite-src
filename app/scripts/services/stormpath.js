@@ -24,7 +24,7 @@ angular.module('stormpathIdpApp')
       }else{
         setTimeout(function(){
           appConfig = {
-            logoUrl: '/images/logo.png',
+            logoUrl: 'images/logo.png',
             hasSocial: $routeParams.hasSocial === 'false' ? false : true,
             appHref: 'https://api.stormpath.com/v1/applications/1234',
             googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
