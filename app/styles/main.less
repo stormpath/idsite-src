@@ -67,7 +67,7 @@ p{
 }
 
 .logo{
-  margin: 30px auto 25px auto;
+  margin: 34px auto 25px auto;
   display: block;
 }
 
@@ -131,6 +131,17 @@ p{
   font-size: 16px;
 }
 
+.form-control{
+  font-size: 15px;
+  &::placeholder {
+    color: #aaadb0;
+  }
+  box-shadow: none;
+  &:focus{
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px rgba(0,132,255,.4);
+  }
+}
+
 .view{
 
   .header{
@@ -168,7 +179,8 @@ p{
 }
 
 .box{
-  box-shadow: 0 0px 3px rgba(0,0,0,.3);
+  box-shadow: 0 0px 3px 1px rgba(0, 0, 0, 0.1);
+  border:1px solid #cacaca;
   border-radius: 3px;
   padding: 0 @boxGutter;
 }
@@ -223,7 +235,7 @@ p{
     margin-bottom: 7px;
   }
 
-  @dividingBorder: 1px solid #d7d7d7;
+  @dividingBorder: 1px solid #cacaca;
 
   .email-password-area{
 
@@ -310,6 +322,7 @@ p{
   .social-area{
     border-top-right-radius: @boxBorderRadius;
     border-bottom-right-radius: @boxBorderRadius;
+    padding: 0 20px;
     .header{
       margin-bottom: -6px;
     }
