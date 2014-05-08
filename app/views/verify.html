@@ -5,7 +5,7 @@
         <span ng-show="status=='verified'">Your account has been successfully created</span>
         <span ng-show="status=='failed'">Sorry, there was an error while verifying your account</span>
       </div>
-      <div ng-show="status=='verified'">
+      <div class="verified" ng-show="status=='verified'">
         <p>
           <span>Success!  Your account is ready, please </span>
           <a href="#/">log in</a>
@@ -14,7 +14,7 @@
       <div ng-show="error" class="alert alert-danger">
           <strong>{{error}}</strong>
       </div>
-      <div ng-show="status=='failed'">
+      <div class="verification-failed" ng-show="status=='failed'">
         <p>
           <span>Please try again by clicking on the verification link that was sent to your email address.</span>
         </p>
