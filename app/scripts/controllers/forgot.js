@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('ForgotCtrl', function ($scope,Stormpath) {
+  .controller('ForgotCtrl', function ($scope,Stormpath,$routeParams) {
     $scope.sent = false;
+    $scope.retry = $routeParams.retry || false;
     $scope.fields = {};
     $scope.submit = function(){
       $scope.notFound = false;

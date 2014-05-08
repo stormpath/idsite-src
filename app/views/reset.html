@@ -3,11 +3,10 @@
     <div class="col-sm-12">
       <div class="header">
         <span ng-show="status=='verified'">Password Reset</span>
-        <span ng-show="status=='expired'">Reset link has expired</span>
         <span ng-show="status=='failed'">Sorry! Something went wrong.</span>
         <span ng-show="status=='success'">Your have successfully changed your password</span>
       </div>
-      <div ng-show="status==='expired' || status=='failed'">
+      <div ng-show="status=='failed'">
         <p>
           <span>You will need to make a new password reset request.</span>
           <a href="#/forgot">Click here to try again</a>

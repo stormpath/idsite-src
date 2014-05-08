@@ -105,6 +105,7 @@ angular.module('stormpathIdpApp')
                 onready.map(function(fn){
                   fn(null);
                 });
+                onready = [];
               }
             });
           });

@@ -18,7 +18,7 @@ angular.module('stormpathIdpApp')
       Stormpath.verifyPasswordToken(token,function(err,a){
         if(err){
           if(err.status===404){
-            $scope.status='expired';
+            $location.path('/forgot/retry');
           }else{
             $scope.status='failed';
             $scope.error = err.userMessage || err;

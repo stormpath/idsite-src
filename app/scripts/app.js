@@ -18,7 +18,7 @@ angular
         templateUrl: 'views/registration.html',
         controller: 'RegistrationCtrl'
       })
-      .when('/forgot', {
+      .when('/forgot/:retry?', {
         templateUrl: 'views/forgot.html',
         controller: 'ForgotCtrl'
       })
