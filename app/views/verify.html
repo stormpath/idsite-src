@@ -11,6 +11,9 @@
           <a href="#/">log in</a>
         </p>
       </div>
+      <div ng-show="error" class="alert alert-danger">
+          <strong>{{error}}</strong>
+      </div>
       <div ng-show="status=='failed'">
         <p>
           <span>Please try again by clicking on the verification link that was sent to your email address.</span>
@@ -20,10 +23,6 @@
           <a href="#/register">register</a>
           <span>again.</span>
         </p>
-        <div ng-show="error" class="alert alert-danger">
-          <p><strong>The error was:</strong></p>
-          <p>{{error}}</p>
-        </div>
       </div>
     </div>
   </div>
