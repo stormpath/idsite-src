@@ -70,12 +70,12 @@ module.exports = function (grunt) {
       options: {
         port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
-        hostname: 'localhost',
+        hostname: '0.0.0.0',
         livereload: 35729
       },
       livereload: {
         options: {
-          open: true,
+          open: 'http://local.stormpath.com:<%=connect.options.port %>',
           base: [
             '.tmp',
             '<%= yeoman.app %>'
@@ -349,7 +349,20 @@ module.exports = function (grunt) {
       dev: {
         options: {
           args: {
-            baseUrl: 'http://<%= connect.options.hostname %>:<%=connect.options.port %>',
+            baseUrl: 'http://local.stormpath.com:<%=connect.options.port %>',
+            params: {
+              appUrl: '/'
+            }
+          }
+        }
+      },
+      sauce: {
+        options: {
+          configFile: 'protractor.conf.sauce.js',
+          args: {
+            sauceUser: process.env.SAUCE_USER,
+            sauceKey: process.env.SAUCE_API_KEY,
+            baseUrl: 'http://local.stormpath.com:<%=connect.options.port %>',
             params: {
               appUrl: '/'
             }
