@@ -77,21 +77,19 @@ p{
   padding: 0 40px;
   color: #fff;
   font-size: 17px;
-  background: linear-gradient(
-    #42c41a 50%,
-    #2dbd00 50%
-  );
-  &:hover,
-  &:focus{
-    color: #fff;
-    background: linear-gradient(
-      #43cd1a 50%,
-      #2ec700 50%
-    );
-  }
+  .flatTwoColorGradient(#42c41a,#2dbd00,#43cd1a,#2ec700);
+}
+
+.ms-gradient-fixes(@bottomColor,@topColor){
+  // autoprefixer doesn't do polyfills: https://github.com/ai/autoprefixer/issues/240
+  // IE 6-8
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=@bottomColor, endColorstr=@topColor);
+  // IE 8-9
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient (GradientType=0, startColorstr=@{bottomColor}, endColorstr=@{topColor})";
 }
 
 .flatTwoColorGradient(@topColor,@bottomColor,@hoverTopColor,@hoverBottomColor){
+
   background: linear-gradient(
     @topColor 50%,
     @bottomColor 50%
@@ -103,7 +101,10 @@ p{
       @hoverTopColor 50%,
       @hoverBottomColor 50%
     );
+    .ms-gradient-fixes(@hoverBottomColor,@hoverTopColor);
   }
+  .ms-gradient-fixes(@bottomColor,@topColor);
+
 }
 
 .btn-social{
