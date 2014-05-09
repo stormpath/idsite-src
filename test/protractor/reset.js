@@ -6,6 +6,8 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
+var util = require('./util');
+
 var ResetPasswordView = function(){
   var cssRoot = '.reset-view ';
   this.typeInField = function(field,value){
@@ -80,7 +82,9 @@ describe('Reset password view', function() {
       browser.sleep(3000);
     });
     it('should send me to #/forgot/retry', function() {
-      expect(browser.getCurrentUrl()).to.eventually.have.string('#/forgot/retry');
+      util.getCurrentUrl(function(url){
+        expect(url).to.have.string('#/forgot/retry');
+      });
     });
   });
 

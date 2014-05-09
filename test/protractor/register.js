@@ -6,6 +6,8 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
+var util = require('./util');
+
 var RegistrationForm = function(){
   var cssRoot = '.registration-form ';
   this.typeInField = function(field,value){
@@ -69,7 +71,9 @@ describe('Registration view', function() {
       form.fillWithValidInformation();
       form.submit();
       browser.sleep(1000);
-      expect(browser.getCurrentUrl()).to.eventually.have.string('unverified');
+      util.getCurrentUrl(function(url){
+        expect(url).to.have.string('unverified');
+      });
     });
   });
 

@@ -6,6 +6,8 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
+var util = require('./util');
+
 var LoginForm = function(){
   this.typeInField = function(field,value){
     return element(by.css('.login-form input[name='+field+']')).sendKeys(value);
@@ -45,8 +47,10 @@ describe('Login view', function() {
       form.submit();
     });
     it('should take me to the service provider after login', function() {
-      browser.sleep(2000);
-      expect(browser.driver.getCurrentUrl()).to.eventually.have.string('https://stormpath.com');
+      browser.sleep(4000);
+      util.getCurrentUrl(function(url){
+        expect(url).to.have.string('https://stormpath.com');
+      });
     });
   });
 
