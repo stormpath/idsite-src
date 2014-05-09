@@ -316,7 +316,7 @@ module.exports = function (grunt) {
         options: {
           // flatten: true,
           silent: false,
-          banner: '<!-- I am a banner -->'
+          banner: ''
         }
       }
     },
