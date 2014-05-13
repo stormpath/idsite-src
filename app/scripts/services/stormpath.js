@@ -14,7 +14,7 @@ angular.module('stormpathIdpApp')
 
     this.errors = [];
 
-    this.accessToken = params.code;
+    this.accessToken = params.access_token;
     this.appHref = params.application_href;
 
     this.getAppConfig = function(cb){
