@@ -29,8 +29,8 @@ function MockStormpath(){
         href: appHref + '/passwordResetTokens'
       },
 
-      ssoConfig: {
-        href: appHref + '/ssoConfig',
+      ssoSite: {
+        href: appHref + '/ssoSite',
         socialProviders: {
           googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
           facebookAppId: '711511582223538'

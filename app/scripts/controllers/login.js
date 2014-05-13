@@ -18,7 +18,7 @@ angular.module('stormpathIdpApp')
       if(err){
         return;
       }else{
-        appConfig = Stormpath.ssoConfig;
+        appConfig = Stormpath.ssoSite;
         $scope.ready = true;
         $scope.hasSocial = appConfig.googleClientId || appConfig.facebookAppId;
         if(appConfig.facebookAppId){

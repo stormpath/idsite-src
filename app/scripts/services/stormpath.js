@@ -97,7 +97,7 @@ angular.module('stormpathIdpApp')
       client.getApplication(
         self.appHref,
         {
-          expand:'ssoConfig'
+          expand:'ssoSite'
         },
         function(err,spApp){
 
@@ -108,7 +108,7 @@ angular.module('stormpathIdpApp')
               application = spApp;
               initializing = false;
               initialized = true;
-              self.ssoConfig = application.ssoConfig;
+              self.ssoSite = application.ssoSite;
               onready.map(function(fn){
                 fn(null);
               });
