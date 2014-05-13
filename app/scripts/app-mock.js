@@ -24,8 +24,8 @@ function MockStormpath(){
         facebookAppId: '711511582223538'
       },
       password: {
-        minLength: 0,
-        maxLength: 255,
+        minLength: 8,
+        maxLength: 20,
         lowerCase: true,
         upperCase: true,
         digit: true,

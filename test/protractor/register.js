@@ -13,6 +13,11 @@ var RegistrationForm = function(){
   this.typeInField = function(field,value){
     return element(by.css(cssRoot+'input[name='+field+']')).sendKeys(value);
   };
+  this.typeAndBlurPassword = function(v){
+    this.clearField('password');
+    this.typeInField('password',v);
+    this.typeInField('passwordConfirm','');
+  };
   this.clearField = function(field){
     return element(by.css(cssRoot+'input[name='+field+']')).clear();
   };
@@ -25,12 +30,15 @@ var RegistrationForm = function(){
   this.isShowingDuplicateUser = function(){
     return element(by.css(cssRoot+'.duplicate-user')).isDisplayed();
   };
+  this.isShowingPasswordError = function(error){
+    return element(by.css('[wd-'+error+']')).isDisplayed();
+  };
   this.fillWithValidInformation = function(){
     this.typeInField('givenName','test');
     this.typeInField('surname','test');
     this.typeInField('username','joe@somewhere.com');
-    this.typeInField('password','abC123');
-    this.typeInField('passwordConfirm','abC123');
+    this.typeInField('password','aaaaaaaaA1');
+    this.typeInField('passwordConfirm','aaaaaaaaA1');
   };
   this.fillWithDuplicateUser = function(){
     this.fillWithValidInformation();
@@ -44,7 +52,7 @@ describe('Registration view', function() {
   var form;
   beforeEach(function(){
     browser.get(
-      browser.params.appUrl + '#register' + util.fakeAuthParams()
+      browser.params.appUrl + '#register' + util.fakeAuthParams('1234')
     );
     browser.sleep(1000);
     form = new RegistrationForm();
@@ -89,6 +97,29 @@ describe('Registration view', function() {
         expect(url).to.have.string('https://stormpath.com');
       });
 
+    });
+  });
+
+  describe('if I enter a bad password', function(){
+    it('should show the password too short message',function(){
+      form.typeAndBlurPassword('a');
+      expect(form.isShowingPasswordError('minLength')).to.eventually.equal(true);
+    });
+    it('should show the password too long message',function(){
+      form.typeAndBlurPassword('aaaaaaaaaaaaaaaaaaaaaaaaaa');
+      expect(form.isShowingPasswordError('maxLength')).to.eventually.equal(true);
+    });
+    it('should show the lowercase required message',function(){
+      form.typeAndBlurPassword('AAAAAAAAAA');
+      expect(form.isShowingPasswordError('lowerCase')).to.eventually.equal(true);
+    });
+    it('should show the uppercase required message',function(){
+      form.typeAndBlurPassword('aaaaaaaaaa');
+      expect(form.isShowingPasswordError('upperCase')).to.eventually.equal(true);
+    });
+    it('should show the number required message',function(){
+      form.typeAndBlurPassword('aaaaaaaaaaAA');
+      expect(form.isShowingPasswordError('digit')).to.eventually.equal(true);
     });
   });
 
