@@ -77,7 +77,7 @@ angular.module('stormpathIdpApp')
         cb(null);
       }
 
-      onready.push(cb);
+      onready.push(typeof cb === 'function' ? cb : function(){});
 
       try{
         client = new stormpath.Client({
@@ -265,6 +265,8 @@ angular.module('stormpathIdpApp')
       'Account password minimum length not satisfied.': 'Password is too short',
       'Password requires a lowercase character!': 'Password requires a lowercase letter'
     };
+
+    self.init();
 
     return this;
   });

@@ -37,7 +37,9 @@ describe('Login view', function() {
   describe('as a user who is registered with the SP', function() {
     var form;
     before(function(){
-      browser.get(browser.params.appUrl);
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams()
+      );
       browser.sleep(1000);
       form = new LoginForm();
     });
@@ -57,7 +59,9 @@ describe('Login view', function() {
   describe('as a user who is registered with the SP', function() {
     var form;
     before(function(){
-      browser.get(browser.params.appUrl);
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams()
+      );
       browser.sleep(1000);
       form = new LoginForm();
     });
@@ -73,7 +77,9 @@ describe('Login view', function() {
   describe('as a user who is not registered with the SP', function() {
     var form;
     before(function(){
-      browser.get(browser.params.appUrl);
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams()
+      );
       browser.sleep(1000);
       form = new LoginForm();
     });

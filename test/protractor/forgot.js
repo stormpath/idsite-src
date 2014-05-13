@@ -6,6 +6,8 @@ var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 var expect = chai.expect;
 
+var util = require('./util');
+
 var ForgotPasswordView = function(){
   var cssRoot = '.forgot-view ';
   this.typeInField = function(field,value){
@@ -41,7 +43,9 @@ var ForgotPasswordView = function(){
 describe('Forgot password view', function() {
   var view;
   beforeEach(function(){
-    browser.get(browser.params.appUrl + '#/forgot');
+    browser.get(
+      browser.params.appUrl + '#/forgot' + util.fakeAuthParams()
+    );
     browser.sleep(1000);
     view = new ForgotPasswordView();
   });

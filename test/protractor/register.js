@@ -43,7 +43,9 @@ var RegistrationForm = function(){
 describe('Registration view', function() {
   var form;
   beforeEach(function(){
-    browser.get(browser.params.appUrl + '#/register');
+    browser.get(
+      browser.params.appUrl + '#register' + util.fakeAuthParams()
+    );
     browser.sleep(1000);
     form = new RegistrationForm();
   });
