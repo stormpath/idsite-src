@@ -15,6 +15,74 @@ function MockStormpath(){
       expires: new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
     };
   }
+
+  var ssoConfigs = {
+    'https://api.stormpath.com/v1/applications/1234': {
+      href: 'https://api.stormpath.com/v1/applications/1234/ssoSite',
+      socialProviders: {
+        googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
+        facebookAppId: '711511582223538'
+      },
+      password: {
+        minLength: 0,
+        maxLength: 255,
+        lowerCase: true,
+        upperCase: true,
+        digit: true,
+        diacrit: false
+      },
+      logoUrl: 'images/logo.png'
+    },
+    'https://api.stormpath.com/v1/applications/2': {
+      href: 'https://api.stormpath.com/v1/applications/2/ssoSite',
+      socialProviders: {
+        googleClientId: null,
+        facebookAppId: null,
+      },
+      password: {
+        minLength: 0,
+        maxLength: 255,
+        lowerCase: true,
+        upperCase: true,
+        digit: true,
+        diacrit: false
+      },
+      logoUrl: 'images/logo.png'
+    },
+    'https://api.stormpath.com/v1/applications/3': {
+      href: 'https://api.stormpath.com/v1/applications/3/ssoSite',
+      socialProviders: {
+        googleClientId: null,
+        facebookAppId: '711511582223538',
+      },
+      password: {
+        minLength: 0,
+        maxLength: 255,
+        lowerCase: true,
+        upperCase: true,
+        digit: true,
+        diacrit: false
+      },
+      logoUrl: 'images/logo.png'
+    },
+    'https://api.stormpath.com/v1/applications/4': {
+      href: 'https://api.stormpath.com/v1/applications/4/ssoSite',
+      socialProviders: {
+        googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
+        facebookAppId: null,
+      },
+      password: {
+        minLength: 0,
+        maxLength: 255,
+        lowerCase: true,
+        upperCase: true,
+        digit: true,
+        diacrit: false
+      },
+      logoUrl: 'images/logo.png'
+    }
+  };
+
   function respondWithApplication(appHref,xhr){
 
     var response = {
@@ -28,28 +96,7 @@ function MockStormpath(){
       'passwordResetTokens': {
         href: appHref + '/passwordResetTokens'
       },
-
-      ssoSite: {
-        href: appHref + '/ssoSite',
-        socialProviders: {
-          googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
-          facebookAppId: '711511582223538'
-        },
-        password: {
-          minLength: 0,
-          maxLength: 255,
-          lowerCase: true,
-          upperCase: true,
-          digit: true,
-          diacrit: false
-        },
-        logoUrl: 'images/logo.png'
-      },
-
-
-      'csrfToken': uuid(),
-      'hpValue': uuid(),
-      'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
+      ssoSite: ssoConfigs[appHref]
     };
     xhr.respond(
       200,
@@ -338,9 +385,9 @@ function MockStormpath(){
 
   server.respondWith(
     'GET',
-    'https://api.stormpath.com/v1/applications/1234',
+    new RegExp('https://api.stormpath.com/v1/applications/*'),
     function(xhr){
-      respondWithApplication('https://api.stormpath.com/v1/applications/1234',xhr);
+      respondWithApplication(xhr.url,xhr);
     }
 
   );

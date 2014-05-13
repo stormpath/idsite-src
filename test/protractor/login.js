@@ -21,6 +21,18 @@ var LoginForm = function(){
   this.isShowingNotFound = function(){
     return element(by.css('.not-found')).isDisplayed();
   };
+  this.isShowingFacebookButton = function(){
+    return element(by.css('.btn-facebook')).isDisplayed();
+  };
+  this.isShowingGoogleButton = function(){
+    return element(by.css('.btn-google')).isDisplayed();
+  };
+  this.isShowingSocialArea = function(){
+    return element(by.css('.social-area')).isDisplayed();
+  };
+  this.hasSocialArea = function(){
+    return browser.isElementPresent(by.css('.social-area'));
+  };
 };
 
 describe('Login view', function() {
@@ -31,6 +43,72 @@ describe('Login view', function() {
     });
     it('should have the correct page title', function() {
       expect(browser.getTitle()).to.eventually.equal('Login');
+    });
+  });
+
+  describe('when loaded with sso config 1 (fb and google)', function() {
+    var form;
+
+    before(function(){
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams('1234')
+      );
+      browser.sleep(1000);
+      form = new LoginForm();
+    });
+    it('should be showing both social buttons', function() {
+      expect(form.isShowingSocialArea()).to.eventually.equal(true);
+      expect(form.isShowingFacebookButton()).to.eventually.equal(true);
+      expect(form.isShowingGoogleButton()).to.eventually.equal(true);
+    });
+  });
+
+  describe('when loaded with sso config 2 (no social buttons)', function() {
+    var form;
+
+    before(function(){
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams('2')
+      );
+      browser.sleep(1000);
+      form = new LoginForm();
+    });
+    it('should not show the social area', function() {
+      expect(form.isShowingSocialArea()).to.eventually.equal(false);
+    });
+  });
+
+  describe('when loaded with sso config 3 (just the FB button)', function() {
+    var form;
+
+    before(function(){
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams('3')
+      );
+      browser.sleep(1000);
+      form = new LoginForm();
+    });
+    it('should have the social area and just the FB button', function() {
+      expect(form.isShowingSocialArea()).to.eventually.equal(true);
+      expect(form.isShowingFacebookButton()).to.eventually.equal(true);
+      expect(form.isShowingGoogleButton()).to.eventually.equal(false);
+    });
+  });
+
+  describe('when loaded with sso config 4 (just the Google button)', function() {
+    var form;
+
+    before(function(){
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams('4')
+      );
+      browser.sleep(1000);
+      form = new LoginForm();
+    });
+    it('should have the social area and just the Google button', function() {
+      expect(form.isShowingSocialArea()).to.eventually.equal(true);
+      expect(form.isShowingFacebookButton()).to.eventually.equal(false);
+      expect(form.isShowingGoogleButton()).to.eventually.equal(true);
     });
   });
 

@@ -5,9 +5,6 @@ angular.module('stormpathIdpApp')
   .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope) {
     var params = $location.search();
     var stormpath = $window.Stormpath;
-    var appConfig = null;
-    var appConfigError = null;
-
 
     var client;
     var application;
