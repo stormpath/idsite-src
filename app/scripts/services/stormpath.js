@@ -3,6 +3,7 @@
 
 angular.module('stormpathIdpApp')
   .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope) {
+    var params = $location.search();
     var stormpath = $window.Stormpath;
     var appConfig = null;
     var appConfigError = null;
@@ -12,6 +13,9 @@ angular.module('stormpathIdpApp')
     var application;
 
     this.errors = [];
+
+    this.accessToken = params.code;
+    this.appHref = params.application_href;
 
     this.getAppConfig = function(cb){
 
@@ -64,7 +68,6 @@ angular.module('stormpathIdpApp')
     var onready = [];
 
     this.init = function(cb){
-
       if(initializing){
         onready.push(cb);
         return;
@@ -76,41 +79,40 @@ angular.module('stormpathIdpApp')
 
       onready.push(cb);
 
+      try{
+        client = new stormpath.Client({
+          authToken: self.accessToken
+        });
+      }catch(e){
+        showError(e);
+        return;
+      }
+
       initializing = true;
 
-      self.getAppConfig(function(err,appConfig){
+      client.getApplication(
+        self.appHref,
+        {
+          expand:'ssoConfig'
+        },
+        function(err,spApp){
 
-        if(err){
-          showError(err);
-        }else{
-          try{
-            client = new stormpath.Client({
-              appHref: appConfig.appHref,
-              headers:{
-                'User-Agent': $window.navigator.userAgent
-              }
-            });
-          }catch(e){
-            showError(err);
-            return;
-          }
-          client.getApplication(appConfig.appHref,function(err,spApp){
-            $rootScope.$apply(function(){
-              if(err){
-                showError(err);
-              }else{
-                application = spApp;
-                initializing = false;
-                initialized = true;
-                onready.map(function(fn){
-                  fn(null);
-                });
-                onready = [];
-              }
-            });
+          $rootScope.$apply(function(){
+            if(err){
+              showError(err);
+            }else{
+              application = spApp;
+              initializing = false;
+              initialized = true;
+              self.ssoConfig = application.ssoConfig;
+              onready.map(function(fn){
+                fn(null);
+              });
+              onready = [];
+            }
           });
         }
-      });
+      );
     };
 
     this.login = function(username,password,cb){

@@ -14,13 +14,13 @@ angular.module('stormpathIdpApp')
 
     var appConfig;
 
-    Stormpath.getAppConfig(function(err,result){
+    Stormpath.init(function(err){
       if(err){
         return;
       }else{
-        appConfig = result;
+        appConfig = Stormpath.ssoConfig;
         $scope.ready = true;
-        $scope.hasSocial = appConfig.hasSocial;
+        $scope.hasSocial = appConfig.googleClientId || appConfig.facebookAppId;
         if(appConfig.facebookAppId){
           initFB();
         }

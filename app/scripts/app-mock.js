@@ -28,6 +28,25 @@ function MockStormpath(){
       'passwordResetTokens': {
         href: appHref + '/passwordResetTokens'
       },
+
+      ssoConfig: {
+        href: appHref + '/ssoConfig',
+        socialProviders: {
+          googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
+          facebookAppId: '711511582223538'
+        },
+        password: {
+          minLength: 0,
+          maxLength: 255,
+          lowerCase: true,
+          upperCase: true,
+          digit: true,
+          diacrit: false
+        },
+        logoUrl: 'images/logo.png'
+      },
+
+
       'csrfToken': uuid(),
       'hpValue': uuid(),
       'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
@@ -255,7 +274,6 @@ function MockStormpath(){
   server.respondWith('POST', 'https://api.stormpath.com/v1/applications/1234/csrfToken',
 
     function(xhr){
-      console.log('TOKEN REQUEST');
       xhr.respond(
         200,
         { 'Content-Type': 'application/json' },

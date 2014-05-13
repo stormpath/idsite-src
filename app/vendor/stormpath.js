@@ -3,71 +3,21 @@ module.exports = _dereq_('./lib/stormpath');
 },{"./lib/stormpath":17}],2:[function(_dereq_,module,exports){
 'use strict';
 
-var request = _dereq_('browser-request');
-
-function CsrfAuthenticator(appHref) {
-  this.appHref = appHref;
-  this.token = null;
+function AuthTokenAuthenticator(authToken) {
+  this.authToken = authToken;
   this.expires = null;
 }
 
-CsrfAuthenticator.prototype.authenticate = function(request,callback) {
-  var self = this;
-  var cb = typeof callback === 'function' ? callback : function(){};
-  self.refresh(function(err){
-    if(err){
-      cb(err);
-    }else{
-      ;delete request.headers['User-Agent'];
-      request.headers.Authorization = self.token;
-      cb(null);
-    }
-  });
+AuthTokenAuthenticator.prototype.authenticate = function(request) {
+  delete request.headers['User-Agent'];
+  request.headers.Authorization = this.token;
 };
 
-CsrfAuthenticator.prototype.parseResponse = function(reponseBody) {
-  this.token = reponseBody.csrfToken;
-  this.expires = reponseBody.expires;
-};
-
-CsrfAuthenticator.prototype.getToken = function(callback) {
-  var self = this;
-  var cb = typeof callback === 'function' ? callback : function(){};
-
-  if(!self.appHref){
-    throw new Error('CsrfAuthenticator instance must have appHref set before a token can be requested');
-  }
-
-  request({
-    method: 'POST',
-    url: self.appHref + '/csrfToken',
-    json: true
-  },function(err,resp,body){
-    if(err){
-      cb(err);
-    }else{
-      self.parseResponse(body);
-      cb(null);
-    }
-  });
-
-};
-
-CsrfAuthenticator.prototype.refresh = function(callback){
-  var cb = typeof callback === 'function' ? callback : function(){};
-  var self = this;
-  if(!self.token || (new Date().getTime() > self.expires)){
-    self.getToken(cb);
-  }else{
-    cb(null);
-  }
-};
-
-module.exports = CsrfAuthenticator;
-},{"browser-request":21}],3:[function(_dereq_,module,exports){
+module.exports = AuthTokenAuthenticator;
+},{}],3:[function(_dereq_,module,exports){
 'use strict';
 
-var CsrfAuthenticator =  _dereq_('./CsrfAuthenticator');
+var AuthTokenAuthenticator =  _dereq_('./AuthTokenAuthenticator');
 
 /**
  * A factory function that inspects any options and returns an appropriate {@link RequestAuthenticator} to use to
@@ -84,12 +34,12 @@ function getAuthenticator(options) {
     return options.requestAuthenticator;
   }
 
-  var appHref = options.appHref;
+  var authToken = options.authToken;
 
-  if (appHref) {
-    return new CsrfAuthenticator(appHref);
+  if (authToken) {
+    return new AuthTokenAuthenticator(authToken);
   }else{
-    throw new Error('appHref must be specified.  Other authentication methods are not yet implemented');
+    throw new Error('authToken must be specified.  Other authentication methods are not yet implemented');
   }
 
 }
@@ -97,7 +47,7 @@ function getAuthenticator(options) {
 module.exports = {
   getAuthenticator: getAuthenticator
 };
-},{"./CsrfAuthenticator":2}],4:[function(_dereq_,module,exports){
+},{"./AuthTokenAuthenticator":2}],4:[function(_dereq_,module,exports){
 'use strict';
 
 var util = _dereq_('util'),
@@ -653,27 +603,21 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
     options.json = true; //all Stormpath resources are JSON
   }
 
-  this.requestAuthenticator.authenticate(options,function(err){
+  this.requestAuthenticator.authenticate(options);
 
-    if(err){
-      return callback(err);
+  request(options, function onRequestResult(err, response, body) {
+    if (err) {
+      var wrapper = new Error('Unable to execute http request ' + req + ': ' + err.message);
+      return callback(wrapper, null);
     }
 
-    request(options, function onRequestResult(err, response, body) {
-      if (err) {
-        var wrapper = new Error('Unable to execute http request ' + req + ': ' + err.message);
-        return callback(wrapper, null);
-      }
+    if (response.statusCode > 399) {
+      return callback(new ResourceError(body), null);
+    }
 
-      if (response.statusCode > 399) {
-        return callback(new ResourceError(body), null);
-      }
-
-      self.requestAuthenticator.parseResponse(body);
-
-      callback(null, body);
-    });
+    callback(null, body);
   });
+
 };
 
 module.exports = RequestExecutor;
@@ -1131,9 +1075,9 @@ module.exports = {
   * @param clientConfig.appHref{String} - The href to the stormpath application which will be used for all API calls.
   */
   Client: _dereq_('./client'),
-  CsrfAuthenticator: _dereq_('./authc/CsrfAuthenticator')
+  AuthTokenAuthenticator: _dereq_('./authc/AuthTokenAuthenticator')
 };
-},{"./authc/CsrfAuthenticator":2,"./client":4}],18:[function(_dereq_,module,exports){
+},{"./authc/AuthTokenAuthenticator":2,"./client":4}],18:[function(_dereq_,module,exports){
 'use strict';
 
 var _  = _dereq_('underscore');

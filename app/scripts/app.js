@@ -1,6 +1,10 @@
 'use strict';
 
-angular
+(function(window){
+
+  window.location.hash = window.SpHashUrlRewriter(String(window.location.hash));
+
+  angular
   .module('stormpathIdpApp', [
     'ngRoute'
   ])
@@ -37,19 +41,5 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  })
-  .run(function($routeParams,$location,Stormpath){
-
-    function getParam(param,url) {
-      var m = url.match(new RegExp(param + '=[^/&#]+','g'));
-      return (m && m.length > 0) ? m[0].split('=')[1] : null;
-    }
-
-    Stormpath.init(function(){
-      if(getParam('emailVerificationToken',$location.absUrl())){
-        $location.path('verify');
-      }else if(getParam('passwordResetToken',$location.absUrl())){
-        $location.path('reset');
-      }
-    });
   });
+})(window);
