@@ -13,6 +13,10 @@ AuthTokenAuthenticator.prototype.authenticate = function(request) {
   request.headers.Authorization = this.token;
 };
 
+AuthTokenAuthenticator.prototype.parseResponse = function(response) {
+  this.authToken = response.responseHeaders.Authorization;
+};
+
 module.exports = AuthTokenAuthenticator;
 },{}],3:[function(_dereq_,module,exports){
 'use strict';
@@ -614,6 +618,8 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
     if (response.statusCode > 399) {
       return callback(new ResourceError(body), null);
     }
+
+    self.requestAuthenticator.parseResponse(response);
 
     callback(null, body);
   });
