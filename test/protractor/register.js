@@ -68,7 +68,7 @@ describe('Registration view', function() {
     });
   });
 
-  describe('if I give valid, new user information', function() {
+  describe('if I give valid, new user information and my account is unverified', function() {
     it('should tell me to check my email for a verification link', function() {
       form.fillWithValidInformation();
       form.submit();
@@ -76,6 +76,19 @@ describe('Registration view', function() {
       util.getCurrentUrl(function(url){
         expect(url).to.have.string('unverified');
       });
+    });
+  });
+  describe('if I give valid, new user information and my account is verified', function() {
+    it('should take me to the service provider after login', function() {
+      form.fillWithValidInformation();
+      form.clearField('givenName');
+      form.typeInField('givenName','verified'); // mock is programmed for this
+      form.submit();
+      browser.sleep(1000);
+      util.getCurrentUrl(function(url){
+        expect(url).to.have.string('https://stormpath.com');
+      });
+
     });
   });
 

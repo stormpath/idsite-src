@@ -58,7 +58,11 @@ angular.module('stormpathIdpApp')
     self.verifiedAccount = null;
 
     function showError(error){
-      self.errors.push(error.message || 'Unknown');
+      var msg = error.message || 'Unknown';
+      if(self.errors.indexOf(msg)===-1){
+        self.errors.push(msg);
+      }
+
       $location.path('/error');
     }
 
@@ -120,9 +124,9 @@ angular.module('stormpathIdpApp')
         application.authenticateAccount({
           username: username,
           password: password
-        },function(err,result){
+        },function(err,account,response){
           $rootScope.$apply(function(){
-            cb(err,result);
+            cb(err,account,response);
           });
         });
       }
@@ -133,12 +137,12 @@ angular.module('stormpathIdpApp')
 
     this.register = function(data,cb){
       try{
-        application.createAccount(data,function(err,result){
+        application.createAccount(data,function(err,account,response){
           if(!err){
-            self.registeredAccount = result;
+            self.registeredAccount = account;
           }
           $rootScope.$apply(function(){
-            cb(err,result);
+            cb(err,account,response);
           });
         });
       }
@@ -223,12 +227,12 @@ angular.module('stormpathIdpApp')
             code: accessToken
           }
         };
-        application.createAccount(data,function(err,result){
+        application.createAccount(data,function(err,account,response){
           if(!err){
-            self.registeredAccount = result;
+            self.registeredAccount = account;
           }
           $rootScope.$apply(function(){
-            cb(err,result);
+            cb(err,account,response);
           });
         });
       }
@@ -245,12 +249,12 @@ angular.module('stormpathIdpApp')
             code: accessToken
           }
         };
-        application.createAccount(data,function(err,result){
+        application.createAccount(data,function(err,account,response){
           if(!err){
-            self.registeredAccount = result;
+            self.registeredAccount = account;
           }
           $rootScope.$apply(function(){
-            cb(err,result);
+            cb(err,account,response);
           });
         });
       }

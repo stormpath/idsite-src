@@ -70,7 +70,10 @@ function MockStormpath(){
     };
     xhr.respond(
       200,
-      {'Content-Type': 'application/json'},
+      {
+        'Content-Type': 'application/json',
+        'Stormpath-SSO-Redirect-Location': 'https://stormpath.com'
+      },
       JSON.stringify(response)
     );
   }
@@ -146,11 +149,15 @@ function MockStormpath(){
       'expires': new Date().getTime() + (1000 * 60 * 5 ) //5 minutes
     };
 
+    var headers = {
+      'Content-Type': 'application/json'
+    };
+
     if(verified){
-      response.redirectTo = 'https://stormpath.com';
+      headers['Stormpath-SSO-Redirect-Location'] = 'https://stormpath.com';
     }
 
-    xhr.respond(201,{'Content-Type': 'application/json'},JSON.stringify(response));
+    xhr.respond(201,headers,JSON.stringify(response));
   }
 
   function respondWithDuplicateUser(xhr){

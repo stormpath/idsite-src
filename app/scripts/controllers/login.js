@@ -71,16 +71,16 @@ angular.module('stormpathIdpApp')
       }
     }
 
-    function errOrRedirect(err,resp){
+    function errOrRedirect(err,account,resp){
       if(err){
         showError(err);
       }else{
-        redirect(resp.redirectTo);
+        redirect(resp);
       }
     }
 
-    function redirect(url){
-      $window.location=url;
+    function redirect(response){
+      $window.location = response.responseHeaders['Stormpath-SSO-Redirect-Location'];
     }
 
     $scope.submit = function(){

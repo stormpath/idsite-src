@@ -15,6 +15,9 @@ AuthTokenAuthenticator.prototype.authenticate = function(request) {
 
 AuthTokenAuthenticator.prototype.parseResponse = function(response) {
   this.authToken = response.responseHeaders.Authorization;
+  // if(response.responseHeaders.Location && window && window.location){
+  //   window.location = response.responseHeaders.Location;
+  // }
 };
 
 module.exports = AuthTokenAuthenticator;
@@ -491,14 +494,14 @@ DataStore.prototype.createResource = function createResource(/* parentHref, [que
     request.body = data;
   }
 
-  _this.requestExecutor.execute(request, function onCreateResourceRequestResult(err, body) {
+  _this.requestExecutor.execute(request, function onCreateResourceRequestResult(err, body, response) {
     if (err) {
       return callback(err, null);
     }
 
     var returnedResource = instantiate(ctor, body, null, _this);
 
-    return callback(null, returnedResource);
+    return callback(null, returnedResource, response);
   });
 };
 
@@ -621,7 +624,7 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
 
     self.requestAuthenticator.parseResponse(response);
 
-    callback(null, body);
+    callback(null, body, response);
   });
 
 };

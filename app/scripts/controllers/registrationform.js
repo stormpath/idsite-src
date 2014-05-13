@@ -3,11 +3,11 @@
 angular.module('stormpathIdpApp')
   .controller('RegistrationFormCtrl', function ($scope,Stormpath,$location,$window) {
 
-    function afterRegistration(account){
+    function afterRegistration(account,response){
       if(account.status==='UNVERIFIED'){
         $location.path('/unverified');
       }else{
-        $window.location.replace(account.redirectTo);
+        $window.location.replace(response.responseHeaders['Stormpath-SSO-Redirect-Location']);
       }
     }
 
@@ -29,7 +29,7 @@ angular.module('stormpathIdpApp')
       },{});
       delete data.passwordConfirm;
       if(inError.length===0){
-        Stormpath.register(data,function(err,account){
+        Stormpath.register(data,function(err,account,response){
 
           if(err){
             var nicePasswordError = Stormpath.nicePasswordErrors[err.userMessage] ||
@@ -44,7 +44,7 @@ angular.module('stormpathIdpApp')
               $scope.unknownError = err;
             }
           }else{
-            afterRegistration(account);
+            afterRegistration(account,response);
           }
         });
       }
