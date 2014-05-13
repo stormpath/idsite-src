@@ -17,41 +17,6 @@ angular.module('stormpathIdpApp')
     this.accessToken = params.access_token;
     this.appHref = params.application_href;
 
-    this.getAppConfig = function(cb){
-
-      if(appConfigError){
-        $location.path('/error');
-        cb(appConfigError);
-      }
-      else if(appConfig){
-        cb(appConfigError,appConfig);
-      }else{
-        setTimeout(function(){
-          appConfig = {
-            logoUrl: 'images/logo.png',
-            hasSocial: $routeParams.hasSocial === 'false' ? false : true,
-            appHref: 'https://api.stormpath.com/v1/applications/1234',
-            googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
-            facebookAppId: '711511582223538'
-          };
-          // appConfigError = {message:'something went wrong!'};
-          if(appConfigError){
-            $rootScope.$apply(function(){
-              $location.path('/error');
-              cb(appConfigError);
-            });
-          }else{
-            $rootScope.logoUrl = appConfig.logoUrl;
-            $rootScope.$apply(function(){
-              cb(null,appConfig);
-            });
-          }
-
-
-        },200);
-      }
-
-    };
     var self = this;
 
     self.registeredAccount = null;
@@ -109,6 +74,7 @@ angular.module('stormpathIdpApp')
               initializing = false;
               initialized = true;
               self.ssoSite = application.ssoSite;
+              $rootScope.logoUrl = application.ssoSite.logoUrl;
               onready.map(function(fn){
                 fn(null);
               });

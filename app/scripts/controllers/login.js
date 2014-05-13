@@ -20,10 +20,14 @@ angular.module('stormpathIdpApp')
       }else{
         appConfig = Stormpath.ssoSite;
         $scope.ready = true;
-        $scope.hasSocial = appConfig.googleClientId || appConfig.facebookAppId;
+
+        $scope.hasGoogle = !!appConfig.socialProviders.googleClientId;
+        $scope.hasFacebook = !!appConfig.socialProviders.facebookAppId;
+        $scope.hasSocial = $scope.hasGoogle || $scope.hasFacebook;
         if(appConfig.facebookAppId){
           initFB();
         }
+
       }
     });
 
@@ -31,7 +35,7 @@ angular.module('stormpathIdpApp')
       $window.fbAsyncInit = function() {
         var FB = $window.FB;
         FB.init({
-          appId: appConfig.facebookAppId,
+          appId: appConfig.socialProviders.facebookAppId,
           xfbml: true,
           status: true,
           version: 'v2.0'
@@ -97,7 +101,7 @@ angular.module('stormpathIdpApp')
       }
       clearErrors();
       var params = {
-        clientid: appConfig.googleClientId,
+        clientid: appConfig.socialProviders.googleClientId,
         scope: 'https://www.googleapis.com/auth/plus.profile.emails.read',
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
