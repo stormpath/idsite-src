@@ -2,20 +2,17 @@
 
 angular.module('stormpathIdpApp')
   .controller('ResetCtrl', function ($scope,Stormpath,$location) {
-    function getParam(param,url) {
-      var m = url.match(new RegExp(param + '=[^/&#]+','g'));
-      return (m && m.length > 0) ? m[0].split('=')[1] : null;
-    }
+
     $scope.status = 'loading';
 
     $scope.fields = {};
 
-    var token = getParam('passwordResetToken',$location.absUrl());
+    var params = $location.search();
 
     var account;
 
     Stormpath.init(function(){
-      Stormpath.verifyPasswordToken(token,function(err,a){
+      Stormpath.verifyPasswordToken(params.sptoken,function(err,a){
         if(err){
           if(err.status===404){
             $location.path('/forgot/retry');

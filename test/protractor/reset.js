@@ -53,7 +53,9 @@ describe('Reset password view', function() {
   describe('with a valid token', function() {
     var view = new ResetPasswordView();
     before(function(){
-      browser.get(browser.params.appUrl + '?passwordResetToken=1#/reset');
+      browser.get(
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=1'
+      );
       browser.sleep(3000);
     });
     it('should show me the reset password form', function() {
@@ -78,7 +80,9 @@ describe('Reset password view', function() {
 
   describe('with an invalid token', function() {
     before(function(){
-      browser.get(browser.params.appUrl + '?passwordResetToken=2#/reset');
+      browser.get(
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=2'
+      );
       browser.sleep(3000);
     });
     it('should send me to #/forgot/retry', function() {
