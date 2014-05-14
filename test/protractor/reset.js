@@ -13,6 +13,11 @@ var ResetPasswordView = function(){
   this.typeInField = function(field,value){
     return element(by.css(cssRoot+'input[name='+field+']')).sendKeys(value);
   };
+  this.typeAndBlurPassword = function(v){
+    this.clearField('password');
+    this.typeInField('password',v);
+    this.typeInField('passwordConfirm','');
+  };
   this.clearField = function(field){
     return element(by.css(cssRoot+'input[name='+field+']')).clear();
   };
@@ -30,6 +35,9 @@ var ResetPasswordView = function(){
   };
   this.isShowingUserNotFound = function(){
     return element(by.css(cssRoot+'.wd-not-found')).isDisplayed();
+  };
+  this.isShowingPasswordError = function(error){
+    return element(by.css('[wd-'+error+']')).isDisplayed();
   };
   this.fillWithMismatchedPasswords = function(){
     this.typeInField('password','123');
@@ -62,21 +70,14 @@ describe('Reset password view', function() {
       expect(view.formIsVisible()).to.eventually.equal(true);
     });
 
-    it('should warn me if I enter mismatched passwords', function() {
-      view.fillWithMismatchedPasswords();
-      view.submit();
-      browser.sleep(100);
-      expect(view.isShowingMismatchedPasswords()).to.eventually.equal(true);
-    });
-
-    it('should show me success if I enter good passwords',function(){
-      view.clearForm();
-      view.fillWithValidPasswords();
-      view.submit();
-      browser.sleep(3000);
-      expect(view.isShowingSuccess()).to.eventually.equal(true);
-    });
   });
+
+  require('./suite/password')(function(){
+    browser.get(
+      browser.params.appUrl + '#reset' + util.fakeAuthParams('1234')
+    );
+    browser.sleep(1000);
+  },ResetPasswordView);
 
   describe('with an invalid token', function() {
     before(function(){
