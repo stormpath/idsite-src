@@ -9,8 +9,10 @@ describe('Controller: LoginCtrl', function () {
     scope;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope) {
+  beforeEach(inject(function ($controller, $rootScope,$location) {
     scope = $rootScope.$new();
+    $location.search('access_token','1234');
+    $location.search('application_href','http://api.stormpath.com/v1/applications/1234');
     LoginCtrl = $controller('LoginCtrl', {
       $scope: scope
     });
