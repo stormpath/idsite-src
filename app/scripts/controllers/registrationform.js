@@ -4,10 +4,10 @@ angular.module('stormpathIdpApp')
   .controller('RegistrationFormCtrl', function ($scope,Stormpath,$location,$window) {
 
     function afterRegistration(account,response){
-      if(account.status==='UNVERIFIED'){
+      if(account && account.status==='UNVERIFIED'){
         $location.path('/unverified');
       }else{
-        $window.location.replace(response.responseHeaders['Stormpath-SSO-Redirect-Location']);
+        $window.location.replace(response.getResponseHeader('Stormpath-SSO-Redirect-Location'));
       }
     }
 
