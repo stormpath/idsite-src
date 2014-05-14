@@ -24,8 +24,10 @@ angular.module('stormpathIdpApp')
       if(self.errors.indexOf(msg)===-1){
         self.errors.push(msg);
       }
-
       $location.path('/error');
+      setTimeout(function(){
+        throw error;
+      },1);
     }
 
     var initializing = false;
