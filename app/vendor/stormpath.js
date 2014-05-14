@@ -14,10 +14,7 @@ AuthTokenAuthenticator.prototype.authenticate = function(request) {
 };
 
 AuthTokenAuthenticator.prototype.parseResponse = function(response) {
-  this.authToken = response.responseHeaders.Authorization;
-  // if(response.responseHeaders.Location && window && window.location){
-  //   window.location = response.responseHeaders.Location;
-  // }
+  this.authToken = response.getResponseHeader('Authorization');
 };
 
 module.exports = AuthTokenAuthenticator;
@@ -604,6 +601,9 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
   options.uri = qualify(req.uri);
   if (req.query) {
     options.qs = req.query;
+  }
+  if (req.qs) {
+    options.qs = req.qs;
   }
   if (req.body) {
     options.body = req.body;
@@ -1537,7 +1537,7 @@ function run_xhr(options) {
     xhr.body = xhr.responseText
     if(options.json) {
       try        { xhr.body = JSON.parse(xhr.responseText) }
-      catch (er) { return options.callback(er, xhr)        }
+      catch (e) { }
     }
 
     options.callback(null, xhr, xhr.body)
@@ -6544,7 +6544,7 @@ module.exports={
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "browser-request": "git://github.com/robertjd/browser-request.git#e39e2d812d3926ad1fce2d1e52de66d80718102d",
+    "browser-request": "git://github.com/robertjd/browser-request.git#0ff037f27a1d063a62bfff59e91d5a85c3a8ea52",
     "inherits": "^2.0.1",
     "Base64": "^0.2.1",
     "node-uuid": "^1.4.1",

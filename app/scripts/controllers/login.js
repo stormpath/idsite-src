@@ -84,7 +84,7 @@ angular.module('stormpathIdpApp')
     }
 
     function redirect(response){
-      $window.location = response.responseHeaders['Stormpath-SSO-Redirect-Location'];
+      $window.location = response.getResponseHeader('Stormpath-SSO-Redirect-Location');
     }
 
     $scope.submit = function(){
