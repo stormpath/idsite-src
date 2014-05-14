@@ -494,6 +494,14 @@ function MockStormpath(){
     }
   );
 
+  sinon.FakeXMLHttpRequest.useFilters=true;
+  sinon.FakeXMLHttpRequest.addFilter(function(method, url){
+    // this could be a way of passing through to a "real" server instance
+    // that is running on our lan
+    var t = (/local.api.stormpath.com/).test(url);
+    return t;
+  });
+
   server.autoRespond = true;
   server.autoRespondAfter = 200;
   return server;
