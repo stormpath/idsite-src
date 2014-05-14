@@ -30,6 +30,16 @@ angular.module('stormpathIdpApp')
       },1);
     }
 
+    if(!this.accessToken){
+      showError(new Error('Access token not provided'));
+      return;
+    }
+
+    if(!this.appHref){
+      showError(new Error('Application href not provided'));
+      return;
+    }
+
     var initializing = false;
     var initialized = false;
 
