@@ -18,7 +18,7 @@ angular.module('stormpathIdpApp')
       if(err){
         return;
       }else{
-        appConfig = Stormpath.ssoSite;
+        appConfig = Stormpath.siteModel;
         $scope.ready = true;
 
         $scope.hasGoogle = !!appConfig.socialProviders.googleClientId;

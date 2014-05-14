@@ -23,12 +23,12 @@ angular.module('stormpathIdpApp')
           var v = element.val();
 
           var tests =  [
-            ['minLength' , function(){return v.length < Stormpath.ssoSite.password.minLength;}],
-            ['maxLength' , function(){ return v.length > Stormpath.ssoSite.password.maxLength;}],
-            ['lowerCase' , function(){ return Stormpath.ssoSite.password.lowerCase && !(/[a-z]/).test(v);}],
-            ['upperCase' , function(){ return Stormpath.ssoSite.password.upperCase && !(/[A-Z]/).test(v);}],
-            ['digit' , function(){ return Stormpath.ssoSite.password.upperCase && !(/[0-9]/).test(v);}],
-            ['diacrit' , function(){ return Stormpath.ssoSite.password.diacrit && !(/[\u00C0-\u017F]/).test(v);}]
+            ['minLength' , function(){return v.length < Stormpath.siteModel.passwordPolicy.minLength;}],
+            ['maxLength' , function(){ return v.length > Stormpath.siteModel.passwordPolicy.maxLength;}],
+            ['lowerCase' , function(){ return Stormpath.siteModel.passwordPolicy.lowerCase && !(/[a-z]/).test(v);}],
+            ['upperCase' , function(){ return Stormpath.siteModel.passwordPolicy.upperCase && !(/[A-Z]/).test(v);}],
+            ['digit' , function(){ return Stormpath.siteModel.passwordPolicy.upperCase && !(/[0-9]/).test(v);}],
+            ['diacrit' , function(){ return Stormpath.siteModel.passwordPolicy.diacrit && !(/[\u00C0-\u017F]/).test(v);}]
           ];
 
           for(var i=0;i<tests.length;i++){

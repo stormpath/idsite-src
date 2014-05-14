@@ -18,12 +18,12 @@ function MockStormpath(){
 
   var ssoConfigs = {
     'https://api.stormpath.com/v1/applications/1234': {
-      href: 'https://api.stormpath.com/v1/applications/1234/ssoSite',
+      href: 'https://api.stormpath.com/v1/applications/1234/siteModel',
       socialProviders: {
         googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
         facebookAppId: '711511582223538'
       },
-      password: {
+      passwordPolicy: {
         minLength: 8,
         maxLength: 20,
         lowerCase: true,
@@ -34,12 +34,12 @@ function MockStormpath(){
       logoUrl: 'images/logo.png'
     },
     'https://api.stormpath.com/v1/applications/2': {
-      href: 'https://api.stormpath.com/v1/applications/2/ssoSite',
+      href: 'https://api.stormpath.com/v1/applications/2/siteModel',
       socialProviders: {
         googleClientId: null,
         facebookAppId: null,
       },
-      password: {
+      passwordPolicy: {
         minLength: 8,
         maxLength: 20,
         lowerCase: true,
@@ -50,12 +50,12 @@ function MockStormpath(){
       logoUrl: null
     },
     'https://api.stormpath.com/v1/applications/3': {
-      href: 'https://api.stormpath.com/v1/applications/3/ssoSite',
+      href: 'https://api.stormpath.com/v1/applications/3/siteModel',
       socialProviders: {
         googleClientId: null,
         facebookAppId: '711511582223538',
       },
-      password: {
+      passwordPolicy: {
         minLength: 0,
         maxLength: 255,
         lowerCase: true,
@@ -66,12 +66,12 @@ function MockStormpath(){
       logoUrl: 'images/logo.png'
     },
     'https://api.stormpath.com/v1/applications/4': {
-      href: 'https://api.stormpath.com/v1/applications/4/ssoSite',
+      href: 'https://api.stormpath.com/v1/applications/4/siteModel',
       socialProviders: {
         googleClientId: '279686489820-bm1m1kd1dbdojvhmh4phhr6aofj95933.apps.googleusercontent.com',
         facebookAppId: null,
       },
-      password: {
+      passwordPolicy: {
         minLength: 0,
         maxLength: 255,
         lowerCase: true,
@@ -96,7 +96,7 @@ function MockStormpath(){
       'passwordResetTokens': {
         href: appHref + '/passwordResetTokens'
       },
-      ssoSite: ssoConfigs[appHref]
+      siteModel: ssoConfigs[appHref]
     };
     xhr.respond(
       200,
