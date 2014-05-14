@@ -30,9 +30,6 @@ angular.module('stormpathIdpApp')
         scope.$watchCollection('errors',function(a){
           angular.extend(scope.fields[fieldname].errors,a||{});
         });
-        scope.$watchCollection('fields.'+fieldname,function(a){
-          element.val(a.value);
-        });
         scope.$watchCollection('fields.'+fieldname+'.errors',function(a){
           angular.extend(scope.errors,a||{});
         });
