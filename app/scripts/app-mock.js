@@ -40,12 +40,12 @@ function MockStormpath(){
         facebookAppId: null,
       },
       password: {
-        minLength: 0,
-        maxLength: 255,
+        minLength: 8,
+        maxLength: 20,
         lowerCase: true,
         upperCase: true,
         digit: true,
-        diacrit: false
+        diacrit: true
       },
       logoUrl: 'images/logo.png'
     },

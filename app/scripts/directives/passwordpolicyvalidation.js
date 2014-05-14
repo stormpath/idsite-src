@@ -28,7 +28,7 @@ angular.module('stormpathIdpApp')
             ['lowerCase' , function(){ return Stormpath.ssoSite.password.lowerCase && !(/[a-z]/).test(v);}],
             ['upperCase' , function(){ return Stormpath.ssoSite.password.upperCase && !(/[A-Z]/).test(v);}],
             ['digit' , function(){ return Stormpath.ssoSite.password.upperCase && !(/[0-9]/).test(v);}],
-            ['diacrit' , function(){ return Stormpath.ssoSite.password.diacrit && !(/^[A-Za-z\u00C0-\u017F]+$/).test(v);}]
+            ['diacrit' , function(){ return Stormpath.ssoSite.password.diacrit && !(/[\u00C0-\u017F]/).test(v);}]
           ];
 
           for(var i=0;i<tests.length;i++){
