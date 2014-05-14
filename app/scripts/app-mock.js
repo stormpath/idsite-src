@@ -47,7 +47,7 @@ function MockStormpath(){
         digit: true,
         diacrit: true
       },
-      logoUrl: 'images/logo.png'
+      logoUrl: null
     },
     'https://api.stormpath.com/v1/applications/3': {
       href: 'https://api.stormpath.com/v1/applications/3/ssoSite',

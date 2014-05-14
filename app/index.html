@@ -56,7 +56,9 @@
     <!-- Add your site or application content here -->
 
     <div class="container" ng-cloak>
-      <img class="logo img-responsive" ng-src="{{logoUrl}}"/>
+      <div class="logo-container">
+        <img ng-show="logoUrl" class="logo img-responsive" ng-src="{{logoUrl}}"/>
+      </div>
       <div ng-view=""></div>
     </div>
 

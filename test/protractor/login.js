@@ -35,14 +35,31 @@ var LoginForm = function(){
   };
 };
 
+var LoginApp = function(){
+  this.pageTitle = function(){
+    return browser.getTitle();
+  };
+  this.isShowingLogoImage = function(){
+    return element(by.css('.logo')).isDisplayed();
+  };
+};
+
 describe('Login view', function() {
 
   describe('when loaded', function() {
+    var app;
     before(function(){
-      browser.get(browser.params.appUrl);
+      browser.get(
+        browser.params.appUrl + '#' + util.fakeAuthParams('1234')
+      );
+      browser.sleep(1000);
+      app = new LoginApp();
     });
     it('should have the correct page title', function() {
-      expect(browser.getTitle()).to.eventually.equal('Login');
+      expect(app.pageTitle()).to.eventually.equal('Login');
+    });
+    it('should show the logo image', function() {
+      expect(app.isShowingLogoImage()).to.eventually.equal(true);
     });
   });
 
@@ -63,8 +80,8 @@ describe('Login view', function() {
     });
   });
 
-  describe('when loaded with sso config 2 (no social buttons)', function() {
-    var form;
+  describe('when loaded with sso config 2 (no social buttons, no logo url)', function() {
+    var form, app;
 
     before(function(){
       browser.get(
@@ -72,9 +89,13 @@ describe('Login view', function() {
       );
       browser.sleep(1000);
       form = new LoginForm();
+      app = new LoginApp();
     });
     it('should not show the social area', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(false);
+    });
+    it('should not show the logo image', function() {
+      expect(app.isShowingLogoImage()).to.eventually.equal(false);
     });
   });
 
