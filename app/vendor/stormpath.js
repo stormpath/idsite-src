@@ -10,7 +10,7 @@ function AuthTokenAuthenticator(authToken) {
 
 AuthTokenAuthenticator.prototype.authenticate = function(request) {
   delete request.headers['User-Agent'];
-  request.headers.Authorization = this.token;
+  request.headers.Authorization = 'Bearer ' + this.authToken;
 };
 
 AuthTokenAuthenticator.prototype.parseResponse = function(response) {
