@@ -68,14 +68,4 @@ describe('Forgot password view', function() {
     });
   });
 
-  describe('if I enter the email address of a user that does not exist', function() {
-    it('should tell me that the user does not exist', function() {
-      view.fillWithNotfoundUser();
-      view.submit();
-      browser.sleep(1000);
-      expect(view.isShowingUserNotFound()).to.eventually.equal(true);
-    });
-  });
-
-
 });
