@@ -6,6 +6,12 @@ angular.module('stormpathIdpApp')
     return {
       restrict: 'A',
       link: function postLink(scope) {
+        scope.errors = {
+          duplicateUser: false
+        };
+        scope.setError = function(k,v){
+          scope.errors[k] = v;
+        };
         scope.validate = function(element){
           scope.clearErrors();
           var t = element.val()==='' ? true : (!re.test(element.val()));

@@ -13,6 +13,11 @@ angular.module('stormpathIdpApp')
           value: element.val(),
           validationError: false,
           errors: scope.errors || {},
+          setError: function(k,v){
+            if(typeof scope.setError === 'function'){
+              scope.setError(k,v);
+            }
+          },
           validate: function(){
             return typeof scope.validate === 'function' ? scope.validate(element) : true;
           }
