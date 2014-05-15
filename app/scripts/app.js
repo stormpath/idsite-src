@@ -14,10 +14,6 @@
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       })
-      .when('/error', {
-        templateUrl: 'views/error.html',
-        controller: 'ErrorCtrl'
-      })
       .when('/register', {
         templateUrl: 'views/registration.html',
         controller: 'RegistrationCtrl'

@@ -56,13 +56,14 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Add your site or application content here -->
-
-    <div class="container" ng-cloak>
+    <div class="container" ng-controller="ErrorCtrl" ng-cloak>
       <div class="logo-container">
         <img ng-show="logoUrl" class="logo img-responsive" ng-src="{{logoUrl}}"/>
       </div>
-      <div ng-view=""></div>
+      <div ng-show="inError" ng-include="'views/error.html'"></div>
+      <div ng-hide="inError" ng-view="">
+        <!-- this will be replaced a the view, as determined by the route config in app.js -->
+      </div>
     </div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->

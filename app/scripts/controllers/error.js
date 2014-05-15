@@ -1,11 +1,10 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('ErrorCtrl', function ($scope,Stormpath,$location) {
-    $scope.errors = angular.copy(Stormpath.errors);
-    if($scope.errors.length===0){
-      $location.path('/');
-    }else{
-      Stormpath.errors = [];
-    }
+  .controller('ErrorCtrl', function ($scope,Stormpath) {
+    $scope.errors = Stormpath.errors;
+    $scope.inError = false;
+    $scope.$watchCollection('errors',function(){
+      $scope.inError = $scope.errors.length > 0;
+    });
   });
