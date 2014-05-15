@@ -7,8 +7,8 @@
       </div>
       <div class="verified" ng-show="status=='verified'">
         <p>
-          <span>Success!  Your account is ready, please </span>
-          <a href="#/">log in</a>
+          <span>We are now redirecting you back to your site.  You can also </span>
+          <a ng-href="{{redirectUrl}}">click here</a> to go there now.
         </p>
       </div>
       <div ng-show="error" class="alert alert-danger">

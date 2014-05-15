@@ -131,19 +131,12 @@ angular.module('stormpathIdpApp')
         return;
       }
       try{
-        client.getCurrentTenant(function(err, tenant) {
-          if (err){
-            throw err;
-          }else{
-            tenant.verifyAccountEmail(token,function(err,account){
-              if(!err){
-                self.verifiedAccount = account;
-              }
-              $rootScope.$apply(function(){
-                cb(err,account);
-              });
-            });
-          }
+        var p = self.appHref.split('/');
+        var uri = p[0] + '//' + p[2] + '/v1/accounts/emailVerificationTokens/' + token;
+        client._dataStore.createResource(uri,function(err,resource,response){
+          $rootScope.$apply(function(){
+            cb(err,response);
+          });
         });
       }
       catch(e){
@@ -235,6 +228,14 @@ angular.module('stormpathIdpApp')
       catch(e){
         showError(e);
       }
+    };
+
+    this.getRedirectUrlFromResponse = function(xhrResponse){
+      return xhrResponse.getResponseHeader('Stormpath-SSO-Redirect-Location');
+    };
+
+    this.serviceProviderRedirect = function(url){
+      $window.location = url;
     };
 
     this.nicePasswordErrors = {

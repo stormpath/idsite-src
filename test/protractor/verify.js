@@ -25,12 +25,15 @@ describe('Email verification view', function() {
     var view = new VerificationView();
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/verify' + util.fakeAuthParams() + '&sptoken=1'
+        browser.params.appUrl + '#/verify' + util.fakeAuthParams() + '&sptoken=avalidtoken'
       );
       browser.sleep(3000);
     });
-    it('should tell me success and that I can log in', function() {
-      expect(view.isShowingSuccess()).to.eventually.equal(true);
+    it('should take me to the service provider', function() {
+      browser.sleep(4000);
+      util.getCurrentUrl(function(url){
+        expect(url).to.have.string('https://stormpath.com');
+      });
     });
   });
 
@@ -38,7 +41,7 @@ describe('Email verification view', function() {
     var view = new VerificationView();
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/verify' + util.fakeAuthParams() + '&sptoken=2'
+        browser.params.appUrl + '#/verify' + util.fakeAuthParams() + '&sptoken=invalid'
       );
       browser.sleep(3000);
     });
