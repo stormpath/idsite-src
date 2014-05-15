@@ -52,7 +52,7 @@ describe('Registration view', function() {
   var form;
   beforeEach(function(){
     browser.get(
-      browser.params.appUrl + '#register' + util.fakeAuthParams('1234')
+      browser.params.appUrl + '#register' + util.fakeAuthParams('1')
     );
     browser.sleep(1000);
     form = new RegistrationForm();
@@ -102,7 +102,7 @@ describe('Registration view', function() {
 
   require('./suite/password')(function(){
     browser.get(
-      browser.params.appUrl + '#register' + util.fakeAuthParams('1234')
+      browser.params.appUrl + '#register' + util.fakeAuthParams('1')
     );
     browser.sleep(1000);
   },RegistrationForm);

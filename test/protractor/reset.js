@@ -62,7 +62,7 @@ describe('Reset password view', function() {
     var view = new ResetPasswordView();
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=1'
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=avalidtoken'
       );
       browser.sleep(3000);
     });
@@ -74,7 +74,7 @@ describe('Reset password view', function() {
 
   require('./suite/password')(function(){
     browser.get(
-      browser.params.appUrl + '#reset' + util.fakeAuthParams('1234')
+      browser.params.appUrl + '#reset' + util.fakeAuthParams('1') + '&sptoken=avalidtoken'
     );
     browser.sleep(1000);
   },ResetPasswordView);
@@ -82,7 +82,7 @@ describe('Reset password view', function() {
   describe('with an invalid token', function() {
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=2'
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=notvalidtoken'
       );
       browser.sleep(3000);
     });

@@ -14,6 +14,8 @@ module.exports = {
   },
   fakeAuthParams: function(appId){
     return '&access_token=' + uuid() +
-      '&application_href=https%3A%2F%2Fapi.stormpath.com%2Fv1%2Fapplications%2F' + (appId || '1234');
+      '&application_href='+
+      encodeURIComponent(browser.params.apiUrl)+
+      '%2Fv1%2Fapplications%2F' + (appId || '1');
   }
 };

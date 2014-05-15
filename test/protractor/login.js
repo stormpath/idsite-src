@@ -50,7 +50,7 @@ describe('Login view', function() {
     var app;
     before(function(){
       browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('1234')
+        browser.params.appUrl + '#' + util.fakeAuthParams('1')
       );
       browser.sleep(1000);
       app = new LoginApp();
@@ -68,7 +68,7 @@ describe('Login view', function() {
 
     before(function(){
       browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('1234')
+        browser.params.appUrl + '#' + util.fakeAuthParams('1')
       );
       browser.sleep(1000);
       form = new LoginForm();
