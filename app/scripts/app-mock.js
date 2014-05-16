@@ -29,7 +29,7 @@ function MockStormpath(){
         lowerCase: true,
         upperCase: true,
         digit: true,
-        diacrit: false
+        diacritical: false
       },
       logoUrl: 'images/logo.png'
     },
@@ -45,7 +45,7 @@ function MockStormpath(){
         lowerCase: true,
         upperCase: true,
         digit: true,
-        diacrit: true
+        diacritical: true
       },
       logoUrl: null
     },
@@ -61,7 +61,7 @@ function MockStormpath(){
         lowerCase: true,
         upperCase: true,
         digit: true,
-        diacrit: false
+        diacritical: false
       },
       logoUrl: 'images/logo.png'
     },
@@ -77,7 +77,7 @@ function MockStormpath(){
         lowerCase: true,
         upperCase: true,
         digit: true,
-        diacrit: false
+        diacritical: false
       },
       logoUrl: 'images/logo.png'
     }

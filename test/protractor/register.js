@@ -110,7 +110,7 @@ describe('Registration view', function() {
 
 });
 
-describe('Registration view w/ diacrit requirement', function() {
+describe('Registration view w/ diacritical requirement', function() {
   var form;
   beforeEach(function(){
     browser.get(
@@ -120,10 +120,10 @@ describe('Registration view w/ diacrit requirement', function() {
     form = new RegistrationForm();
   });
 
-  describe('if I enter a password without a diacrit', function(){
-    it('should show the diacrit required message',function(){
+  describe('if I enter a password without a diacritical', function(){
+    it('should show the diacritical required message',function(){
       form.typeAndBlurPassword('aaaaaaaaaaAA1');
-      expect(form.isShowingPasswordError('diacrit')).to.eventually.equal(true);
+      expect(form.isShowingPasswordError('diacritical')).to.eventually.equal(true);
     });
   });
 

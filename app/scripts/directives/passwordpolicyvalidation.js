@@ -11,7 +11,7 @@ angular.module('stormpathIdpApp')
           lowerCase: false,
           upperCase: false,
           digit: false,
-          diacrit: false
+          diacritical: false
         };
         scope.errorCount = function(){
           return Object.keys(scope.errors).filter(function(k){
@@ -28,7 +28,7 @@ angular.module('stormpathIdpApp')
             ['lowerCase' , function(){ return Stormpath.siteModel.passwordPolicy.lowerCase && !(/[a-z]/).test(v);}],
             ['upperCase' , function(){ return Stormpath.siteModel.passwordPolicy.upperCase && !(/[A-Z]/).test(v);}],
             ['digit' , function(){ return Stormpath.siteModel.passwordPolicy.upperCase && !(/[0-9]/).test(v);}],
-            ['diacrit' , function(){ return Stormpath.siteModel.passwordPolicy.diacrit && !(/[\u00C0-\u017F]/).test(v);}]
+            ['diacritical' , function(){ return Stormpath.siteModel.passwordPolicy.diacritical && !(/[\u00C0-\u017F]/).test(v);}]
           ];
 
           for(var i=0;i<tests.length;i++){
