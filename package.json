@@ -22,7 +22,7 @@
     "grunt-ngmin": "~0.0.2",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~0.2.0",
-    "grunt-usemin": "~2.0.0",
+    "grunt-usemin": "git://github.com/yeoman/grunt-usemin.git#4bf6bace5e96c63a21ec838d4c13e3d88e5f79a4",
     "jshint-stylish": "~0.1.3",
     "load-grunt-tasks": "~0.4.0",
     "time-grunt": "~0.2.1",
