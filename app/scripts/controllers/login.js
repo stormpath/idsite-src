@@ -14,20 +14,14 @@ angular.module('stormpathIdpApp')
 
     var appConfig;
 
-    Stormpath.init(function(err){
-      if(err){
-        return;
-      }else{
-        appConfig = Stormpath.siteModel;
-        $scope.ready = true;
-
-        $scope.hasGoogle = !!appConfig.socialProviders.googleClientId;
-        $scope.hasFacebook = !!appConfig.socialProviders.facebookAppId;
-        $scope.hasSocial = $scope.hasGoogle || $scope.hasFacebook;
-        if(appConfig.facebookAppId){
-          initFB();
-        }
-
+    Stormpath.init.then(function initSuccess(){
+      appConfig = Stormpath.siteModel;
+      $scope.ready = true;
+      $scope.hasGoogle = !!appConfig.socialProviders.googleClientId;
+      $scope.hasFacebook = !!appConfig.socialProviders.facebookAppId;
+      $scope.hasSocial = $scope.hasGoogle || $scope.hasFacebook;
+      if(appConfig.facebookAppId){
+        initFB();
       }
     });
 

@@ -2,7 +2,7 @@
 
 
 angular.module('stormpathIdpApp')
-  .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope) {
+  .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope,$q) {
     var params = $location.search();
     var stormpath = $window.Stormpath;
 
@@ -39,59 +39,40 @@ angular.module('stormpathIdpApp')
       return;
     }
 
-    var initializing = false;
-    var initialized = false;
+    var init = $q.defer();
 
-    var onready = [];
-
-    this.init = function(cb){
-      if(initializing){
-        onready.push(cb);
-        return;
-      }
-
-      if(initialized){
-        cb(null);
-      }
-
-      onready.push(typeof cb === 'function' ? cb : function(){});
+    function initialize(){
 
       try{
         client = new stormpath.Client({
           authToken: self.accessToken
         });
+
+        client.getApplication(
+          self.appHref,
+          {
+            expand:'siteModel'
+          },
+          function(err,spApp){
+            $rootScope.$apply(function(){
+              if(err){
+                showError(err);
+              }else{
+                application = spApp;
+                self.siteModel = application.siteModel;
+                $rootScope.logoUrl = application.siteModel.logoUrl;
+                init.resolve();
+              }
+            });
+          }
+        );
       }catch(e){
         showError(e);
         return;
       }
+    }
 
-      initializing = true;
-
-      client.getApplication(
-        self.appHref,
-        {
-          expand:'siteModel'
-        },
-        function(err,spApp){
-
-          $rootScope.$apply(function(){
-            if(err){
-              showError(err);
-            }else{
-              application = spApp;
-              initializing = false;
-              initialized = true;
-              self.siteModel = application.siteModel;
-              $rootScope.logoUrl = application.siteModel.logoUrl;
-              onready.map(function(fn){
-                fn(null);
-              });
-              onready = [];
-            }
-          });
-        }
-      );
-    };
+    this.init = init.promise;
 
     this.login = function(username,password,cb){
       try{
@@ -245,7 +226,7 @@ angular.module('stormpathIdpApp')
       'Password requires a lowercase character!': 'Password requires a lowercase letter'
     };
 
-    self.init();
+    initialize();
 
     return this;
   });

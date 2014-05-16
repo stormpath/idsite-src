@@ -7,7 +7,7 @@ angular.module('stormpathIdpApp')
 
     var params = $location.search();
 
-    Stormpath.init(function(){
+    Stormpath.init.then(function initSuccess(){
       Stormpath.verifyEmailToken(params.sptoken,function(err,response){
         if(err){
           $scope.status='failed';

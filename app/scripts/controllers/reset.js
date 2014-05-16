@@ -11,7 +11,7 @@ angular.module('stormpathIdpApp')
 
     var account;
 
-    Stormpath.init(function(){
+    Stormpath.init.then(function initSuccess(){
       Stormpath.verifyPasswordToken(params.sptoken,function(err,a){
         if(err){
           if(err.status===404){
