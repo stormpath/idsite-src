@@ -2,8 +2,7 @@
 
 angular.module('stormpathIdpApp')
   .controller('UnverifiedCtrl', function ($scope,Stormpath,$location) {
-    var a = Stormpath.registeredAccount;
-    if(!a || a.status!=='UNVERIFIED'){
+    if(Stormpath.registrationStatus!==202){
       $location.path('/');
     }
   });

@@ -13,6 +13,7 @@ angular.module('stormpathIdpApp')
 
     this.accessToken = params.access_token;
     this.appHref = params.application_href;
+    this.registrationStatus = null;
 
     var self = this;
 
@@ -102,10 +103,20 @@ angular.module('stormpathIdpApp')
       try{
         application.createAccount(data,function(err,account,response){
           if(!err){
-            self.registeredAccount = account;
+            self.registrationStatus = response.statusCode;
+            if(response.statusCode===204){
+              self.serviceProviderRedirect(
+                self.getRedirectUrlFromResponse(response)
+              );
+            }
+            if(response.statusCode===202){
+              $rootScope.$apply(function(){
+                $location.path('/unverified');
+              });
+            }
           }
           $rootScope.$apply(function(){
-            cb(err,account,response);
+            cb(err);
           });
         });
       }

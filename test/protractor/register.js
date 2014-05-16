@@ -36,14 +36,14 @@ var RegistrationForm = function(){
   this.fillWithValidInformation = function(){
     this.typeInField('givenName','test');
     this.typeInField('surname','test');
-    this.typeInField('username','joe@somewhere.com');
+    this.typeInField('email','joe@somewhere.com');
     this.typeInField('password','aaaaaaaaA1');
     this.typeInField('passwordConfirm','aaaaaaaaA1');
   };
   this.fillWithDuplicateUser = function(){
     this.fillWithValidInformation();
-    this.clearField('username');
-    this.typeInField('username','robert@stormpath.com');
+    this.clearField('email');
+    this.typeInField('email','robert@stormpath.com');
   };
   this.arriveWithPasswordRequirements =
     function arriveWithPasswordRequirements(){
@@ -68,7 +68,7 @@ describe('Registration view', function() {
 
   describe('if I enter an invalid email address', function() {
     it('should show me the invalid email error', function() {
-      form.typeInField('username','123');
+      form.typeInField('email','123');
       form.submit();
       browser.sleep(1000);
       expect(form.isShowingInvalidEmail()).to.eventually.equal(true);
