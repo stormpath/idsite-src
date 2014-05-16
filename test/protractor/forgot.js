@@ -31,11 +31,8 @@ var ForgotPasswordView = function(){
   this.fillWithInvalidEmail = function(){
     this.typeInField('email','123');
   };
-  this.fillWithExistingUser = function(){
+  this.fillWithValidEmail = function(){
     this.typeInField('email','robert@stormpath.com');
-  };
-  this.fillWithNotfoundUser = function(){
-    this.typeInField('email','asdlkfj@asdf.com');
   };
 };
 
@@ -59,9 +56,9 @@ describe('Forgot password view', function() {
     });
   });
 
-  describe('if I enter the email address of a user that exists', function() {
+  describe('if I submit the form with a valid email address', function() {
     it('should tell me to check my email for a link', function() {
-      view.fillWithExistingUser();
+      view.fillWithValidEmail();
       view.submit();
       browser.sleep(1000);
       expect(view.isShowingSuccess()).to.eventually.equal(true);

@@ -8,7 +8,7 @@ var expect = chai.expect;
 
 var util = require('./util');
 
-var ResetPasswordView = function(){
+var ResetPasswordPageObject = function(){
   var cssRoot = '.reset-view ';
   this.typeInField = function(field,value){
     return element(by.css(cssRoot+'input[name='+field+']')).sendKeys(value);
@@ -16,7 +16,7 @@ var ResetPasswordView = function(){
   this.typeAndBlurPassword = function(v){
     this.clearField('password');
     this.typeInField('password',v);
-    this.typeInField('passwordConfirm','');
+    this.submit();
   };
   this.clearField = function(field){
     return element(by.css(cssRoot+'input[name='+field+']')).clear();
@@ -51,40 +51,43 @@ var ResetPasswordView = function(){
     this.clearField('password');
     this.clearField('passwordConfirm');
   };
-
+  this.arriveWithValidToken = function arriveWithValidToken(){
+    browser.get(
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=avalidtoken'
+    );
+  };
+  this.arriveWithInvalidToken = function arriveWithInvalidToken(){
+    browser.get(
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=notvalidtoken'
+    );
+  };
 };
 
 
 describe('Reset password view', function() {
 
+  var pageObj = new ResetPasswordPageObject();
 
   describe('with a valid token', function() {
-    var view = new ResetPasswordView();
+
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=avalidtoken'
-      );
-      browser.sleep(3000);
+      pageObj.arriveWithValidToken();
     });
     it('should show me the reset password form', function() {
-      expect(view.formIsVisible()).to.eventually.equal(true);
+      expect(pageObj.formIsVisible()).to.eventually.equal(true);
     });
 
   });
 
   require('./suite/password')(function(){
-    browser.get(
-      browser.params.appUrl + '#reset' + util.fakeAuthParams('1') + '&sptoken=avalidtoken'
-    );
-    browser.sleep(1000);
-  },ResetPasswordView);
+    before(function(){
+      pageObj.arriveWithValidToken();
+    });
+  },ResetPasswordPageObject);
 
   describe('with an invalid token', function() {
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=notvalidtoken'
-      );
-      browser.sleep(3000);
+      pageObj.arriveWithInvalidToken();
     });
     it('should send me to #/forgot/retry', function() {
       util.getCurrentUrl(function(url){

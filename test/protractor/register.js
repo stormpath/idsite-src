@@ -16,7 +16,7 @@ var RegistrationForm = function(){
   this.typeAndBlurPassword = function(v){
     this.clearField('password');
     this.typeInField('password',v);
-    this.typeInField('passwordConfirm','');
+    this.submit();
   };
   this.clearField = function(field){
     return element(by.css(cssRoot+'input[name='+field+']')).clear();
