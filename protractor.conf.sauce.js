@@ -1,6 +1,6 @@
 exports.config = {
   framework: 'mocha',
-  specs: ['test/protractor/**/*.js'],
+  specs: ['test/protractor/**/*.js','-test/util.js'],
   allScriptsTimeout: 60000,
   multiCapabilities: [
     // {

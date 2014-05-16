@@ -8,6 +8,8 @@ var expect = chai.expect;
 
 var util = require('./util');
 
+var uuid = require('node-uuid');
+
 var LoginForm = function(){
   this.typeInField = function(field,value){
     return element(by.css('.login-form input[name='+field+']')).sendKeys(value);
@@ -33,27 +35,31 @@ var LoginForm = function(){
   this.hasSocialArea = function(){
     return browser.isElementPresent(by.css('.social-area'));
   };
+  this.submitWithValidCredentials = function submitWithValidCredentials(){
+    this.typeInField('username','robert@stormpath.com');
+    this.typeInField('password','robert@stormpath.com');
+    this.submit();
+  };
+  this.submitWithInvalidCredentials = function submitWithInvalidCredentials(){
+    this.typeInField('username','robert@stormpath.com');
+    this.typeInField('password','1');
+    this.submit();
+  };
+  this.submitWithUnknownCredentials = function submitWithUnknownCredentials(){
+    this.typeInField('username',uuid());
+    this.typeInField('password',uuid());
+    this.submit();
+  };
 };
 
-var LoginApp = function(){
-  this.pageTitle = function(){
-    return browser.getTitle();
-  };
-  this.isShowingLogoImage = function(){
-    return element(by.css('.logo')).isDisplayed();
-  };
-};
+var LoginApp = require('./page-objects/login-app');
 
 describe('Login view', function() {
-
+  var app = new LoginApp();
   describe('when loaded', function() {
-    var app;
+
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('1')
-      );
-      browser.sleep(1000);
-      app = new LoginApp();
+      app.arriveWithFacebookAndGoogleIntegrations();
     });
     it('should have the correct page title', function() {
       expect(app.pageTitle()).to.eventually.equal('Login');
@@ -70,7 +76,6 @@ describe('Login view', function() {
       browser.get(
         browser.params.appUrl + '#' + util.fakeAuthParams('1')
       );
-      browser.sleep(1000);
       form = new LoginForm();
     });
     it('should be showing both social buttons', function() {
@@ -81,15 +86,11 @@ describe('Login view', function() {
   });
 
   describe('when loaded with sso config 2 (no social buttons, no logo url)', function() {
-    var form, app;
+    var form;
 
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('2')
-      );
-      browser.sleep(1000);
+      app.arriveWithNoSocialIntegrations();
       form = new LoginForm();
-      app = new LoginApp();
     });
     it('should not show the social area', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(false);
@@ -103,10 +104,7 @@ describe('Login view', function() {
     var form;
 
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('3')
-      );
-      browser.sleep(1000);
+      app.arriveWithOnlyFacebookIntegration();
       form = new LoginForm();
     });
     it('should have the social area and just the FB button', function() {
@@ -120,10 +118,7 @@ describe('Login view', function() {
     var form;
 
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('4')
-      );
-      browser.sleep(1000);
+      app.arriveWithOnlyGoogleIntegration();
       form = new LoginForm();
     });
     it('should have the social area and just the Google button', function() {
@@ -133,19 +128,11 @@ describe('Login view', function() {
     });
   });
 
-  describe('as a user who is registered with the SP', function() {
-    var form;
+  describe('as a user who is registered with the SP who provides valid credentials', function() {
+    var form = new LoginForm();
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams()
-      );
-      browser.sleep(1000);
-      form = new LoginForm();
-    });
-    it('should allow me to login', function() {
-      form.typeInField('username','robert@stormpath.com');
-      form.typeInField('password','robert@stormpath.com');
-      form.submit();
+      app.arriveWithFacebookAndGoogleIntegrations();
+      form.submitWithValidCredentials();
     });
     it('should take me to the service provider after login', function() {
       browser.sleep(4000);
@@ -155,38 +142,24 @@ describe('Login view', function() {
     });
   });
 
-  describe('as a user who is registered with the SP', function() {
-    var form;
+  describe('as a user who is registered with the SP wh provides INVALID credentials', function() {
+    var form = new LoginForm();
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams()
-      );
-      browser.sleep(1000);
-      form = new LoginForm();
+      app.arriveWithFacebookAndGoogleIntegrations();
+      form.submitWithInvalidCredentials();
     });
     it('should warn me if I entered the wrong login credentials', function() {
-      form.typeInField('username','robert@stormpath.com');
-      form.typeInField('password','1');
-      form.submit();
-      browser.sleep(1000);
       expect(form.isShowingInvalidLogin()).to.eventually.equal(true);
     });
   });
 
   describe('as a user who is not registered with the SP', function() {
-    var form;
+    var form = new LoginForm();
     before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams()
-      );
-      browser.sleep(1000);
-      form = new LoginForm();
+      app.arriveWithFacebookAndGoogleIntegrations();
+      form.submitWithUnknownCredentials();
     });
     it('should tell me that i ned to register if I try to login', function() {
-      form.typeInField('username','1');
-      form.typeInField('password','1');
-      form.submit();
-      browser.sleep(1000);
       expect(form.isShowingNotFound()).to.eventually.equal(true);
     });
   });

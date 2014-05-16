@@ -365,7 +365,8 @@ module.exports = function (grunt) {
             sauceKey: process.env.SAUCE_API_KEY,
             baseUrl: 'http://local.stormpath.com:<%=connect.options.port %>',
             params: {
-              appUrl: '/'
+              appUrl: '/',
+              apiUrl: 'http://fakeapi.stormpath.com:1337'
             }
           }
         }

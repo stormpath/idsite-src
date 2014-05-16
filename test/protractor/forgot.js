@@ -34,24 +34,24 @@ var ForgotPasswordView = function(){
   this.fillWithValidEmail = function(){
     this.typeInField('email','robert@stormpath.com');
   };
+  this.arrive = function(){
+    browser.get(
+      browser.params.appUrl + '#/forgot' + util.fakeAuthParams()
+    );
+  };
 };
 
 
 describe('Forgot password view', function() {
-  var view;
+  var view = new ForgotPasswordView();
   beforeEach(function(){
-    browser.get(
-      browser.params.appUrl + '#/forgot' + util.fakeAuthParams()
-    );
-    browser.sleep(1000);
-    view = new ForgotPasswordView();
+    view.arrive();
   });
 
   describe('if I enter an invalid email address', function() {
     it('should show me the invalid email error', function() {
       view.fillWithInvalidEmail();
       view.submit();
-      browser.sleep(1000);
       expect(view.isShowingInvalidEmail()).to.eventually.equal(true);
     });
   });
@@ -60,7 +60,6 @@ describe('Forgot password view', function() {
     it('should tell me to check my email for a link', function() {
       view.fillWithValidEmail();
       view.submit();
-      browser.sleep(1000);
       expect(view.isShowingSuccess()).to.eventually.equal(true);
     });
   });

@@ -1,7 +1,9 @@
 {
   "name": "stormpathidp",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "node-uuid": "^1.4.1"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-autoprefixer": "~0.4.0",
