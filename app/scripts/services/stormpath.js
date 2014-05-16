@@ -29,6 +29,14 @@ angular.module('stormpathIdpApp')
       },1);
     }
 
+    var ieMatch = $window.navigator.userAgent.match(/MSIE ([0-9.]+)/);
+    if(ieMatch && ieMatch[1]){
+      if(parseInt(ieMatch[1],10)<10){
+        showError(new Error('Internet Explorer ' + ieMatch[1] + ' is not supported.  Please try again with a newer browser.'));
+        return;
+      }
+    }
+
     if(!this.accessToken){
       showError(new Error('Access token not provided'));
       return;

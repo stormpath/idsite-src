@@ -17,5 +17,5 @@
     }
 
   }
-  window.SpHashUrlRewriter = rewriter;
+  window.SpHashRewriter = rewriter;
 })(window);

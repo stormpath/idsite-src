@@ -2,7 +2,7 @@
 
 describe('URL rewriter', function () {
 
-  var rewriter = window.SpHashUrlRewriter;
+  var rewriter = window.SpHashRewriter;
 
   var cases = [
     {
