@@ -615,6 +615,7 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
   this.requestAuthenticator.authenticate(options);
 
   request(options, function onRequestResult(err, response, body) {
+    self.requestAuthenticator.parseResponse(response);
     if (err) {
       var wrapper = new Error('Unable to execute http request ' + req + ': ' + err.message);
       return callback(wrapper, null);
@@ -624,7 +625,7 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
       return callback(new ResourceError(body), null);
     }
 
-    self.requestAuthenticator.parseResponse(response);
+
 
     callback(null, body, response);
   });
