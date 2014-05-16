@@ -35,7 +35,7 @@ angular.module('stormpathIdpApp')
             var nicePasswordError = Stormpath.nicePasswordErrors[err.userMessage] ||
               Stormpath.nicePasswordErrors[err.developerMessage];
             if(err.status===409){
-              $scope.fields.username.setError('duplicateUser', true);
+              $scope.fields.email.setError('duplicateUser', true);
             }else if(nicePasswordError){
               $scope.fields.password.errors.passwordPolicy = nicePasswordError;
             }else if(err.userMessage && err.userMessage.toLowerCase().match(/password|account/)){
