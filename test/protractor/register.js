@@ -45,17 +45,25 @@ var RegistrationForm = function(){
     this.clearField('username');
     this.typeInField('username','robert@stormpath.com');
   };
+  this.arriveWithPasswordRequirements =
+    function arriveWithPasswordRequirements(){
+      browser.get(
+        browser.params.appUrl + '#register' + util.fakeAuthParams('1')
+      );
+    };
+  this.arriveWithDiacriticRequirements =
+    function arriveWithDiacriticRequirements(){
+      browser.get(
+        browser.params.appUrl + '#register' + util.fakeAuthParams('2')
+      );
+    };
 };
 
 
 describe('Registration view', function() {
-  var form;
+  var form = new RegistrationForm();
   beforeEach(function(){
-    browser.get(
-      browser.params.appUrl + '#register' + util.fakeAuthParams('1')
-    );
-    browser.sleep(1000);
-    form = new RegistrationForm();
+    form.arriveWithPasswordRequirements();
   });
 
   describe('if I enter an invalid email address', function() {
@@ -100,24 +108,19 @@ describe('Registration view', function() {
     });
   });
 
-  require('./suite/password')(function(){
-    browser.get(
-      browser.params.appUrl + '#register' + util.fakeAuthParams('1')
-    );
-    browser.sleep(1000);
-  },RegistrationForm);
-
-
 });
 
-describe('Registration view w/ diacritical requirement', function() {
-  var form;
+describe('Registration view with password requirements', function() {
+  var form = new RegistrationForm();
+  require('./suite/password')(function(){
+    form.arriveWithPasswordRequirements();
+  },RegistrationForm);
+});
+
+describe('Registration view with diacritical password requirement', function() {
+  var form = new RegistrationForm();
   beforeEach(function(){
-    browser.get(
-      browser.params.appUrl + '#register' + util.fakeAuthParams('2')
-    );
-    browser.sleep(1000);
-    form = new RegistrationForm();
+    form.arriveWithDiacriticRequirements();
   });
 
   describe('if I enter a password without a diacritical', function(){
