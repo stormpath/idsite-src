@@ -126,7 +126,7 @@ describe('Registration view with diacritical password requirement', function() {
   describe('if I enter a password without a diacritical', function(){
     it('should show the diacritical required message',function(){
       form.typeAndBlurPassword('aaaaaaaaaaAA1');
-      expect(form.isShowingPasswordError('diacritical')).to.eventually.equal(true);
+      expect(form.isShowingPasswordError('requireDiacritical')).to.eventually.equal(true);
     });
   });
 

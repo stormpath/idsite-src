@@ -25,11 +25,12 @@ function MockStormpath(){
       },
       passwordPolicy: {
         minLength: 8,
-        maxLength: 20,
-        lowerCase: true,
-        upperCase: true,
-        digit: true,
-        diacritical: false
+        maxLength: 100,
+        requireLowerCase: true,
+        requireUpperCase: true,
+        requireNumeric: true,
+        requireDiacritical: false,
+        special: false
       },
       logoUrl: 'images/logo.png'
     },
@@ -42,10 +43,11 @@ function MockStormpath(){
       passwordPolicy: {
         minLength: 8,
         maxLength: 20,
-        lowerCase: true,
-        upperCase: true,
-        digit: true,
-        diacritical: true
+        requireLowerCase: true,
+        requireUpperCase: true,
+        requireNumeric: true,
+        requireDiacritical: true,
+        special: false
       },
       logoUrl: null
     },
@@ -58,10 +60,11 @@ function MockStormpath(){
       passwordPolicy: {
         minLength: 0,
         maxLength: 255,
-        lowerCase: true,
-        upperCase: true,
-        digit: true,
-        diacritical: false
+        requireLowerCase: true,
+        requireUpperCase: true,
+        requireNumeric: true,
+        requireDiacritical: false,
+        special: false
       },
       logoUrl: 'images/logo.png'
     },
@@ -74,10 +77,10 @@ function MockStormpath(){
       passwordPolicy: {
         minLength: 0,
         maxLength: 255,
-        lowerCase: true,
-        upperCase: true,
-        digit: true,
-        diacritical: false
+        requireLowerCase: true,
+        requireUpperCase: true,
+        requireNumeric: true,
+        requireDiacritical: false
       },
       logoUrl: 'images/logo.png'
     }

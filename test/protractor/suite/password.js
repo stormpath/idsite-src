@@ -33,21 +33,21 @@ module.exports = function(beforeFn,FormConstructor){
       it('should show the lowercase required message',function(){
         form.typeAndBlurPassword('AAAAAAAAAA');
         browser.sleep(1000);
-        expect(form.isShowingPasswordError('lowerCase')).to.eventually.equal(true);
+        expect(form.isShowingPasswordError('requireLowerCase')).to.eventually.equal(true);
       });
     });
     describe('if I enter a password without a uppercase', function(){
       it('should show the uppercase required message',function(){
         form.typeAndBlurPassword('aaaaaaaaaa');
         browser.sleep(1000);
-        expect(form.isShowingPasswordError('upperCase')).to.eventually.equal(true);
+        expect(form.isShowingPasswordError('requireUpperCase')).to.eventually.equal(true);
       });
     });
     describe('if I enter a password without a number', function(){
       it('should show the number required message',function(){
         form.typeAndBlurPassword('aaaaaaaaaaAA');
         browser.sleep(1000);
-        expect(form.isShowingPasswordError('digit')).to.eventually.equal(true);
+        expect(form.isShowingPasswordError('requireNumeric')).to.eventually.equal(true);
       });
     });
 
