@@ -18,7 +18,7 @@ angular.module('stormpathIdpApp')
           if(err.status===404){
             $scope.notFound = true;
           }else{
-            $scope.unknownError = err;
+            $scope.unknownError = String(err);
           }
         }else{
           $scope.sent = true;
