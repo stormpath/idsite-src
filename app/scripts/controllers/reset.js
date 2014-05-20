@@ -37,17 +37,7 @@ angular.module('stormpathIdpApp')
       account.password = $scope.fields.password.value;
       Stormpath.saveAccount(account,function(err){
         if(err){
-          var nicePasswordError = Stormpath.nicePasswordErrors[err.userMessage] ||
-            Stormpath.nicePasswordErrors[err.developerMessage];
-          if(err.status===409){
-            $scope.fields.username.errors.duplicateUser = true;
-          }else if(nicePasswordError){
-            $scope.fields.password.errors.passwordPolicy = nicePasswordError;
-          }else if(err.userMessage && err.userMessage.toLowerCase().match(/password|account/)){
-            $scope.fields.password.errors.passwordPolicy = err.userMessage;
-          }else{
-            $scope.unknownError = err;
-          }
+          $scope.unknownError = String(err.userMessage || err.developerMessage || err);
         }else{
           $scope.status = 'success';
         }

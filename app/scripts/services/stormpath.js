@@ -22,9 +22,9 @@ angular.module('stormpathIdpApp')
     self.verifiedAccount = null;
 
     function showError(error){
-      var msg = error.message || 'Unknown';
+      var msg = error.userMessage || error.developerMessage || error.message || 'Unknown';
       if(self.errors.indexOf(msg)===-1){
-        self.errors.push(msg);
+        self.errors.push(error.status === 401 ? 'This link has expired' : msg);
       }
       setTimeout(function(){
         throw error;
@@ -247,13 +247,6 @@ angular.module('stormpathIdpApp')
 
     this.serviceProviderRedirect = function(url){
       $window.location = url;
-    };
-
-    this.nicePasswordErrors = {
-      'Password requires a numeric character!': 'Password requires a number',
-      'Password requires an uppercase character!': 'Password requires an uppercase letter',
-      'Account password minimum length not satisfied.': 'Password is too short',
-      'Password requires a lowercase character!': 'Password requires a lowercase letter'
     };
 
     initialize();

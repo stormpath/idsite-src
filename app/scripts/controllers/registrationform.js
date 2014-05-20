@@ -19,16 +19,10 @@ angular.module('stormpathIdpApp')
       if(inError.length===0){
         Stormpath.register(data,function(err){
           if(err){
-            var nicePasswordError = Stormpath.nicePasswordErrors[err.userMessage] ||
-              Stormpath.nicePasswordErrors[err.developerMessage];
             if(err.status===409){
               $scope.fields.email.setError('duplicateUser', true);
-            }else if(nicePasswordError){
-              $scope.fields.password.errors.passwordPolicy = nicePasswordError;
-            }else if(err.userMessage && err.userMessage.toLowerCase().match(/password|account/)){
-              $scope.fields.password.errors.passwordPolicy = err.userMessage;
             }else{
-              $scope.unknownError = err;
+              $scope.unknownError = String(err.userMessage || err.developerMessage || err);
             }
           }
         });
