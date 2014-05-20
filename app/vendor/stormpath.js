@@ -16,7 +16,7 @@ AuthTokenAuthenticator.prototype.authenticate = function(request) {
 AuthTokenAuthenticator.prototype.parseResponse = function(response) {
   this.authToken =
     ((((response.getResponseHeader('Authorization') || '')
-    .match(/Bearer (.*)$/)) || [])[1]) || '';
+    .match(/Bearer (.*)$/i)) || [])[1]) || '';
 };
 
 module.exports = AuthTokenAuthenticator;
