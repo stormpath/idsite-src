@@ -20,7 +20,7 @@ describe('Verification view', function() {
     it('should take me to the login view', function() {
       browser.sleep(1000);
       util.getCurrentUrl(function(url){
-        expect(url).to.match(/\/#\/\?access_token/);
+        expect(url).to.match(/\/#\/\?/);
       });
     });
   });

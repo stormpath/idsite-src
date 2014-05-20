@@ -32,6 +32,6 @@ module.exports = {
     browser.executeScript('return window.document.location.href').then(cb);
   },
   fakeAuthParams: function(appId){
-    return '&jwt=' + fakeJwt(appId);
+    return '?jwt=' + fakeJwt(appId);
   }
 };

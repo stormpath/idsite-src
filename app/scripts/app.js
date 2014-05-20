@@ -1,11 +1,6 @@
 'use strict';
 
-(function(window){
-  var rewrittenHash = window.SpHashRewriter(String(window.location.hash));
-  if(rewrittenHash!==window.location.hash){
-    window.location.hash = rewrittenHash;
-  }
-
+(function(){
 
   angular
   .module('stormpathIdpApp', [
