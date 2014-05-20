@@ -14,7 +14,7 @@ describe('Verification view', function() {
 
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/unverified' + util.fakeAuthParams()
+        browser.params.appUrl + '#/unverified' + util.fakeAuthParams('1')
       );
     });
     it('should take me to the login view', function() {

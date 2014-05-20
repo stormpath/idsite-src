@@ -16,7 +16,7 @@ AuthTokenAuthenticator.prototype.authenticate = function(request) {
 AuthTokenAuthenticator.prototype.parseResponse = function(response) {
   this.authToken =
     ((((response.getResponseHeader('Authorization') || '')
-    .match(/access_token=([^&]+)/)) || [])[1]) || '';
+    .match(/Bearer (.*)$/)) || [])[1]) || '';
 };
 
 module.exports = AuthTokenAuthenticator;
@@ -1087,9 +1087,10 @@ module.exports = {
   * @param clientConfig.appHref{String} - The href to the stormpath application which will be used for all API calls.
   */
   Client: _dereq_('./client'),
-  AuthTokenAuthenticator: _dereq_('./authc/AuthTokenAuthenticator')
+  AuthTokenAuthenticator: _dereq_('./authc/AuthTokenAuthenticator'),
+  base64: _dereq_('./utils').base64
 };
-},{"./authc/AuthTokenAuthenticator":2,"./client":4}],18:[function(_dereq_,module,exports){
+},{"./authc/AuthTokenAuthenticator":2,"./client":4,"./utils":19}],18:[function(_dereq_,module,exports){
 'use strict';
 
 var _  = _dereq_('underscore');

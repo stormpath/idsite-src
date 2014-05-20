@@ -36,7 +36,7 @@ var ForgotPasswordView = function(){
   };
   this.arrive = function(){
     browser.get(
-      browser.params.appUrl + '#/forgot' + util.fakeAuthParams()
+      browser.params.appUrl + '#/forgot' + util.fakeAuthParams('1')
     );
   };
 };

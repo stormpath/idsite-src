@@ -53,12 +53,12 @@ var ResetPasswordPageObject = function(){
   };
   this.arriveWithValidToken = function arriveWithValidToken(){
     browser.get(
-        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=avalidtoken'
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams('1') + '&sptoken=avalidtoken'
     );
   };
   this.arriveWithInvalidToken = function arriveWithInvalidToken(){
     browser.get(
-        browser.params.appUrl + '#/reset' + util.fakeAuthParams() + '&sptoken=notvalidtoken'
+        browser.params.appUrl + '#/reset' + util.fakeAuthParams('1') + '&sptoken=notvalidtoken'
     );
   };
 };

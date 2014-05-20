@@ -8,10 +8,11 @@ angular.module('stormpathIdpApp')
 
     var client;
     var application;
+    var jwtPayload;
 
     this.errors = [];
 
-    this.accessToken = params.access_token;
+    this.jwt = params.jwt;
     this.appHref = params.application_href;
     this.registrationStatus = null;
 
@@ -38,10 +39,20 @@ angular.module('stormpathIdpApp')
       }
     }
 
-    if(!this.accessToken){
-      showError(new Error('Access token not provided'));
+
+    if(!this.jwt){
+      showError(new Error('JWT token not provided'));
       return;
     }
+
+    try{
+      jwtPayload = JSON.parse(stormpath.base64.decode(self.jwt.split('.')[1]));
+      self.appHref = jwtPayload.app_href;
+    }catch(e){
+      showError(e);
+      return;
+    }
+
 
     if(!this.appHref){
       showError(new Error('Application href not provided'));
@@ -54,7 +65,7 @@ angular.module('stormpathIdpApp')
 
       try{
         client = new stormpath.Client({
-          authToken: self.accessToken
+          authToken: self.jwt
         });
 
         client.getApplication(
