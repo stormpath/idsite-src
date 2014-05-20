@@ -1,24 +1,19 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('VerifyCtrl', function ($scope, $location,Stormpath,$timeout) {
+  .controller('VerifyCtrl', function ($scope, $location,Stormpath) {
 
     $scope.status = 'loading';
 
     var params = $location.search();
 
     Stormpath.init.then(function initSuccess(){
-      Stormpath.verifyEmailToken(params.sptoken,function(err,response){
+      Stormpath.verifyEmailToken(params.sptoken,function(err){
         if(err){
           $scope.status='failed';
           $scope.error = err.userMessage || err;
         }else{
-          var r = Stormpath.getRedirectUrlFromResponse(response);
           $scope.status='verified';
-          $scope.redirectUrl = r;
-          $timeout(function(){
-            Stormpath.serviceProviderRedirect(r);
-          },2000);
         }
       });
     });

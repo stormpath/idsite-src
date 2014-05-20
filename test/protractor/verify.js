@@ -29,11 +29,8 @@ describe('Email verification view', function() {
       );
       browser.sleep(3000);
     });
-    it('should take me to the service provider', function() {
-      browser.sleep(4000);
-      util.getCurrentUrl(function(url){
-        expect(url).to.have.string('https://stormpath.com');
-      });
+    it('should show me the success message', function() {
+      expect(view.isShowingSuccess()).to.eventually.equal(true);
     });
   });
 
