@@ -90,14 +90,14 @@ angular.module('stormpathIdpApp')
       clearErrors();
       var params = {
         clientid: appConfig.socialProviders.googleClientId,
-        scope: 'https://www.googleapis.com/auth/plus.profile.emails.read',
+        scope: 'email',
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
           if (authResult.status.signed_in) {
             Stormpath.register({
               providerData: {
                 providerId: 'google',
-                code: authResult.access_token
+                accessToken: authResult.access_token
               }
             },errHandler);
           } else {
@@ -115,7 +115,7 @@ angular.module('stormpathIdpApp')
       Stormpath.register({
         providerData: {
           providerId: 'facebook',
-          code: response.authResponse.accessToken
+          accessToken: response.authResponse.accessToken
         }
       },errHandler);
     }
@@ -123,17 +123,11 @@ angular.module('stormpathIdpApp')
     $scope.facebookLogin = function(){
       var FB = $window.FB;
 
-      FB.getLoginStatus(function(response) {
+      FB.login(function(response) {
         if(response.status === 'connected'){
           fbRegister(response);
-        }else{
-          FB.login(function(response) {
-            if(response.status === 'connected'){
-              fbRegister(response);
-            }
-          });
         }
-      });
+      },{scope: 'email'});
 
     };
 
