@@ -20,7 +20,7 @@ angular.module('stormpathIdpApp')
       $scope.hasGoogle = !!appConfig.socialProviders.googleClientId;
       $scope.hasFacebook = !!appConfig.socialProviders.facebookAppId;
       $scope.hasSocial = $scope.hasGoogle || $scope.hasFacebook;
-      if(appConfig.facebookAppId){
+      if(appConfig.socialProviders.facebookAppId){
         initFB();
       }
     });
@@ -69,22 +69,16 @@ angular.module('stormpathIdpApp')
       }
     }
 
-    function errOrRedirect(err,account,resp){
+    function errHandler(err){
       if(err){
         showError(err);
-      }else{
-        redirect(resp);
       }
-    }
-
-    function redirect(response){
-      $window.location = response.getResponseHeader('Stormpath-SSO-Redirect-Location');
     }
 
     $scope.submit = function(){
       clearErrors();
       if($scope.username && $scope.password){
-        Stormpath.login($scope.username,$scope.password,errOrRedirect);
+        Stormpath.login($scope.username,$scope.password,errHandler);
       }
     };
 
@@ -100,7 +94,12 @@ angular.module('stormpathIdpApp')
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
           if (authResult.status.signed_in) {
-            Stormpath.googleLogin(authResult.access_token,errOrRedirect);
+            Stormpath.register({
+              providerData: {
+                providerId: 'google',
+                code: authResult.access_token
+              }
+            },errHandler);
           } else {
             if(authResult.error==='access_denied'){
               $scope.errors.googleReject = true;
@@ -112,16 +111,25 @@ angular.module('stormpathIdpApp')
       gapi.auth.signIn(params);
     };
 
+    function fbRegister(response){
+      Stormpath.register({
+        providerData: {
+          providerId: 'facebook',
+          code: response.authResponse.accessToken
+        }
+      },errHandler);
+    }
+
     $scope.facebookLogin = function(){
       var FB = $window.FB;
 
       FB.getLoginStatus(function(response) {
         if(response.status === 'connected'){
-          Stormpath.facebookLogin(response.authResponse.accessToken,errOrRedirect);
+          fbRegister(response);
         }else{
           FB.login(function(response) {
             if(response.status === 'connected'){
-              Stormpath.facebookLogin(response.authResponse.accessToken,errOrRedirect);
+              fbRegister(response);
             }
           });
         }

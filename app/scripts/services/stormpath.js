@@ -101,7 +101,11 @@ angular.module('stormpathIdpApp')
           password: password
         },function(err,account,response){
           $rootScope.$apply(function(){
-            cb(err,account,response);
+            if(err){
+              cb(err);
+            }else if(response.statusCode===204){
+              redirect(response);
+            }
           });
         });
       }
@@ -110,24 +114,27 @@ angular.module('stormpathIdpApp')
       }
     };
 
+    function redirect(xhrResponse){
+      var url = xhrResponse
+        .getResponseHeader('Stormpath-SSO-Redirect-Location');
+      $window.location = url;
+    }
+
     this.register = function(data,cb){
       try{
         application.createAccount(data,function(err,account,response){
-          if(!err){
-            self.registrationStatus = response.statusCode;
-            if(response.statusCode===204){
-              self.serviceProviderRedirect(
-                self.getRedirectUrlFromResponse(response)
-              );
-            }
-            if(response.statusCode===202){
-              $rootScope.$apply(function(){
-                $location.path('/unverified');
-              });
-            }
-          }
           $rootScope.$apply(function(){
-            cb(err);
+            if(err){
+              cb(err);
+            }else{
+              self.registrationStatus = response.statusCode;
+              if(response.statusCode===204){
+                redirect(response);
+              }
+              if(response.statusCode===202){
+                $location.path('/unverified');
+              }
+            }
           });
         });
       }
@@ -195,58 +202,6 @@ angular.module('stormpathIdpApp')
       catch(e){
         showError(e);
       }
-    };
-
-    this.googleLogin = function(accessToken,cb){
-      try{
-        var data = {
-          providerData: {
-            providerId: 'google',
-            code: accessToken
-          }
-        };
-        application.createAccount(data,function(err,account,response){
-          if(!err){
-            self.registeredAccount = account;
-          }
-          $rootScope.$apply(function(){
-            cb(err,account,response);
-          });
-        });
-      }
-      catch(e){
-        showError(e);
-      }
-    };
-
-    this.facebookLogin = function(accessToken,cb){
-      try{
-        var data = {
-          providerData: {
-            providerId: 'facebook',
-            code: accessToken
-          }
-        };
-        application.createAccount(data,function(err,account,response){
-          if(!err){
-            self.registeredAccount = account;
-          }
-          $rootScope.$apply(function(){
-            cb(err,account,response);
-          });
-        });
-      }
-      catch(e){
-        showError(e);
-      }
-    };
-
-    this.getRedirectUrlFromResponse = function(xhrResponse){
-      return xhrResponse.getResponseHeader('Stormpath-SSO-Redirect-Location');
-    };
-
-    this.serviceProviderRedirect = function(url){
-      $window.location = url;
     };
 
     initialize();
