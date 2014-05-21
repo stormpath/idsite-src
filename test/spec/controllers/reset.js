@@ -9,16 +9,23 @@ describe('Controller: ResetCtrl', function () {
     scope;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $location) {
-    $location.search('access_token','1234');
-    $location.search('application_href','http://api.stormpath.com/v1/applications/1234');
+  beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
     ResetCtrl = $controller('ResetCtrl', {
-      $scope: scope
+      $scope: scope,
+      Stormpath: {
+        init: {
+          then: function(cb){cb();}
+        },
+        verifyPasswordToken: function(token,cb){
+          // verification success
+          cb(null);
+        }
+      }
     });
   }));
 
-  it('should do something', function () {
-    expect(true).to.equal(true);
+  it('should set scope.status to success', function () {
+    expect(scope.status).to.equal('verified');
   });
 });

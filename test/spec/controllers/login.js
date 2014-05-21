@@ -9,16 +9,24 @@ describe('Controller: LoginCtrl', function () {
     scope;
 
   // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope,$location) {
+  beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
-    $location.search('access_token','1234');
-    $location.search('application_href','http://api.stormpath.com/v1/applications/1234');
     LoginCtrl = $controller('LoginCtrl', {
-      $scope: scope
+      $scope: scope,
+      Stormpath: {
+        init: {
+          then: function(cb){cb();}
+        },
+        siteModel: {
+          socialProviders: {
+
+          }
+        }
+      }
     });
   }));
 
-  it('should do something', function () {
-    expect(true).to.equal(true);
+  it('should set scope.ready to true', function () {
+    expect(scope.ready).to.equal(true);
   });
 });

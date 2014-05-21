@@ -16,7 +16,7 @@ describe('Controller: RegistrationFormCtrl', function () {
     });
   }));
 
-  it('should do something', function () {
-    expect(true).to.equal(true);
+  it('should set a fields object', function () {
+    expect(typeof scope.fields).to.equal('object');
   });
 });

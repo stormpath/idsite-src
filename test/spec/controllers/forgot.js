@@ -16,7 +16,7 @@ describe('Controller: ForgotCtrl', function () {
     });
   }));
 
-  it('should do something', function () {
-    expect(true).to.equal(true);
+  it('should initially set scope.sent to false', function () {
+    expect(scope.sent).to.equal(false);
   });
 });

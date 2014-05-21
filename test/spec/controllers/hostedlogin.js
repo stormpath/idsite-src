@@ -8,15 +8,24 @@ describe('Controller: ErrorCtrl', function () {
   var ErrorCtrl,
     scope;
 
+  var stormpath = {
+    errors: []
+  };
+
   // Initialize the controller and a mock scope
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();
     ErrorCtrl = $controller('ErrorCtrl', {
-      $scope: scope
+      $scope: scope,
+      Stormpath: stormpath
     });
   }));
 
-  it('should do something', function () {
-    expect(true).to.equal(true);
+  it('should observe new errors and set inError to true', function () {
+    var anError = 'an error';
+    stormpath.errors.push(anError);
+    expect(scope.errors[0]).to.equal(anError);
+    scope.$digest();
+    expect(scope.inError).to.equal(true);
   });
 });

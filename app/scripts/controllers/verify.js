@@ -11,7 +11,7 @@ angular.module('stormpathIdpApp')
       Stormpath.verifyEmailToken(params.sptoken,function(err){
         if(err){
           $scope.status='failed';
-          $scope.error = String(err.userMessage || err.developerMessage || err);
+          $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
         }else{
           $scope.status='verified';
         }

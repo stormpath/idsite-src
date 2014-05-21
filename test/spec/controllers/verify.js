@@ -2,23 +2,92 @@
 
 describe('Controller: VerifyCtrl', function () {
 
-  // load the controller's module
+  var stormpathFixture1 = {
+    init: {
+      // dont callback on init, so that we can assert initial controller state
+      then: function(){}
+    }
+  };
+
+  var stormpathFixture2 = {
+    // verification success
+    init: {
+      then: function(cb){cb();}
+    },
+    verifyEmailToken: function(token,cb){
+      cb(null);
+    }
+  };
+
+  var stormpathFixture3 = {
+    // verification failure with generic error object
+    init: {
+      then: function(cb){cb();}
+    },
+    verifyEmailToken: function(token,cb){
+      cb(new Error('an error'));
+    }
+  };
+
   beforeEach(module('stormpathIdpApp'));
 
-  var VerifyCtrl,
-    scope;
-
-  // Initialize the controller and a mock scope
-  beforeEach(inject(function ($controller, $rootScope, $location) {
-    scope = $rootScope.$new();
-    $location.search('access_token','1234');
-    $location.search('application_href','http://api.stormpath.com/v1/applications/1234');
-    VerifyCtrl = $controller('VerifyCtrl', {
-      $scope: scope
+  describe('initial state',function(){
+    var VerifyCtrl, scope;
+    beforeEach(inject(function ($controller, $rootScope) {
+      scope = $rootScope.$new();
+      VerifyCtrl = $controller('VerifyCtrl', {
+        $scope: scope,
+        Stormpath: stormpathFixture1
+      });
+    }));
+    it('should begin with status loading', function () {
+      expect(scope.status).to.equal('loading');
     });
-  }));
-
-  it('should do something', function () {
-    expect(true).to.equal(true);
   });
+
+
+  describe('with a valid token',function(){
+    var VerifyCtrl, scope;
+    beforeEach(inject(function ($controller, $rootScope) {
+      scope = $rootScope.$new();
+      VerifyCtrl = $controller('VerifyCtrl', {
+        $scope: scope,
+        Stormpath: stormpathFixture2
+      });
+    }));
+    it('should have status of verified', function () {
+      expect(scope.status).to.equal('verified');
+    });
+  });
+
+  describe('with a invalid token',function(){
+    var VerifyCtrl, scope;
+    beforeEach(inject(function ($controller, $rootScope) {
+      scope = $rootScope.$new();
+      VerifyCtrl = $controller('VerifyCtrl', {
+        $scope: scope,
+        Stormpath: stormpathFixture3
+      });
+    }));
+
+    it('should have status failed if an error is returned', function () {
+      expect(scope.status).to.equal('failed');
+    });
+  });
+
+  describe('with a generic error result',function(){
+    var VerifyCtrl, scope;
+    beforeEach(inject(function ($controller, $rootScope) {
+      scope = $rootScope.$new();
+      VerifyCtrl = $controller('VerifyCtrl', {
+        $scope: scope,
+        Stormpath: stormpathFixture3
+      });
+    }));
+
+    it('should put the error string onto scope.error', function () {
+      expect(scope.error).to.equal('an error');
+    });
+  });
+
 });
