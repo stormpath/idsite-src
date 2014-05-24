@@ -22,6 +22,9 @@ var ForgotPasswordView = function(){
   this.isShowingSuccess = function(){
     return element(by.css(cssRoot+'.wd-sent')).isDisplayed();
   };
+  this.isShowingBackToLogin = function(){
+    return element(by.css('[wd-back-to-login]')).isDisplayed();
+  };
   this.isShowingInvalidEmail = function(){
     return element(by.css(cssRoot+'.wd-invalid-email')).isDisplayed();
   };
@@ -39,6 +42,9 @@ var ForgotPasswordView = function(){
       browser.params.appUrl + '#/forgot' + util.fakeAuthParams('1')
     );
   };
+  this.pressBackButton = function pressBackButton(){
+    browser.navigate('/');
+  };
 };
 
 
@@ -46,6 +52,12 @@ describe('Forgot password view', function() {
   var view = new ForgotPasswordView();
   beforeEach(function(){
     view.arrive();
+  });
+
+  describe('upon arrival', function() {
+    it('should show me a link to return to login', function() {
+      expect(view.isShowingBackToLogin()).to.eventually.equal(true);
+    });
   });
 
   describe('if I enter an invalid email address', function() {
@@ -61,6 +73,20 @@ describe('Forgot password view', function() {
       view.fillWithValidEmail();
       view.submit();
       expect(view.isShowingSuccess()).to.eventually.equal(true);
+    });
+    it('should hide the wd-back-to-login link', function() {
+      expect(view.isShowingBackToLogin()).to.eventually.equal(true);
+    });
+  });
+
+  describe('if I try to use the back button after a successful sent', function() {
+    it('should keep me on this view', function() {
+      view.fillWithValidEmail();
+      view.submit();
+      view.pressBackButton();
+      util.getCurrentUrl(function(url){
+        expect(url).to.have.string('#/forgot');
+      });
     });
   });
 

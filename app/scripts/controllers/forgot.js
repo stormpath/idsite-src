@@ -1,10 +1,15 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('ForgotCtrl', function ($scope,Stormpath,$routeParams) {
+  .controller('ForgotCtrl', function ($scope,Stormpath,$routeParams,$rootScope) {
     $scope.sent = false;
     $scope.retry = $routeParams.retry || false;
     $scope.fields = {};
+    $rootScope.$on('$locationChangeStart',function(e){
+      if($scope.sent){
+        e.preventDefault();
+      }
+    });
     $scope.submit = function(){
       $scope.notFound = false;
       var inError = Object.keys($scope.fields).filter(function(f){
