@@ -23,11 +23,11 @@ var LoginForm = function(){
   this.isShowingNotFound = function(){
     return element(by.css('.not-found')).isDisplayed();
   };
-  this.isShowingFacebookButton = function(){
-    return element(by.css('.btn-facebook')).isDisplayed();
+  this.hasFacebookButton = function(){
+    return element(by.css('.btn-facebook')).isPresent();
   };
-  this.isShowingGoogleButton = function(){
-    return element(by.css('.btn-google')).isDisplayed();
+  this.hasGoogleButton = function(){
+    return element(by.css('.btn-google')).isPresent();
   };
   this.isShowingSocialArea = function(){
     return element(by.css('.social-area')).isDisplayed();
@@ -80,8 +80,8 @@ describe('Login view', function() {
     });
     it('should be showing both social buttons', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.isShowingFacebookButton()).to.eventually.equal(true);
-      expect(form.isShowingGoogleButton()).to.eventually.equal(true);
+      expect(form.hasFacebookButton()).to.eventually.equal(true);
+      expect(form.hasGoogleButton()).to.eventually.equal(true);
     });
   });
 
@@ -109,8 +109,8 @@ describe('Login view', function() {
     });
     it('should have the social area and just the FB button', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.isShowingFacebookButton()).to.eventually.equal(true);
-      expect(form.isShowingGoogleButton()).to.eventually.equal(false);
+      expect(form.hasFacebookButton()).to.eventually.equal(true);
+      expect(form.hasGoogleButton()).to.eventually.equal(false);
     });
   });
 
@@ -123,8 +123,8 @@ describe('Login view', function() {
     });
     it('should have the social area and just the Google button', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.isShowingFacebookButton()).to.eventually.equal(false);
-      expect(form.isShowingGoogleButton()).to.eventually.equal(true);
+      expect(form.hasFacebookButton()).to.eventually.equal(false);
+      expect(form.hasGoogleButton()).to.eventually.equal(true);
     });
   });
 

@@ -7,20 +7,14 @@ angular.module('stormpathIdpApp')
       badLogin: false,
       notFound: false,
       userMessage: false,
-      unknown: false,
-      googleReject: false,
-      facebookReject: false
+      unknown: false
     };
 
-    var providers;
-
     Stormpath.init.then(function initSuccess(){
-      providers = Stormpath.providers;
+      $scope.providers = Stormpath.providers;
       $scope.ready = true;
-      $scope.hasGoogle = !!providers.google;
-      $scope.hasFacebook = !!providers.facebook;
-      $scope.hasSocial = $scope.hasGoogle || $scope.hasFacebook;
-      if($scope.hasFacebook){
+      $scope.hasSocial = $scope.providers.length > 0;
+      if(Stormpath.getProvider('facebook')){
         initFB();
       }
     });
@@ -29,7 +23,7 @@ angular.module('stormpathIdpApp')
       $window.fbAsyncInit = function() {
         var FB = $window.FB;
         FB.init({
-          appId: providers.facebook.clientId,
+          appId: Stormpath.getProvider('facebook').clientId,
           xfbml: true,
           status: true,
           version: 'v2.0'
@@ -89,7 +83,7 @@ angular.module('stormpathIdpApp')
       }
       clearErrors();
       var params = {
-        clientid: providers.google.clientId,
+        clientid: Stormpath.getProvider('google').clientId,
         scope: 'email',
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
@@ -100,10 +94,6 @@ angular.module('stormpathIdpApp')
                 accessToken: authResult.access_token
               }
             },errHandler);
-          } else {
-            if(authResult.error==='access_denied'){
-              $scope.errors.googleReject = true;
-            }
           }
         }
       };
@@ -129,6 +119,15 @@ angular.module('stormpathIdpApp')
         }
       },{scope: 'email'});
 
+    };
+
+    $scope.providerLogin = function(providerId){
+      var fn = $scope[providerId+'Login'];
+      if(typeof fn!=='function'){
+        console.error('provider login function \'' + providerId + '\' is not implemented');
+      }else{
+        fn();
+      }
     };
 
     return $scope;

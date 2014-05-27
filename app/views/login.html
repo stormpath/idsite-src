@@ -48,8 +48,7 @@
     <div class="social-area  col-xs-12 col-sm-4" ng-show="hasSocial">
       <div class="header">&nbsp;</div>
       <label>Easy 1-click login:</label>
-      <button class="btn btn-social btn-google" ng-show="hasGoogle" ng-click="googleLogin()">Google</button>
-      <button class="btn btn-social btn-facebook" ng-show="hasFacebook" ng-click="facebookLogin()">Facebook</button>
+      <button ng-repeat="p in providers" class="btn btn-social btn-{{p.providerId}}" ng-click="providerLogin(p.providerId)">{{p.providerId}}</button>
     </div>
 
   </div>
