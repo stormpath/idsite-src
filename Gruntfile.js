@@ -18,6 +18,9 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
 
+    hostname: process.env.SSO_DEV_HOST || 'localhost',
+    port: process.env.SSO_DEV_PORT || 9000,
+
     // Project settings
     yeoman: {
       // configurable paths
@@ -68,14 +71,14 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 9000,
+        port: '<%=port %>',
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: '0.0.0.0',
         livereload: 35729
       },
       livereload: {
         options: {
-          open: 'http://local.stormpath.com:<%=connect.options.port %>',
+          open: 'http://<%=hostname %>:<%=port %>',
           base: [
             '.tmp',
             '<%= yeoman.app %>'
@@ -349,7 +352,7 @@ module.exports = function (grunt) {
       dev: {
         options: {
           args: {
-            baseUrl: 'http://local.stormpath.com:<%=connect.options.port %>',
+            baseUrl: 'http://<%=hostname %>:<%=port %>',
             params: {
               appUrl: '/',
               apiUrl: 'http://fakeapi.stormpath.com:1337'
@@ -363,7 +366,7 @@ module.exports = function (grunt) {
           args: {
             sauceUser: process.env.SAUCE_USER,
             sauceKey: process.env.SAUCE_API_KEY,
-            baseUrl: 'http://local.stormpath.com:<%=connect.options.port %>',
+            baseUrl: 'http://<%=hostname %>:<%=port %>',
             params: {
               appUrl: '/',
               apiUrl: 'http://fakeapi.stormpath.com:1337'
