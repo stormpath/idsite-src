@@ -17,11 +17,7 @@ describe('Controller: LoginCtrl', function () {
         init: {
           then: function(cb){cb();}
         },
-        siteModel: {
-          socialProviders: {
-
-          }
-        }
+        providers: {}
       }
     });
   }));

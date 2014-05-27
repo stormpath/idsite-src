@@ -15,6 +15,7 @@ angular.module('stormpathIdpApp')
     this.jwt = params.jwt;
     this.appHref = params.application_href;
     this.registrationStatus = null;
+    this.providers = {};
 
     var self = this;
 
@@ -79,7 +80,14 @@ angular.module('stormpathIdpApp')
                 showError(err);
               }else{
                 application = spApp;
-                self.siteModel = application.siteModel;
+                var m = application.siteModel;
+                var ps = m.providers;
+                self.siteModel = m;
+                ps.reduce(function(a,p){
+                  a[p.providerId]=p;
+                  return a;
+                },self.providers);
+
                 $rootScope.logoUrl = application.siteModel.logoUrl;
                 init.resolve();
               }

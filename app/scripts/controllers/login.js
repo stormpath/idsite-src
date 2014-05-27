@@ -12,15 +12,15 @@ angular.module('stormpathIdpApp')
       facebookReject: false
     };
 
-    var appConfig;
+    var providers;
 
     Stormpath.init.then(function initSuccess(){
-      appConfig = Stormpath.siteModel;
+      providers = Stormpath.providers;
       $scope.ready = true;
-      $scope.hasGoogle = !!appConfig.socialProviders.googleClientId;
-      $scope.hasFacebook = !!appConfig.socialProviders.facebookAppId;
+      $scope.hasGoogle = !!providers.google;
+      $scope.hasFacebook = !!providers.facebook;
       $scope.hasSocial = $scope.hasGoogle || $scope.hasFacebook;
-      if(appConfig.socialProviders.facebookAppId){
+      if($scope.hasFacebook){
         initFB();
       }
     });
@@ -29,7 +29,7 @@ angular.module('stormpathIdpApp')
       $window.fbAsyncInit = function() {
         var FB = $window.FB;
         FB.init({
-          appId: appConfig.socialProviders.facebookAppId,
+          appId: providers.facebook.clientId,
           xfbml: true,
           status: true,
           version: 'v2.0'
@@ -89,7 +89,7 @@ angular.module('stormpathIdpApp')
       }
       clearErrors();
       var params = {
-        clientid: appConfig.socialProviders.googleClientId,
+        clientid: providers.google.clientId,
         scope: 'email',
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
