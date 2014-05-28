@@ -7,12 +7,10 @@ angular.module('stormpathIdpApp')
 
     $scope.fields = {};
 
-    var params = $location.search();
-
     var account;
 
     Stormpath.init.then(function initSuccess(){
-      Stormpath.verifyPasswordToken(params.sptoken,function(err,a){
+      Stormpath.verifyPasswordToken(Stormpath.sptoken,function(err,a){
         if(err){
           if(err.status===404){
             $location.path('/forgot/retry');

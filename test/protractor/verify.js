@@ -25,7 +25,7 @@ describe('Email verification view', function() {
     var view = new VerificationView();
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/verify' + util.fakeAuthParams('1') + '&sptoken=avalidtoken'
+        browser.params.appUrl + '#/verify' + util.fakeAuthParams('1',{sp_token:'avalidtoken'})
       );
       browser.sleep(3000);
     });
@@ -38,7 +38,7 @@ describe('Email verification view', function() {
     var view = new VerificationView();
     before(function(){
       browser.get(
-        browser.params.appUrl + '#/verify' + util.fakeAuthParams('1') + '&sptoken=invalid'
+        browser.params.appUrl + '#/verify' + util.fakeAuthParams('1',{sp_token:'invalid'})
       );
       browser.sleep(3000);
     });

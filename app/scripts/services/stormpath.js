@@ -13,7 +13,8 @@ angular.module('stormpathIdpApp')
     this.errors = [];
 
     this.jwt = params.jwt;
-    this.appHref = params.application_href;
+    this.appHref = null;
+    this.sptoken = null;
     this.registrationStatus = null;
     this.providers = [];
 
@@ -49,6 +50,7 @@ angular.module('stormpathIdpApp')
     try{
       jwtPayload = JSON.parse(stormpath.base64.decode(self.jwt.split('.')[1]));
       self.appHref = jwtPayload.app_href;
+      self.sptoken = jwtPayload.sp_token || null;
     }catch(e){
       showError(e);
       return;

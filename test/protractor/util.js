@@ -4,7 +4,7 @@ function uuid(){
   return Math.floor(Math.random()*10000)+'';
 }
 
-function fakeJwt(appId){
+function fakeJwt(appId,properties){
   var header = {};
   var payload = {
     jti: uuid(),
@@ -17,6 +17,11 @@ function fakeJwt(appId){
     state: '',
     init_jti: ''
   };
+  properties = typeof properties === 'object' ? properties : {};
+  Object.keys(properties).reduce(function(a,k){
+    a[k] = properties[k];
+    return a;
+  },payload);
   var signature = '';
   return encodeURIComponent([header,payload,signature].map(function(v){
     return new Buffer(JSON.stringify(v)).toString('base64');
@@ -31,7 +36,7 @@ module.exports = {
 
     browser.executeScript('return window.document.location.href').then(cb);
   },
-  fakeAuthParams: function(appId){
-    return '?jwt=' + fakeJwt(appId);
+  fakeAuthParams: function(appId,properties){
+    return '?jwt=' + fakeJwt(appId,properties);
   }
 };
