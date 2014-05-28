@@ -687,7 +687,7 @@ Application.prototype.authenticateAccount = function authenticateApplicationAcco
     value: utils.base64.encode(username + ':' + password)
   };
 
-  _this.dataStore.createResource(_this.loginAttempts.href, {expand: 'account'}, loginAttempt, _dereq_('./AuthenticationResult'), callback);
+  _this.dataStore.createResource(_this.loginAttempts.href, {}, loginAttempt, _dereq_('./AuthenticationResult'), callback);
 };
 
 Application.prototype.sendPasswordResetEmail = function sendApplicationPasswordResetEmail(emailOrUsername, callback) {
