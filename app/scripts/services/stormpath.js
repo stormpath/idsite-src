@@ -74,7 +74,7 @@ angular.module('stormpathIdpApp')
         client.getApplication(
           self.appHref,
           {
-            expand:'siteModel'
+            expand:'idSiteModel'
           },
           function(err,spApp){
             $rootScope.$apply(function(){
@@ -82,10 +82,10 @@ angular.module('stormpathIdpApp')
                 showError(err);
               }else{
                 application = spApp;
-                var m = application.siteModel;
-                self.siteModel = m;
+                var m = application.idSiteModel;
+                self.idSiteModel = m;
                 self.providers = self.providers.concat(m.providers);
-                $rootScope.logoUrl = application.siteModel.logoUrl;
+                $rootScope.logoUrl = application.idSiteModel.logoUrl;
                 init.resolve();
               }
             });
