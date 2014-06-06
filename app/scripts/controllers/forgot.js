@@ -18,7 +18,7 @@ angular.module('stormpathIdpApp')
       if(inError.length>0){
         return;
       }
-      Stormpath.sendPasswordResetEmail($scope.fields.email.value,function(err){
+      Stormpath.sendPasswordResetEmail($scope.fields.email.value.trim(),function(err){
         if(err){
           if(err.status===404){
             $scope.notFound = true;

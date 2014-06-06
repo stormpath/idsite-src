@@ -37,6 +37,9 @@ var ForgotPasswordView = function(){
   this.fillWithValidEmail = function(){
     this.typeInField('email','robert@stormpath.com');
   };
+  this.fillWithEmailAndWhitespaceAtFront = function(){
+    this.typeInField('email', ' robert@stormpath.com');
+  };
   this.arrive = function(){
     browser.get(
       browser.params.appUrl + '#/forgot' + util.fakeAuthParams('1')
@@ -76,6 +79,14 @@ describe('Forgot password view', function() {
     });
     it('should hide the wd-back-to-login link', function() {
       expect(view.isShowingBackToLogin()).to.eventually.equal(true);
+    });
+  });
+
+  describe('if I enter an email with whitespace in the front', function() {
+    it('should succeed', function() {
+      view.fillWithEmailAndWhitespaceAtFront();
+      view.submit();
+      expect(view.isShowingSuccess()).to.eventually.equal(true);
     });
   });
 

@@ -14,7 +14,8 @@ angular.module('stormpathIdpApp')
         };
         scope.validate = function(element){
           scope.clearErrors();
-          var t = element.val()==='' ? true : (!re.test(element.val()));
+          var val = element.val().trim();
+          var t = val==='' ? true : (!re.test(val));
           scope.validationError = t;
           return t;
         };
