@@ -3,6 +3,7 @@
 angular.module('stormpathIdpApp')
   .controller('LoginCtrl', function ($scope,Stormpath,$window) {
     $scope.ready = false;
+    $scope.canRegister = true;
     $scope.errors = {
       badLogin: false,
       notFound: false,
@@ -11,6 +12,7 @@ angular.module('stormpathIdpApp')
     };
 
     Stormpath.init.then(function initSuccess(){
+      $scope.canRegister = !!Stormpath.idSiteModel.passwordPolicy;
       $scope.providers = Stormpath.providers;
       $scope.ready = true;
       $scope.hasSocial = $scope.providers.length > 0;

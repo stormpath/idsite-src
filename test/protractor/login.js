@@ -23,6 +23,9 @@ var LoginForm = function(){
   this.isShowingNotFound = function(){
     return element(by.css('.not-found')).isDisplayed();
   };
+  this.isShowingRegistrationLink = function(){
+    return element(by.css('[wd-can-register]')).isDisplayed();
+  };
   this.hasFacebookButton = function(){
     return element(by.css('.btn-facebook')).isPresent();
   };
@@ -82,6 +85,7 @@ describe('Login view', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(true);
       expect(form.hasFacebookButton()).to.eventually.equal(true);
       expect(form.hasGoogleButton()).to.eventually.equal(true);
+      expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
     });
   });
 
@@ -111,6 +115,7 @@ describe('Login view', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(true);
       expect(form.hasFacebookButton()).to.eventually.equal(true);
       expect(form.hasGoogleButton()).to.eventually.equal(false);
+      expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
     });
   });
 
@@ -125,6 +130,22 @@ describe('Login view', function() {
       expect(form.isShowingSocialArea()).to.eventually.equal(true);
       expect(form.hasFacebookButton()).to.eventually.equal(false);
       expect(form.hasGoogleButton()).to.eventually.equal(true);
+      expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
+    });
+  });
+
+  describe('when loaded with sso config 5 (no password policy, has google login)', function() {
+    var form;
+
+    before(function(){
+      app.arriveWithoutDefaultAccountStore();
+      form = new LoginForm();
+    });
+    it('should have the social area and just the Google button', function() {
+      expect(form.isShowingSocialArea()).to.eventually.equal(true);
+      expect(form.hasFacebookButton()).to.eventually.equal(false);
+      expect(form.hasGoogleButton()).to.eventually.equal(true);
+      expect(form.isShowingRegistrationLink()).to.eventually.equal(false);
     });
   });
 

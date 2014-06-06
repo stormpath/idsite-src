@@ -29,6 +29,12 @@ var LoginApp = function(){
       browser.params.appUrl + '#' + util.fakeAuthParams('4')
     );
   };
+  this.arriveWithoutDefaultAccountStore = function arriveWithoutDefaultAccountStore(){
+    browser.get(
+      browser.params.appUrl + '#' + util.fakeAuthParams('5')
+    );
+  };
+
 };
 
 module.exports = LoginApp;

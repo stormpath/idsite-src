@@ -2,8 +2,12 @@
   <div class="box row">
     <div class="email-password-area  col-xs-12" ng-class="[hasSocial ? 'small col-sm-8' : 'large col-sm-12']">
       <div class="header">
-        <span>Log In or </span>
-        <a href="#register">Create an Account</a>
+        <span>Log In</span>
+        <span ng-show="canRegister" wd-can-register>
+          <span> or </span>
+          <a href="#register">Create an Account</a>
+        </span>
+
       </div>
       <div class="alert alert-danger bad-login" ng-show="errors.badLogin">
         Invalid username or password.
