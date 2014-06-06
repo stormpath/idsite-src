@@ -19,6 +19,8 @@ angular.module('stormpathIdpApp')
       }
     });
 
+    var googleIsSignedIn = false;
+
     function initFB(){
       $window.fbAsyncInit = function() {
         var FB = $window.FB;
@@ -87,7 +89,8 @@ angular.module('stormpathIdpApp')
         scope: 'email',
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
-          if (authResult.status.signed_in) {
+          if (!googleIsSignedIn && authResult.status.signed_in) {
+            googleIsSignedIn = true;
             Stormpath.register({
               providerData: {
                 providerId: 'google',
