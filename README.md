@@ -1,14 +1,10 @@
-# Stormpath SSO Site Source #
+# Stormpath ID Site Source #
 
 [Stormpath](http://stormpath.com/) is a User Management API that reduces development time with instant-on, scalable user infrastructure. Stormpath's intuitive API and expert support make it easy for developers to authenticate, manage, and secure users and roles in any application.
 
-This is the development environment for the Stormpath hosted SSO Site.  You can use this repository to build the same single page application (SPA) that Stormpath provides, or you can modify it to suit your needs.  The SPA uses Angular and Browserify and it is built using Grunt and Yeoman.
+This is the development environment for the Stormpath hosted ID Site.  You can use this repository to build the same single page application (SPA) that Stormpath provides, or you can modify it to suit your needs.  The SPA uses Angular and Browserify and it is built using Grunt and Yeoman.
 
 ### Usage
-
-**TODO** Include the fake api server in this repository.  The SPA will not run without it
-
-**TODO** Append a JWT param when launching the SPA from Grunt, so that it can work right away
 
 It is assumed that you have Node.JS installed and that you have Bower and Grunt installed as global packages.
 
@@ -21,7 +17,7 @@ Then you can use the following grunt tasks:
  * load the application in your web browser
  * open a chrome instance for Karma tests to run in
  * watch files for edits and reload the application and re-run the tests
-* `grunt build` will build the the application and place it in the `dist` folder
+* `grunt build` will build the the application and place it in the `dist` folder.
 
 ### Contributing
 
