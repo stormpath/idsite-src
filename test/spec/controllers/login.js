@@ -17,7 +17,11 @@ describe('Controller: LoginCtrl', function () {
         init: {
           then: function(cb){cb();}
         },
-        providers: {}
+        providers: {},
+        idSiteModel: {
+          passwordPolicy: null
+        },
+        getProvider: function(){}
       }
     });
   }));
