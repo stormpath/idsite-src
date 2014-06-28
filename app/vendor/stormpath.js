@@ -487,6 +487,10 @@ DataStore.prototype.createResource = function createResource(/* parentHref, [que
 
   var request = {uri: parentHref, method: 'POST'};
   if (query) {
+    if(query.withCredentials){
+      request.withCredentials = query.withCredentials;
+      delete query.withCredentials;
+    }
     request.query = query;
   }
   if (data) {
@@ -537,7 +541,7 @@ var packageJson = _dereq_('../../package.json');
 var ResourceError = _dereq_('../error/ResourceError');
 
 var BASE_URL = 'https://api.stormpath.com/v1';
-var USER_AGENT_VALUE = 'Stormpath-NodeSDK/' + packageJson.version;
+var USER_AGENT_VALUE = 'Stormpath.js/' + packageJson.version;
 
 function qualify(uri) {
   if (!uri || _(uri).startsWith('http')) {
@@ -611,6 +615,9 @@ RequestExecutor.prototype.execute = function executeRequest(req, callback) {
     options.body = req.body;
     options.json = true; //all Stormpath resources are JSON
   }
+  if (req.withCredentials){
+    options.withCredentials = req.withCredentials;
+  }
 
   this.requestAuthenticator.authenticate(options);
 
@@ -676,18 +683,21 @@ function Application() {
 }
 utils.inherits(Application, InstanceResource);
 
-Application.prototype.authenticateAccount = function authenticateApplicationAccount(authcRequest, callback) {
+Application.prototype.authenticateAccount = function authenticateApplicationAccount(authcRequest, options, callback) {
   var _this = this,
     username = authcRequest.username,
     password = authcRequest.password,
     type = authcRequest.type || 'basic';
+
+  var opts = typeof options === 'function' ? {} : options;
+  var cb = typeof options === 'function' ? options : ( callback || utils.noop );
 
   var loginAttempt = {
     type: type,
     value: utils.base64.encode(username + ':' + password)
   };
 
-  _this.dataStore.createResource(_this.loginAttempts.href, {}, loginAttempt, _dereq_('./AuthenticationResult'), callback);
+  _this.dataStore.createResource(_this.loginAttempts.href, opts, loginAttempt, _dereq_('./AuthenticationResult'), cb);
 };
 
 Application.prototype.sendPasswordResetEmail = function sendApplicationPasswordResetEmail(emailOrUsername, callback) {

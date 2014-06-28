@@ -104,7 +104,9 @@ angular.module('stormpathIdpApp')
         application.authenticateAccount({
           username: username,
           password: password
-        },function(err,account,response){
+        },
+        {withCredentials:true},
+        function(err,account,response){
           $rootScope.$apply(function(){
             if(err){
               cb(err);
@@ -127,7 +129,7 @@ angular.module('stormpathIdpApp')
 
     this.register = function(data,cb){
       try{
-        application.createAccount(data,function(err,account,response){
+        application.createAccount(data,{withCredentials:true},function(err,account,response){
           $rootScope.$apply(function(){
             if(err){
               cb(err);
