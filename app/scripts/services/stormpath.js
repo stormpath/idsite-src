@@ -3,22 +3,18 @@
 
 angular.module('stormpathIdpApp')
   .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope,$q) {
+    var self = this;
+    var init = $q.defer();
     var params = $location.search();
     var stormpath = $window.Stormpath;
-
+    var ieMatch = $window.navigator.userAgent.match(/MSIE ([0-9.]+)/);
     var client;
-    var application;
 
-    this.errors = [];
-
-    this.jwt = params.jwt;
-
-
-    this.isRegistered = null;
-    this.providers = [];
-
-    var self = this;
-
+    self.init = init.promise;
+    self.errors = [];
+    self.jwt = params.jwt;
+    self.isRegistered = null;
+    self.providers = [];
     self.registeredAccount = null;
     self.isVerified = null;
 
@@ -32,47 +28,33 @@ angular.module('stormpathIdpApp')
       },1);
     }
 
-    var ieMatch = $window.navigator.userAgent.match(/MSIE ([0-9.]+)/);
-    if(ieMatch && ieMatch[1]){
-      if(parseInt(ieMatch[1],10)<10){
-        showError(new Error('Internet Explorer ' + ieMatch[1] + ' is not supported.  Please try again with a newer browser.'));
-        return;
-      }
+    function redirect(url){
+      $window.location = url;
     }
 
-    var init = $q.defer();
-
     function initialize(){
-
-      try{
-        client = new stormpath.Client(function(err,idSiteModel){
+      if(ieMatch && ieMatch[1]){
+        if(parseInt(ieMatch[1],10)<10){
+          showError(new Error('Internet Explorer ' + ieMatch[1] + ' is not supported.  Please try again with a newer browser.'));
+          return;
+        }
+      }
+      client = new stormpath.Client(function(err,idSiteModel){
+        $rootScope.$apply(function(){
           if(err){
             showError(err);
           }else{
-            $rootScope.$apply(function(){
-              if(err){
-                showError(err);
-              }else{
-                var m = idSiteModel;
-                self.idSiteModel = m;
-                self.providers = self.providers.concat(m.providers);
-                $rootScope.logoUrl = m.logoUrl;
-                init.resolve();
-              }
-            });
+            var m = idSiteModel;
+            self.idSiteModel = m;
+            self.providers = self.providers.concat(m.providers);
+            $rootScope.logoUrl = m.logoUrl;
+            init.resolve();
           }
         });
-
-      }catch(e){
-        showError(e);
-        return;
-      }
+      });
     }
 
-    this.init = init.promise;
-
-    this.login = function(username,password,cb){
-
+    this.login = function login(username,password,cb){
       client.login({
         login: username,
         password: password
@@ -85,15 +67,9 @@ angular.module('stormpathIdpApp')
           }
         });
       });
-
     };
 
-    function redirect(url){
-      $window.location = url;
-    }
-
-    this.register = function(data,cb){
-
+    this.register = function register(data,cb){
       client.register(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
@@ -106,10 +82,9 @@ angular.module('stormpathIdpApp')
           }
         });
       });
-
     };
 
-    this.verifyEmailToken = function(cb){
+    this.verifyEmailToken = function verifyEmailToken(cb){
       client.verifyEmailToken(function(err){
         $rootScope.$apply(function(){
           self.isVerified = err ? false : true;
@@ -118,7 +93,7 @@ angular.module('stormpathIdpApp')
       });
     };
 
-    this.verifyPasswordToken = function(cb){
+    this.verifyPasswordToken = function verifyPasswordToken(cb){
       client.verifyPasswordResetToken(function(err, resp) {
         $rootScope.$apply(function(){
           cb(err,resp);
@@ -126,7 +101,7 @@ angular.module('stormpathIdpApp')
       });
     };
 
-    this.sendPasswordResetEmail = function(email,cb){
+    this.sendPasswordResetEmail = function sendPasswordResetEmail(email,cb){
       client.sendPasswordResetEmail(email,function(err) {
         $rootScope.$apply(function(){
           cb(err);
@@ -134,7 +109,7 @@ angular.module('stormpathIdpApp')
       });
     };
 
-    this.setNewPassword = function(pwTokenVerification,newPassword,cb){
+    this.setNewPassword = function setNewPassword(pwTokenVerification,newPassword,cb){
       client.setNewPassword(pwTokenVerification,newPassword,function(err, resp) {
         $rootScope.$apply(function(){
           cb(err,resp);
@@ -142,7 +117,7 @@ angular.module('stormpathIdpApp')
       });
     };
 
-    this.getProvider = function(providerId){
+    this.getProvider = function getProvider(providerId){
       var r = self.providers.filter(function(p){
         return p.providerId === providerId;
       });
