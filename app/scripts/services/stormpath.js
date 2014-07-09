@@ -8,14 +8,13 @@ angular.module('stormpathIdpApp')
 
     var client;
     var application;
-    var jwtPayload;
 
     this.errors = [];
 
     this.jwt = params.jwt;
-    this.appHref = null;
-    this.sptoken = null;
-    this.registrationStatus = null;
+
+
+    this.isRegistered = null;
     this.providers = [];
 
     var self = this;
@@ -41,56 +40,29 @@ angular.module('stormpathIdpApp')
       }
     }
 
-
-    if(!this.jwt){
-      showError(new Error('JWT token not provided'));
-      return;
-    }
-
-    try{
-      jwtPayload = JSON.parse(stormpath.base64.decode(self.jwt.split('.')[1]));
-      self.appHref = jwtPayload.app_href;
-      self.sptoken = jwtPayload.sp_token || null;
-    }catch(e){
-      showError(e);
-      return;
-    }
-
-
-    if(!this.appHref){
-      showError(new Error('Application href not provided'));
-      return;
-    }
-
     var init = $q.defer();
 
     function initialize(){
 
       try{
-        client = new stormpath.Client({
-          authToken: self.jwt
-        });
-
-        client.getApplication(
-          self.appHref,
-          {
-            expand:'idSiteModel'
-          },
-          function(err,spApp){
+        client = new stormpath.Client(function(err,idSiteModel){
+          if(err){
+            showError(err);
+          }else{
             $rootScope.$apply(function(){
               if(err){
                 showError(err);
               }else{
-                application = spApp;
-                var m = application.idSiteModel;
+                var m = idSiteModel;
                 self.idSiteModel = m;
                 self.providers = self.providers.concat(m.providers);
-                $rootScope.logoUrl = application.idSiteModel.logoUrl;
+                $rootScope.logoUrl = m.logoUrl;
                 init.resolve();
               }
             });
           }
-        );
+        });
+
       }catch(e){
         showError(e);
         return;
@@ -100,52 +72,41 @@ angular.module('stormpathIdpApp')
     this.init = init.promise;
 
     this.login = function(username,password,cb){
-      try{
-        application.authenticateAccount({
-          username: username,
-          password: password
-        },function(err,account,response){
-          $rootScope.$apply(function(){
-            if(err){
-              cb(err);
-            }else if(response.statusCode===204){
-              redirect(response);
-            }
-          });
+
+      client.login({
+        login: username,
+        password: password
+      },function(err,response){
+        $rootScope.$apply(function(){
+          if(err){
+            cb(err);
+          }else{
+            redirect(response.redirectUrl);
+          }
         });
-      }
-      catch(e){
-        showError(e);
-      }
+      });
+
     };
 
-    function redirect(xhrResponse){
-      var url = xhrResponse
-        .getResponseHeader('Stormpath-SSO-Redirect-Location');
+    function redirect(url){
       $window.location = url;
     }
 
     this.register = function(data,cb){
-      try{
-        application.createAccount(data,function(err,account,response){
-          $rootScope.$apply(function(){
-            if(err){
-              cb(err);
-            }else{
-              self.registrationStatus = response.statusCode;
-              if(response.statusCode===204){
-                redirect(response);
-              }
-              if(response.statusCode===202){
-                $location.path('/unverified');
-              }
-            }
-          });
+
+      client.register(data,function(err,response){
+        $rootScope.$apply(function(){
+          if(err){
+            cb(err);
+          }else if(response.redirectUrl){
+            redirect(response.redirectUrl);
+          }else{
+            self.isRegistered = true;
+            $location.path('/unverified');
+          }
         });
-      }
-      catch(e){
-        showError(e);
-      }
+      });
+
     };
 
     this.verifyEmailToken = function(token,cb){

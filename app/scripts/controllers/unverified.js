@@ -2,7 +2,7 @@
 
 angular.module('stormpathIdpApp')
   .controller('UnverifiedCtrl', function ($scope,Stormpath,$location) {
-    if(Stormpath.registrationStatus!==202){
+    if(!Stormpath.isRegistered){
       $location.path('/');
     }
   });
