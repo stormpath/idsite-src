@@ -20,7 +20,7 @@ angular.module('stormpathIdpApp')
     var self = this;
 
     self.registeredAccount = null;
-    self.verifiedAccount = null;
+    self.isVerified = null;
 
     function showError(error){
       var msg = error.userMessage || error.developerMessage || error.message || 'Unknown';
@@ -109,23 +109,13 @@ angular.module('stormpathIdpApp')
 
     };
 
-    this.verifyEmailToken = function(token,cb){
-      if(self.verifiedAccount){
-        cb(null,self.verifiedAccount);
-        return;
-      }
-      try{
-        var p = self.appHref.split('/');
-        var uri = p[0] + '//' + p[2] + '/v1/accounts/emailVerificationTokens/' + token;
-        client._dataStore.createResource(uri,function(err,resource,response){
-          $rootScope.$apply(function(){
-            cb(err,response);
-          });
+    this.verifyEmailToken = function(cb){
+      client.verifyEmailToken(function(err){
+        $rootScope.$apply(function(){
+          self.isVerified = err ? false : true;
+          cb(err);
         });
-      }
-      catch(e){
-        showError(e);
-      }
+      });
     };
 
     this.verifyPasswordToken = function(token,cb){

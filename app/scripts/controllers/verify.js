@@ -6,7 +6,7 @@ angular.module('stormpathIdpApp')
     $scope.status = 'loading';
 
     Stormpath.init.then(function initSuccess(){
-      Stormpath.verifyEmailToken(Stormpath.sptoken,function(err){
+      Stormpath.verifyEmailToken(function(err){
         if(err){
           $scope.status='failed';
           $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
