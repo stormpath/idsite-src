@@ -14,7 +14,7 @@ describe('Controller: VerifyCtrl', function () {
     init: {
       then: function(cb){cb();}
     },
-    verifyEmailToken: function(token,cb){
+    verifyEmailToken: function(cb){
       cb(null);
     }
   };
@@ -24,7 +24,7 @@ describe('Controller: VerifyCtrl', function () {
     init: {
       then: function(cb){cb();}
     },
-    verifyEmailToken: function(token,cb){
+    verifyEmailToken: function(cb){
       cb(new Error('an error'));
     }
   };

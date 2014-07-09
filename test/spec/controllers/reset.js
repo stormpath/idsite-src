@@ -17,7 +17,7 @@ describe('Controller: ResetCtrl', function () {
         init: {
           then: function(cb){cb();}
         },
-        verifyPasswordToken: function(token,cb){
+        verifyPasswordToken: function(cb){
           // verification success
           cb(null);
         }
