@@ -118,46 +118,28 @@ angular.module('stormpathIdpApp')
       });
     };
 
-    this.verifyPasswordToken = function(token,cb){
-      try{
-        application.verifyPasswordResetToken(token,function(err, account) {
-          $rootScope.$apply(function(){
-            cb(err,account);
-          });
+    this.verifyPasswordToken = function(cb){
+      client.verifyPasswordResetToken(function(err, resp) {
+        $rootScope.$apply(function(){
+          cb(err,resp);
         });
-      }
-      catch(e){
-        showError(e);
-      }
+      });
     };
 
     this.sendPasswordResetEmail = function(email,cb){
-      try{
-        application.sendPasswordResetEmail(email,function(err, resp) {
-          $rootScope.$apply(function(){
-            cb(err,resp);
-          });
+      client.sendPasswordResetEmail(email,function(err) {
+        $rootScope.$apply(function(){
+          cb(err);
         });
-      }
-      catch(e){
-        showError(e);
-      }
+      });
     };
 
-    this.saveAccount = function(account,cb){
-      try{
-        account.save(function(err, account) {
-          if(!err){
-            self.verifiedAccount = account;
-          }
-          $rootScope.$apply(function(){
-            cb(err,account);
-          });
+    this.setNewPassword = function(pwTokenVerification,newPassword,cb){
+      client.setNewPassword(pwTokenVerification,newPassword,function(err, resp) {
+        $rootScope.$apply(function(){
+          cb(err,resp);
         });
-      }
-      catch(e){
-        showError(e);
-      }
+      });
     };
 
     this.getProvider = function(providerId){
