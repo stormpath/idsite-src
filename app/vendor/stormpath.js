@@ -15,7 +15,8 @@ function Client(options,readyCallback){
 
   self.jwt = opts.token || self._getToken();
   if(!self.jwt){
-    return cb(new Error('jwt not found as url query parameter'));
+    setTimeout(function(){cb(new Error('jwt not found as url query parameter'));},1);
+    return;
   }
   try{
     self.jwtPayload = JSON.parse(base64.atob(self.jwt.split('.')[1]));
@@ -23,7 +24,8 @@ function Client(options,readyCallback){
     self.sptoken = self.jwtPayload.sp_token || null;
     self.baseurl = self.appHref.match('^.+//([^\/]+)\/')[0];
   }catch(e){
-    return cb(e);
+    setTimeout(function(){cb(e);},1);
+    return;
   }
   self.requestExecutor = opts.requestExecutor || new RequestExecutor(self.jwt);
   self.requestExecutor.execute(
@@ -41,28 +43,27 @@ Client.prototype._getToken = function() {
 Client.prototype.login = function login(credentials,callback) {
   var self = this;
   var data;
-  var cb = typeof callback === 'function' ? callback : (typeof credentials === 'function' ? credentials : utils.noop);
   var creds = typeof credentials === 'object' ? credentials : null;
   if(!creds){
-    return cb(new Error('must provide an object'));
+    throw new Error('must provide an object');
   }else if(creds.providerData){
     data = creds;
   }else if(creds.login){
-
     data = {
       type: 'basic',
       value: utils.base64.btoa(creds.login + ':' + creds.password)
     };
   }else{
-    return cb(new Error('unsupported credentials object'));
+    throw new Error('unsupported credentials object');
   }
 
   self.requestExecutor.execute(
     'POST',self.appHref+'/loginAttempts',
     {
-      body: data
+      body: data,
+      withCredentials: true
     },
-    callback
+    callback || utils.noop
   );
 
 };
@@ -105,12 +106,12 @@ Client.prototype.verifyPasswordResetToken = function verifyPasswordResetToken(ca
   );
 };
 
-Client.prototype.setNewPassword = function setNewPassword(pwTokenVerification,newPassword,callback) {
+Client.prototype.setAccountPassword = function setAccountPassword(pwTokenVerification,newPassword,callback) {
   if(!pwTokenVerification || !pwTokenVerification.href){
     throw new Error('invalid pwTokenVerification');
   }
   if(!newPassword){
-    throw new Error('must supply new password as second argument to client.setNewPassword()');
+    throw new Error('must supply new password as second argument to client.setAccountPassword()');
   }
   var self = this;
   self.requestExecutor.execute('POST',pwTokenVerification.href,
