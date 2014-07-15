@@ -76,7 +76,8 @@ Client.prototype.register = function register(data,callback) {
   self.requestExecutor.execute(
     'POST',self.appHref+'/accounts',
     {
-      body: data
+      body: data,
+      withCredentials: true
     },
     callback || utils.noop
   );
@@ -157,7 +158,9 @@ function Request(method,url,options,callback){
   if(options.withCredentials){
     self.xhr.withCredentials = options.withCredentials;
   }
-  self.xhr.send(JSON.stringify(options.body));
+  setTimeout(function(){
+    self.xhr.send(JSON.stringify(options.body));
+  },1);
   self.opened = false;
   self.done = false;
   return self;
@@ -217,7 +220,7 @@ RequestExecutor.prototype.execute = function(method,url,options,callback) {
   var cb = typeof options === 'function' ? options : ( callback || utils.noop);
   var req = new Request(method,url,opts,function onDone(err,newToken,request,body){
     self.authToken = newToken;
-    if(!self.authToken){
+    if(!err && !self.authToken){
       self.terminated = true;
     }
     if(err){

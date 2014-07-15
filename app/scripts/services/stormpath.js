@@ -110,7 +110,7 @@ angular.module('stormpathIdpApp')
     };
 
     this.setNewPassword = function setNewPassword(pwTokenVerification,newPassword,cb){
-      client.setNewPassword(pwTokenVerification,newPassword,function(err, resp) {
+      client.setAccountPassword(pwTokenVerification,newPassword,function(err, resp) {
         $rootScope.$apply(function(){
           cb(err,resp);
         });
