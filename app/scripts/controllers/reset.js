@@ -7,10 +7,10 @@ angular.module('stormpathIdpApp')
 
     $scope.fields = {};
 
-    var account;
+    var verification;
 
     Stormpath.init.then(function initSuccess(){
-      Stormpath.verifyPasswordToken(Stormpath.sptoken,function(err,a){
+      Stormpath.verifyPasswordToken(function(err,pwTokenVerification){
         if(err){
           if(err.status===404){
             $location.path('/forgot/retry');
@@ -20,7 +20,7 @@ angular.module('stormpathIdpApp')
           }
         }else{
           $scope.status='verified';
-          account = a;
+          verification = pwTokenVerification;
         }
       });
     });
@@ -32,8 +32,8 @@ angular.module('stormpathIdpApp')
       if(errorCount>0){
         return;
       }
-      account.password = $scope.fields.password.value;
-      Stormpath.saveAccount(account,function(err){
+      var newPassword = $scope.fields.password.value;
+      Stormpath.setNewPassword(verification,newPassword,function(err){
         if(err){
           $scope.unknownError = String(err.userMessage || err.developerMessage || err);
         }else{
