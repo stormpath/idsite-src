@@ -17,7 +17,8 @@ Then you can use the following grunt tasks:
  * load the application in your web browser
  * open a chrome instance for Karma tests to run in
  * watch files for edits and reload the application and re-run the tests
-* `grunt build` will build the the application and place it in the `dist` folder.
+* `grunt build` will build the the application and place it in the `dist/` folder.  All assets will be minified.
+* `grunt build:debug` will also build the application to `dist/`, but without minifying the javascript assets
 
 ### Contributing
 

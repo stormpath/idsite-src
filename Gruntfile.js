@@ -184,16 +184,33 @@ module.exports = function (grunt) {
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: '<%= yeoman.app %>/index.html',
-      options: {
-        dest: '<%= yeoman.dist %>',
-        flow: {
-          html: {
-            steps: {
-              js: ['concat', 'uglifyjs'],
-              css: ['cssmin']
-            },
-            post: {}
+      dist:{
+        src: '<%= yeoman.app %>/index.html',
+        options: {
+          dest: '<%= yeoman.dist %>',
+          flow: {
+            html: {
+              steps: {
+                js: ['concat', 'uglifyjs'],
+                css: ['cssmin']
+              },
+              post: {}
+            }
+          }
+        }
+      },
+      debug:{
+        src: '<%= yeoman.app %>/index.html',
+        options: {
+          dest: '<%= yeoman.dist %>',
+          flow: {
+            html: {
+              steps: {
+                js: ['concat'],
+                css: ['cssmin']
+              },
+              post: {}
+            }
           }
         }
       }
@@ -313,6 +330,12 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.{less}'
+      },
+      debug: {
+        expand: true,
+        cwd: '.tmp/concat/scripts',
+        dest: '<%= yeoman.dist %>/scripts',
+        src: '{,*/}*.js'
       }
     },
 
@@ -454,7 +477,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bowerInstall',
-    'useminPrepare',
+    'useminPrepare:dist',
     'concurrent:dist',
     'autoprefixer',
     'concat',
@@ -466,6 +489,21 @@ module.exports = function (grunt) {
     // 'rev',
     'usemin'
     // 'htmlmin'
+  ]);
+
+  grunt.registerTask('build:debug', [
+    'clean:dist',
+    'bowerInstall',
+    'useminPrepare:debug',
+    'concurrent:dist',
+    'autoprefixer',
+    'concat',
+    'ngmin',
+    'copy:dist',
+    'cdnify',
+    'cssmin',
+    'usemin',
+    'copy:debug'
   ]);
 
   grunt.registerTask('default', [
