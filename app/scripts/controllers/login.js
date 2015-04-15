@@ -8,17 +8,29 @@ angular.module('stormpathIdpApp')
       badLogin: false,
       notFound: false,
       userMessage: false,
-      unknown: false
+      unknown: false,
+      accountStoreRequired: false,
+      accountStoreNotFound: false
     };
+
+    var accountStoreMap;
 
     Stormpath.init.then(function initSuccess(){
       $scope.canRegister = !!Stormpath.idSiteModel.passwordPolicy;
       $scope.providers = Stormpath.providers;
-      $scope.ready = true;
+
       $scope.hasSocial = $scope.providers.length > 0;
+
       if(Stormpath.getProvider('facebook')){
         initFB();
       }
+      Stormpath.getMultiTenantConfig().then(function(mtConfig){
+        $scope.requireAccountStore = true;
+        accountStoreMap = mtConfig.accountStores;
+
+      }).finally(function(){
+        $scope.ready = true;
+      });
     });
 
     var googleIsSignedIn = false;
@@ -71,8 +83,28 @@ angular.module('stormpathIdpApp')
 
     $scope.submit = function(){
       clearErrors();
-      if($scope.username && $scope.password){
-        Stormpath.login($scope.username.trim(),$scope.password.trim(),errHandler);
+      if(accountStoreMap){
+        if($scope.accountStoreName){
+          if(accountStoreMap[$scope.accountStoreName]){
+            Stormpath.login({
+              login: $scope.username.trim(),
+              password: $scope.password.trim(),
+              accountStore: {
+                href: accountStoreMap[$scope.accountStoreName]
+              }
+            },errHandler);
+          }else{
+            $scope.errors.accountStoreNotFound = true;
+          }
+        }else{
+          $scope.errors.accountStoreRequired = true;
+        }
+      }
+      else if($scope.username && $scope.password){
+        Stormpath.login({
+          login: $scope.username.trim(),
+          password: $scope.password.trim()
+        },errHandler);
       }
     };
 

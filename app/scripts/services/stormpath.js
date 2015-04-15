@@ -2,7 +2,7 @@
 
 
 angular.module('stormpathIdpApp')
-  .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope,$q) {
+  .service('Stormpath', function Stormpath($window,$routeParams,$location,$rootScope,$q,$timeout) {
     var self = this;
     var init = $q.defer();
     var params = $location.search();
@@ -54,11 +54,8 @@ angular.module('stormpathIdpApp')
       });
     }
 
-    this.login = function login(username,password,cb){
-      client.login({
-        login: username,
-        password: password
-      },function(err,response){
+    this.login = function login(credentials,cb){
+      client.login(credentials,function(err,response){
         $rootScope.$apply(function(){
           if(err){
             cb(err);
@@ -115,6 +112,27 @@ angular.module('stormpathIdpApp')
           cb(err,resp);
         });
       });
+    };
+
+    this.getMultiTenantConfig = function getMultiTenantConfig(){
+      /*
+        Resolve promise if this is a mult-tenant situation
+        that requires the user to specify the name of an account
+        store.
+
+        Otherwise, reject the promise
+       */
+      var op = $q.defer();
+
+
+      $timeout(function(){
+        if($window.mtConfig){
+          op.resolve($window.mtConfig);
+        }else{
+          op.reject();
+        }
+      },1);
+      return op.promise;
     };
 
     this.getProvider = function getProvider(providerId){
