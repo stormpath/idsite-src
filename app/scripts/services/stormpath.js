@@ -39,19 +39,41 @@ angular.module('stormpathIdpApp')
           return;
         }
       }
-      client = new stormpath.Client(function(err,idSiteModel){
-        $rootScope.$apply(function(){
-          if(err){
-            showError(err);
-          }else{
-            var m = idSiteModel;
-            self.idSiteModel = m;
-            self.providers = self.providers.concat(m.providers);
-            $rootScope.logoUrl = m.logoUrl;
-            init.resolve();
-          }
+      function constructClient(){
+        client = new stormpath.Client(function(err,idSiteModel){
+          $rootScope.$apply(function(){
+            if(err){
+              showError(err);
+            }else{
+              var m = idSiteModel;
+              self.idSiteModel = m;
+              self.providers = self.providers.concat(m.providers);
+              $rootScope.logoUrl = m.logoUrl;
+              init.resolve();
+            }
+          });
         });
-      });
+      }
+      // Use this method to determine if there is JWT in the URL
+      if(stormpath.Client.prototype._getToken()){
+        constructClient();
+      }else{
+        /*
+          We cannot continue without a JWT.
+          If the multi tenant config specifies a default
+          login endpoint, go there.  Otherwise continue
+          to constuct the client (which will return an
+          error regarding the lack of a JWT)
+        */
+
+        self.getMultiTenantConfig().then(function(mtConfig){
+          if(mtConfig.defaultLoginUrl){
+            $window.location.href = mtConfig.defaultLoginUrl;
+          }else{
+            constructClient();
+          }
+        }).catch(constructClient);
+      }
     }
 
     this.login = function login(credentials,cb){
