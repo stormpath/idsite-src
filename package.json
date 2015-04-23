@@ -1,6 +1,6 @@
 {
   "name": "stormpathidp",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "dependencies": {
     "node-uuid": "^1.4.1"
   },
