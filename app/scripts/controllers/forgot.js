@@ -18,16 +18,8 @@ angular.module('stormpathIdpApp')
       if(inError.length>0){
         return;
       }
-      Stormpath.sendPasswordResetEmail($scope.fields.email.value.trim(),function(err){
-        if(err){
-          if(err.status===400){
-            $scope.notFound = true;
-          }else{
-            $scope.unknownError = String(err);
-          }
-        }else{
-          $scope.sent = true;
-        }
+      Stormpath.sendPasswordResetEmail($scope.fields.email.value.trim(),function(){
+        $scope.sent = true;
       });
     };
   });

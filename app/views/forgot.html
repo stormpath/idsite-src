@@ -4,13 +4,13 @@
       <div class="header">
         <span ng-show="!sent && !retry">Password Reset</span>
         <span ng-show="retry">Reset link has expired</span>
-        <span ng-show="sent">Check your email</span>
+        <span ng-show="sent">Please check your mail.</span>
 
       </div>
       <div class="wd-sent" ng-show="sent">
         <p>
           <span>We've sent a password reset link to </span>
-          <strong>{{fields.email.value}}</span>
+          <strong>{{fields.email.value}}</strong>.
         </p>
         <p>&nbsp;</p>
       </div>
