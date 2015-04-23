@@ -20,7 +20,7 @@ angular.module('stormpathIdpApp')
       }
       Stormpath.sendPasswordResetEmail($scope.fields.email.value.trim(),function(err){
         if(err){
-          if(err.status===404){
+          if(err.status===400){
             $scope.notFound = true;
           }else{
             $scope.unknownError = String(err);
