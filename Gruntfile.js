@@ -6,6 +6,8 @@
 // 'test/spec/{,*/}*.js'
 // use this if you want to recursively match all subfolders:
 // 'test/spec/**/*.js'
+//
+var untildify = require('untildify');
 
 module.exports = function (grunt) {
 
@@ -302,9 +304,6 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             '*.{ico,png,txt}',
-            '.htaccess',
-            // '*.html',
-            // 'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]
@@ -336,9 +335,14 @@ module.exports = function (grunt) {
         cwd: '.tmp/concat/scripts',
         dest: '<%= yeoman.dist %>/scripts',
         src: '{,*/}*.js'
-      }
+      },
+      dest:{
+        cwd: '<%= yeoman.dist %>',
+        src: '**/*',
+        dest: grunt.option('dest') ? untildify(grunt.option('dest')):'',
+        expand: true
+      },
     },
-
     includes: {
       html:{
 
@@ -474,22 +478,24 @@ module.exports = function (grunt) {
     'karma'
   ]);
 
-  grunt.registerTask('build', [
-    'clean:dist',
-    'bowerInstall',
-    'useminPrepare:dist',
-    'concurrent:dist',
-    'autoprefixer',
-    'concat',
-    'ngmin',
-    'copy:dist',
-    'cdnify',
-    'cssmin',
-    'uglify',
-    // 'rev',
-    'usemin'
-    // 'htmlmin'
-  ]);
+  grunt.registerTask('build', 'Build the project, assets are placed in dist/',
+    [
+      'clean:dist',
+      'bowerInstall',
+      'useminPrepare:dist',
+      'concurrent:dist',
+      'autoprefixer',
+      'concat',
+      'ngmin',
+      'copy:dist',
+      'cdnify',
+      'cssmin',
+      'uglify',
+      // 'rev',
+      'usemin'
+      // 'htmlmin'
+    ]
+  );
 
   grunt.registerTask('build:debug', [
     'clean:dist',
@@ -511,4 +517,15 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.registerTask('dist',
+    'Use this task to build a distro and copy it to the directoroy sepcified by --dist on the command line',
+    function(){
+      if(grunt.option('dest')){
+        return grunt.task.run(['build','copy:dest']);
+      }else{
+        throw new Error('Must specify destination with --dest option');
+      }
+    }
+  );
 };

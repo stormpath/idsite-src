@@ -42,7 +42,8 @@
     "karma-coverage": "^0.2.1",
     "protractor": "^0.22.0",
     "chai-as-promised": "^4.1.1",
-    "grunt-protractor-runner": "^0.2.4"
+    "grunt-protractor-runner": "^0.2.4",
+    "untildify": "^2.0.0"
   },
   "engines": {
     "node": ">=0.10.0"
