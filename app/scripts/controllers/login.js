@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('LoginCtrl', function ($scope,Stormpath,$window) {
+  .controller('LoginCtrl', function ($scope,Stormpath,$window,$http) {
     $scope.ready = false;
     $scope.canRegister = true;
     $scope.errors = {
@@ -83,29 +83,30 @@ angular.module('stormpathIdpApp')
 
     $scope.submit = function(){
       clearErrors();
-      if(accountStoreMap){
-        if($scope.accountStoreName){
-          if(accountStoreMap[$scope.accountStoreName]){
+
+      var accountStoreName = $scope.accountStoreName;
+
+      $scope.errors.accountStoreRequired = false;
+      $scope.errors.accountStoreNotFound = false;
+
+      if(!accountStoreName){
+        $scope.errors.accountStoreRequired = true;
+      }else if($scope.username && $scope.password){
+        $http.get('/the/accountStoreApi?tenantIdentifier='+accountStoreName)
+          .then(function(href){
             Stormpath.login({
               login: $scope.username.trim(),
               password: $scope.password.trim(),
               accountStore: {
-                href: accountStoreMap[$scope.accountStoreName]
+                href: href
               }
             },errHandler);
-          }else{
+          })
+          .catch(function(){
             $scope.errors.accountStoreNotFound = true;
-          }
-        }else{
-          $scope.errors.accountStoreRequired = true;
-        }
+          });
       }
-      else if($scope.username && $scope.password){
-        Stormpath.login({
-          login: $scope.username.trim(),
-          password: $scope.password.trim()
-        },errHandler);
-      }
+
     };
 
     $scope.googleLogin = function(){
