@@ -33,7 +33,9 @@ angular.module('stormpathIdpApp')
         return;
       }
       var newPassword = $scope.fields.password.value;
+      $scope.submitting = true;
       Stormpath.setNewPassword(verification,newPassword,function(err){
+        $scope.submitting = false;
         if(err){
           $scope.unknownError = String(err.userMessage || err.developerMessage || err);
         }else{
