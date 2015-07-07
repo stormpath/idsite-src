@@ -17,7 +17,9 @@ angular.module('stormpathIdpApp')
       },{});
       delete data.passwordConfirm;
       if(inError.length===0){
+        $scope.submitting = true;
         Stormpath.register(data,function(err){
+          $scope.submitting = false;
           if(err){
             if(err.status===409){
               $scope.fields.email.setError('duplicateUser', true);
