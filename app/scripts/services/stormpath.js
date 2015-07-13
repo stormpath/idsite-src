@@ -39,7 +39,7 @@ angular.module('stormpathIdpApp')
           return;
         }
       }
-      self.client = new stormpath.Client(function(err,idSiteModel){
+      client = self.client = new stormpath.Client(function(err,idSiteModel){
         $rootScope.$apply(function(){
           if(err){
             showError(err);
