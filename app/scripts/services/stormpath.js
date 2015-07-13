@@ -8,8 +8,8 @@ angular.module('stormpathIdpApp')
     var params = $location.search();
     var stormpath = $window.Stormpath;
     var ieMatch = $window.navigator.userAgent.match(/MSIE ([0-9.]+)/);
-    var client;
 
+    var client = self.client = null;
     self.init = init.promise;
     self.errors = [];
     self.jwt = params.jwt;
@@ -39,10 +39,11 @@ angular.module('stormpathIdpApp')
           return;
         }
       }
-      client = new stormpath.Client(function(err,idSiteModel){
+      self.client = new stormpath.Client(function(err,idSiteModel){
         $rootScope.$apply(function(){
           if(err){
             showError(err);
+            init.reject(err);
           }else{
             var m = idSiteModel;
             self.idSiteModel = m;
