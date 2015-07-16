@@ -72,8 +72,8 @@ angular.module('stormpathIdpApp')
 
     $scope.submit = function(){
       clearErrors();
-      $scope.submitting = true;
       if($scope.username && $scope.password){
+        $scope.submitting = true;
         Stormpath.login($scope.username.trim(),$scope.password.trim(),errHandler);
       }
     };
