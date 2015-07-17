@@ -27,7 +27,7 @@ var resources = {
   facebookDirectory: null
 };
 
-function createAccount(application,cb){
+function createAccount(directory,cb){
   console.log('Create Account'.blue);
   var newAccount = {
     email: 'nobody+'+uuid()+'@stormpath.com',
@@ -35,12 +35,12 @@ function createAccount(application,cb){
     surname: uuid(),
     password: uuid() + uuid().toUpperCase()
   };
-  application.createAccount(newAccount,function(err,account){
+  directory.createAccount(newAccount,function(err,account){
     if(err){
       throw err;
     }else{
       account.password = newAccount.password;
-      cb(account);
+      cb(null,account);
     }
   });
 }
@@ -52,7 +52,7 @@ function createDirectory(client,directoryConfig,cb){
     if(err){
       throw err;
     }else{
-      cb(directory);
+      cb(null,directory);
     }
   });
 }
@@ -67,7 +67,7 @@ function createGoogleDirectory(client,cb) {
       redirectUri: uuid(),
     }
   };
-  createDirectory(client,directoryConfig,cb.bind(null,null));
+  createDirectory(client,directoryConfig,cb);
 }
 
 function createFacebookDirectory(client,cb) {
@@ -80,42 +80,18 @@ function createFacebookDirectory(client,cb) {
       redirectUri: uuid(),
     }
   };
-  createDirectory(client,directoryConfig,cb.bind(null,null));
+  createDirectory(client,directoryConfig,cb);
 }
 
 function createApplication(client,cb){
   console.log('Create Application'.blue);
   client.createApplication(
     {name:'protractor-test-id-site-'+uuid()},
-    {createDirectory:true},
     function(err,application){
       if(err){
         throw err;
       }else{
-        console.log('Get Application Account Store'.blue);
-        client.getApplication(
-          application.href,
-          {expand:'defaultAccountStoreMapping'},
-          function(err,application){
-            if(err){
-              throw err;
-            }else{
-              client.getDirectory(application.defaultAccountStoreMapping.accountStore.href,function(err,dir){
-                if(err){
-                  throw err;
-                }else{
-                  resources.directory = dir;
-                  createAccount(application,function(account){
-                    resources.loginAccount = account;
-                    cb(null,application);
-                  });
-
-                }
-              });
-            }
-          }
-        );
-
+        cb(null,application);
       }
     }
   );
@@ -221,7 +197,8 @@ function mapDirectory(application,directory,cb) {
 async.parallel({
   googleDirectory: createGoogleDirectory.bind(null,client),
   facebookDirectory: createFacebookDirectory.bind(null,client),
-  application: createApplication.bind(null,client)
+  application: createApplication.bind(null,client),
+  directory: createDirectory.bind(null,client,{name:'protractor-test-id-site-'+uuid()})
 },function(err,results) {
   if(err){
     throw err;
@@ -229,9 +206,20 @@ async.parallel({
     resources.googleDirectory = results.googleDirectory;
     resources.facebookDirectory = results.facebookDirectory;
     resources.application = results.application;
-    prepeareIdSiteModel(client,browser.params.appHost,browser.params.callbackUri,function(){
-      ready = true;
+    resources.directory = results.directory;
+
+    async.parallel({
+      idSiteModel: prepeareIdSiteModel.bind(null,client,browser.params.appHost,browser.params.callbackUri),
+      account: createAccount.bind(null,resources.directory)
+    },function(err,results) {
+      if(err){
+        throw err;
+      }else{
+        resources.loginAccount = results.account;
+        ready = true;
+      }
     });
+
   }
 });
 
