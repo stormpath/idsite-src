@@ -20,6 +20,31 @@ Then you can use the following grunt tasks:
 * `grunt build` will build the the application and place it in the `dist/` folder.  All assets will be minified.
 * `grunt build:debug` will also build the application to `dist/`, but without minifying the javascript assets
 
+### Testing
+
+To run the Selenium tests, you need to install Protractor:
+
+```
+npm install -g protractor
+```
+
+Start the development server by running `grunt serve`,
+then run Protractor with the config file in this repo:
+
+```
+protractor protractor.conf.js
+```
+
+**WARNING**: This will modify the ID Site Configuration of the Stormpath Tenant
+that is defined by these environment variables:
+
+```
+STORMPATH_CLIENT_APIKEY_ID
+STORMPATH_CLIENT_APIKEY_SECRET
+```
+Alas, you must ensure that you are using a tenant that is not userd with your
+production application!
+
 ### Contributing
 
 You can make your own contributions by forking the <code>development</code> branch, making your changes, and issuing pull-requests on the <code>development</code> branch.
