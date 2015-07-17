@@ -44,10 +44,27 @@ var LoginForm = function(){
   this.isPresent = function(){
     return element(by.css('.login-view')).isDisplayed();
   };
+  this.submitIsDisabled = function() {
+    return element(by.css('.login-view button[type=submit]')).getAttribute('disabled');
+  };
   this.waitForForm = function(){
+    /*
+      TODO - implenet something in the stormpath.js client
+      which keeps track of the "is waiting for a network request"
+      state.  then, we can get rid of these wait functions and have
+      a common "wait for client" function.
+     */
     var self = this;
     return browser.driver.wait(function(){
       return self.isPresent();
+    },10000);
+  };
+  this.waitForLoginAttempt = function(){
+    var self = this;
+    browser.driver.wait(function(){
+      return self.submitIsDisabled().then(function(value) {
+        return value === null;
+      });
     },10000);
   };
   this.login = function(account){
@@ -82,6 +99,7 @@ describe('Login view', function() {
   beforeEach(function(done){
     app.arriveWithFacebookAndGoogleIntegrations(function(account){
       loginAccount = account;
+      form.waitForForm();
       done();
     });
   });
@@ -91,16 +109,16 @@ describe('Login view', function() {
     it('should have the correct page title', function() {
       expect(app.pageTitle()).to.eventually.equal('Login');
     });
+
     it('should show the logo image', function() {
-      form.waitForForm();
       expect(app.logoImageUrl()).to.eventually.equal(browser.params.logoUrl);
     });
+
     it('should show the login form', function() {
-      form.waitForForm();
       expect(form.isPresent()).to.eventually.equal(true);
     });
+
     it('should allow me to submit the form', function(){
-      form.waitForForm();
       form.login(util.getLoginAccount());
       browser.driver.wait(function() {
         return browser.driver.getCurrentUrl().then(function(url) {
@@ -108,6 +126,22 @@ describe('Login view', function() {
         });
       }, 10000);
       expect(browser.driver.getCurrentUrl()).to.eventually.contain(browser.params.callbackUri);
+    });
+
+    it('should disable the form while submitting',function(){
+      form.login({email:'me@stormpath.com',password:'b'});
+      // assert that it becomes disabled
+      expect(form.submitIsDisabled()).to.eventually.equal('true');
+      // then wait for, and assert, that it becomes enabled
+      // after the network request is complete
+      form.waitForLoginAttempt();
+      expect(form.submitIsDisabled()).to.eventually.equal(null);
+    });
+
+    it('should show me an error if I enter invalid credentials',function(){
+      form.login({email:'me@stormpath.com',password:'b'});
+      form.waitForLoginAttempt();
+      expect(form.isShowingInvalidLogin()).to.eventually.equal(true);
     });
   });
 
