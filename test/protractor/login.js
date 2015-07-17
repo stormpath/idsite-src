@@ -145,6 +145,44 @@ describe('Login view', function() {
     });
   });
 
+  describe('If a google directory is mapped to the application',function() {
+    var mapping;
+    before(function(done) {
+      util.mapDirectory(util.resources.application,util.resources.googleDirectory,function(asm){
+        mapping = asm;
+        done();
+      });
+    });
+    beforeEach(function() {
+      form.waitForForm();
+    });
+    after(function(done) {
+      util.deleteResource(mapping,done);
+    });
+    it('should show the google login button',function() {
+      expect(form.hasGoogleButton()).to.eventually.equal(true);
+    });
+  });
+
+  describe('If a facebook directory is mapped to the application',function() {
+    var mapping;
+    before(function(done) {
+      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,function(asm){
+        mapping = asm;
+        done();
+      });
+    });
+    beforeEach(function() {
+      form.waitForForm();
+    });
+    after(function(done) {
+      util.deleteResource(mapping,done);
+    });
+    it('should show the facebook login button',function() {
+      expect(form.hasFacebookButton()).to.eventually.equal(true);
+    });
+  });
+
   // describe('when loaded with sso config 1 (fb and google)', function() {
   //   var form;
 

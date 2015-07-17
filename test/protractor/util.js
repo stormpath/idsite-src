@@ -6,6 +6,8 @@ var uuid = require('node-uuid');
 
 var stormpath = require('stormpath');
 
+var async = require('async');
+
 require('colors');
 
 var client = new stormpath.Client({
@@ -16,9 +18,14 @@ var client = new stormpath.Client({
 });
 
 var ready = false;
-var application = null;
-var directory = null;
-var loginAccount = null;
+
+var resources = {
+  application: null,
+  directory: null,
+  loginAccount: null,
+  googleDirectory: null,
+  facebookDirectory: null
+};
 
 function createAccount(application,cb){
   console.log('Create Account'.blue);
@@ -38,10 +45,48 @@ function createAccount(application,cb){
   });
 }
 
+function createDirectory(client,directoryConfig,cb){
+  console.log(('Create Directory ' + directoryConfig.name).blue);
+
+  client.createDirectory(directoryConfig,function(err,directory){
+    if(err){
+      throw err;
+    }else{
+      cb(directory);
+    }
+  });
+}
+
+function createGoogleDirectory(client,cb) {
+  var directoryConfig = {
+    name:'protractor-test-id-site-'+uuid(),
+    provider: {
+      providerId: 'google',
+      clientId: uuid(),
+      clientSecret: uuid(),
+      redirectUri: uuid(),
+    }
+  };
+  createDirectory(client,directoryConfig,cb.bind(null,null));
+}
+
+function createFacebookDirectory(client,cb) {
+  var directoryConfig = {
+    name:'protractor-test-id-site-'+uuid(),
+    provider: {
+      providerId: 'facebook',
+      clientId: uuid(),
+      clientSecret: uuid(),
+      redirectUri: uuid(),
+    }
+  };
+  createDirectory(client,directoryConfig,cb.bind(null,null));
+}
+
 function createApplication(client,cb){
   console.log('Create Application'.blue);
   client.createApplication(
-    {name:'protractor-test-id-site'+uuid()},
+    {name:'protractor-test-id-site-'+uuid()},
     {createDirectory:true},
     function(err,application){
       if(err){
@@ -55,14 +100,14 @@ function createApplication(client,cb){
             if(err){
               throw err;
             }else{
-              client.getDirectory(application.defaultAccountStoreMapping.href,function(err,dir){
+              client.getDirectory(application.defaultAccountStoreMapping.accountStore.href,function(err,dir){
                 if(err){
                   throw err;
                 }else{
-                  directory = dir;
+                  resources.directory = dir;
                   createAccount(application,function(account){
-                    loginAccount = account;
-                    cb(application);
+                    resources.loginAccount = account;
+                    cb(null,application);
                   });
 
                 }
@@ -114,7 +159,7 @@ function prepeareIdSiteModel(client,currentHost,callbckUri,cb){
 }
 
 function getJwtUrl(cb){
-  var url = application.createIdSiteUrl({
+  var url = resources.application.createIdSiteUrl({
     callbackUri: browser.params.callbackUri
   });
   request(url,{
@@ -132,45 +177,79 @@ function getJwtUrl(cb){
   });
 
 }
+function deleteResource(resource,cb){
+  console.log(('Delete').blue,resource.href);
+  resource.delete(cb);
+}
 
 function cleanup(cb){
   console.log('Begin Cleanup'.blue);
-  application.delete(function(err){
+
+  var toDelete = Object.keys(resources).map(function(key){
+    return resources[key];
+  });
+
+  async.each(toDelete,deleteResource,function(err){
     if(err){
       throw err;
     }else{
-      directory.delete(function(err){
-        if(err){
-          throw err;
-        }else{
-          console.log('Cleanup Complete'.green);
-          cb();
-        }
-      });
+      console.log('Cleanup Complete'.blue);
+      cb();
     }
   });
 }
 
-createApplication(client,function(app){
-  application = app;
-  prepeareIdSiteModel(client,browser.params.appHost,browser.params.callbackUri,function(){
-    ready = true;
+function mapDirectory(application,directory,cb) {
+  var mapping = {
+    application: {
+      href: application.href
+    },
+    accountStore: {
+      href: directory.href
+    }
+  };
+
+  application.createAccountStoreMapping(mapping, function(err, mapping){
+    if(err){
+      throw err;
+    }else{
+      cb(mapping);
+    }
   });
+}
+
+async.parallel({
+  googleDirectory: createGoogleDirectory.bind(null,client),
+  facebookDirectory: createFacebookDirectory.bind(null,client),
+  application: createApplication.bind(null,client)
+},function(err,results) {
+  if(err){
+    throw err;
+  }else{
+    resources.googleDirectory = results.googleDirectory;
+    resources.facebookDirectory = results.facebookDirectory;
+    resources.application = results.application;
+    prepeareIdSiteModel(client,browser.params.appHost,browser.params.callbackUri,function(){
+      ready = true;
+    });
+  }
 });
 
 module.exports = {
   createApplication: createApplication,
   createAccount: createAccount,
+  deleteResource: deleteResource,
   ready: function(){
     return ready;
   },
-  application: application,
+  resources: resources,
   getJwtUrl: getJwtUrl,
   cleanup: cleanup,
   getDirectory: function(){
-    return directory;
+    return resources.directory;
   },
   getLoginAccount: function(){
-    return loginAccount;
-  }
+    return resources.loginAccount;
+  },
+  mapDirectory: mapDirectory
 };
