@@ -3,7 +3,7 @@
 var util = require('../util');
 
 
-var LoginApp = function(){
+var IdSiteApp = function(){
   this.pageTitle = function(){
     return browser.getTitle();
   };
@@ -19,4 +19,4 @@ var LoginApp = function(){
 
 };
 
-module.exports = LoginApp;
+module.exports = IdSiteApp;
