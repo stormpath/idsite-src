@@ -2,7 +2,8 @@
   "name": "stormpathidp",
   "version": "0.1.3",
   "dependencies": {
-    "node-uuid": "^1.4.1"
+    "node-uuid": "^1.4.1",
+    "protractor": "^2.1.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -34,7 +35,7 @@
     "karma": "^0.12.14",
     "karma-ng-scenario": "^0.1.0",
     "karma-ng-html2js-preprocessor": "^0.1.0",
-    "mocha": "^1.18.2",
+    "mocha": "^2.2.5",
     "karma-mocha": "^0.1.3",
     "chai": "^1.9.1",
     "karma-chai": "^0.1.0",
@@ -43,7 +44,11 @@
     "protractor": "^0.22.0",
     "chai-as-promised": "^4.1.1",
     "grunt-protractor-runner": "^0.2.4",
-    "untildify": "^2.0.0"
+    "untildify": "^2.0.0",
+    "stormpath": "^0.10.0",
+    "request": "^2.58.0",
+    "colors": "^1.1.2",
+    "q": "^1.4.1"
   },
   "engines": {
     "node": ">=0.10.0"

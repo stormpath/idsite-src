@@ -2,17 +2,19 @@
 
 var util = require('../util');
 
+
 var LoginApp = function(){
   this.pageTitle = function(){
     return browser.getTitle();
   };
-  this.isShowingLogoImage = function(){
-    return element(by.css('.logo')).isDisplayed();
+  this.logoImageUrl = function(){
+    return element(by.css('.logo')).getAttribute('src');
   };
-  this.arriveWithFacebookAndGoogleIntegrations = function arriveWithFacebookAndGoogleIntegrations(){
-    browser.get(
-      browser.params.appUrl + '#' + util.fakeAuthParams('1')
-    );
+  this.arriveWithFacebookAndGoogleIntegrations = function arriveWithFacebookAndGoogleIntegrations(done){
+    util.getJwtUrl(function(url){
+      browser.get(url);
+      done();
+    });
   };
   this.arriveWithNoSocialIntegrations = function arriveWithNoSocialIntegrations(){
     browser.get(

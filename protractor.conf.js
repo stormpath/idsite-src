@@ -1,13 +1,45 @@
+'use strict';
+
+var util = require('./test/protractor/util');
+var q = require('q');
+
 exports.config = {
-  seleniumServerJar: './node_modules/protractor/selenium/selenium-server-standalone-2.41.0.jar',
+  directConnect: true,
   framework: 'mocha',
-  specs: ['test/protractor/**/*.js','-test/util.js'],
-  multiCapabilities: [
-    {
-      'browserName': 'firefox'
-    },
-    {
-      'browserName': 'chrome'
-    },
-  ]
+  specs: ['test/protractor/login.js'],
+  exclude: ['test/protractor/util.js'],
+  mochaOpts: {
+    reporter: 'spec',
+    timeout: 20000
+  },
+  params:{
+    // The location of the ID Site application that you are developing
+    appHost: 'http://localhost:9000',
+    // The location of the app that is initiating the redict to ID Site
+    callbackUri: 'https://stormpath.com',
+    // The configurable logo URL for ID Site, to assert that it works
+    logoUrl: 'https://stormpath.com/images/template/logo-nav.png'
+  },
+
+  // multiCapabilities: [
+  //   {
+  //     'browserName': 'firefox'
+  //   },
+  //   {
+  //     'browserName': 'chrome'
+  //   },
+  // ],
+  onPrepare: function() {
+    return browser.driver.wait(function() {
+      return util.ready();
+    }, 20000);
+  },
+  onCleanUp: function(exitCode) {
+    var deferred = q.defer();
+
+    util.cleanup(function(){
+      deferred.resolve(exitCode);
+    });
+    return deferred.promise;
+  },
 };
