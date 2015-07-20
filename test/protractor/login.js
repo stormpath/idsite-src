@@ -17,7 +17,7 @@ describe('Login Flow', function() {
   var form = new LoginForm();
 
   beforeEach(function(done){
-    app.arriveWithJwt(function(){
+    app.arriveWithJwt('',function(){
       form.waitForForm();
       done();
     });
@@ -28,7 +28,7 @@ describe('Login Flow', function() {
     var mapping;
 
     before(function(done) {
-      util.mapDirectory(util.resources.application,util.resources.directory,function(asm){
+      util.mapDirectory(util.resources.application,util.resources.directory,false,function(asm){
         mapping = asm;
         done();
       });
@@ -88,7 +88,7 @@ describe('Login Flow', function() {
   describe('If a google directory is mapped to the application',function() {
     var mapping;
     before(function(done) {
-      util.mapDirectory(util.resources.application,util.resources.googleDirectory,function(asm){
+      util.mapDirectory(util.resources.application,util.resources.googleDirectory,false,function(asm){
         mapping = asm;
         done();
       });
@@ -105,7 +105,7 @@ describe('Login Flow', function() {
   describe('If a facebook directory is mapped to the application',function() {
     var mapping;
     before(function(done) {
-      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,function(asm){
+      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,false,function(asm){
         mapping = asm;
         done();
       });
@@ -122,7 +122,7 @@ describe('Login Flow', function() {
 
     var mapping;
     before(function(done) {
-      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,function(asm){
+      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,false,function(asm){
         mapping = asm;
         done();
       });

@@ -51,7 +51,7 @@ var ForgotPasswordView = function(){
 };
 
 
-describe('Forgot password view', function() {
+describe.skip('Forgot password view', function() {
   var view = new ForgotPasswordView();
   beforeEach(function(){
     view.arrive();

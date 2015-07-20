@@ -19,7 +19,7 @@ var VerificationView = function(){
 };
 
 
-describe('Email verification view', function() {
+describe.skip('Email verification view', function() {
 
   describe('with a valid token', function() {
     var view = new VerificationView();

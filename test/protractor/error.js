@@ -22,7 +22,7 @@ var ErrorPage = function(){
 };
 
 
-describe('error.html page', function() {
+describe.skip('error.html page', function() {
   var page = new ErrorPage();
   before(function(){
     page.arrive();

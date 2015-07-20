@@ -134,10 +134,12 @@ function prepeareIdSiteModel(client,currentHost,callbckUri,cb){
   });
 }
 
-function getJwtUrl(cb){
+function getJwtUrl(path,cb){
   var url = resources.application.createIdSiteUrl({
-    callbackUri: browser.params.callbackUri
+    callbackUri: browser.params.callbackUri,
+    path: path
   });
+
   request(url,{
     followRedirect: false
   },function(err,res,body){
@@ -146,8 +148,8 @@ function getJwtUrl(cb){
     }else if(res.statusCode!==302){
       throw new Error(body&&body.message || JSON.stringify(body||'Unknown error'));
     }else{
-      var jwt = res.headers.location.split('jwt=')[1];
-      var url = browser.params.appHost + '#/?jwt=' + jwt;
+      var fragment = res.headers.location.split('/#')[1];
+      var url = browser.params.appHost + '#' + fragment;
       cb(url);
     }
   });
@@ -175,14 +177,15 @@ function cleanup(cb){
   });
 }
 
-function mapDirectory(application,directory,cb) {
+function mapDirectory(application,directory,isDefaultAccountStore,cb) {
   var mapping = {
     application: {
       href: application.href
     },
     accountStore: {
       href: directory.href
-    }
+    },
+    isDefaultAccountStore: isDefaultAccountStore
   };
 
   application.createAccountStoreMapping(mapping, function(err, mapping){

@@ -6,7 +6,7 @@ var q = require('q');
 exports.config = {
   directConnect: true,
   framework: 'mocha',
-  specs: ['test/protractor/login.js'],
+  specs: ['test/protractor/*.js'],
   exclude: ['test/protractor/util.js'],
   mochaOpts: {
     reporter: 'spec',
