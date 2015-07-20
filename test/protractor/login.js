@@ -60,11 +60,7 @@ describe('Login Flow', function() {
 
     it('should allow me to submit the form', function(){
       form.login(util.getLoginAccount());
-      browser.driver.wait(function() {
-        return browser.driver.getCurrentUrl().then(function(url) {
-          return url.indexOf(browser.params.callbackUri) > -1;
-        });
-      }, 10000);
+      app.waitForUrlChange();
       expect(browser.driver.getCurrentUrl()).to.eventually.contain(browser.params.callbackUri);
     });
 
