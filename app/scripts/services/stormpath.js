@@ -55,11 +55,8 @@ angular.module('stormpathIdpApp')
       });
     }
 
-    this.login = function login(username,password,cb){
-      client.login({
-        login: username,
-        password: password
-      },function(err,response){
+    this.login = function login(data,cb){
+      client.login(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
             cb(err);

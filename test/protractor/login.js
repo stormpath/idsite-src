@@ -81,6 +81,18 @@ describe('Login Flow', function() {
     });
   });
 
+  describe.skip('if an organization name is required',function(){
+    it('should show the organization name field',function() {
+
+    });
+    it('should show error when an invalid organization name is given',function() {
+
+    });
+    it('should log me in if a valid organization and username and password is given',function() {
+
+    });
+  });
+
   describe('If a google directory is mapped to the application',function() {
     var mapping;
     before(function(done) {
