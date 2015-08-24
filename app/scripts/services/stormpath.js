@@ -29,7 +29,7 @@ angular.module('stormpathIdpApp')
     }
 
     function redirect(url){
-      $window.location = 'https://api.stormpath.com/sso/?jwtResponse='+url.split('jwtResponse=')[1];
+      $window.location = client.baseUrl + '?jwtResponse='+url.split('jwtResponse=')[1];
     }
 
     function initialize(){
