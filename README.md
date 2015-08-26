@@ -128,6 +128,9 @@ point their ID Site Configuration at the branch for testing purposes.  When you
 merge the feature into master and deploy a master release, you should delete
 the branch.
 
+In this situation, you'll likely want to use `grunt build:debug` to create a
+non-obfuscated build output (which will make in-browser debugging easier).
+
 ## Copyright
 
 Copyright &copy; 2014 Stormpath, Inc. and contributors.
