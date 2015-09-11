@@ -59,7 +59,11 @@ angular.module('stormpathIdpApp')
       client.login(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
-            cb(err);
+            if(err.redirectUrl){
+              redirect(err.redirectUrl);
+            }else{
+              cb(err);
+            }
           }else{
             redirect(response.redirectUrl);
           }
@@ -71,7 +75,11 @@ angular.module('stormpathIdpApp')
       client.register(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
-            cb(err);
+            if(err.redirectUrl){
+              redirect(err.redirectUrl);
+            }else{
+              cb(err);
+            }
           }else if(response.redirectUrl){
             redirect(response.redirectUrl);
           }else{

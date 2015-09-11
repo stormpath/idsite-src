@@ -14,7 +14,9 @@ angular.module('stormpathIdpApp')
     };
 
     Stormpath.init.then(function initSuccess(){
+      $scope.organizationNameKey = Stormpath.client.jwtPayload.asnk || '';
       $scope.showOrganizationField = Stormpath.client.jwtPayload.sof;
+      $scope.disableOrganizationField = $scope.organizationNameKey !== '';
       $scope.canRegister = !!Stormpath.idSiteModel.passwordPolicy;
       $scope.providers = Stormpath.providers;
       $scope.ready = true;
@@ -89,6 +91,11 @@ angular.module('stormpathIdpApp')
           password: $scope.password.trim()
         };
         if($scope.organizationNameKey){
+          data.accountStore = {
+            nameKey: $scope.organizationNameKey
+          };
+        }
+        if(Stormpath.client.jwtPayload.ash){
           data.accountStore = {
             href: Stormpath.client.jwtPayload.ash
           };
