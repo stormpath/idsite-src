@@ -123,6 +123,10 @@ angular.module('stormpathIdpApp')
       });
     };
 
+    this.getOrganizationNameKey = function getOrganizationNameKey(){
+      return client.jwtPayload.asnk || '';
+    };
+
     this.getProvider = function getProvider(providerId){
       var r = self.providers.filter(function(p){
         return p.providerId === providerId;

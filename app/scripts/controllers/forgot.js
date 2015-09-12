@@ -12,7 +12,7 @@ angular.module('stormpathIdpApp')
       }
     });
     Stormpath.init.then(function initSuccess(){
-      $scope.organizationNameKey = Stormpath.client.jwtPayload.asnk || '';
+      $scope.organizationNameKey = Stormpath.getOrganizationNameKey();
       $scope.showOrganizationField = Stormpath.client.jwtPayload.sof;
       $scope.disableOrganizationField = $scope.organizationNameKey !== '';
       $scope.ready = true;
