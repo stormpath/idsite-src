@@ -8,10 +8,15 @@ angular.module('stormpathIdpApp')
       badLogin: false,
       notFound: false,
       userMessage: false,
-      unknown: false
+      unknown: false,
+      organizationNameKeyRequired: false,
+      organizationNameKeyInvalid: false
     };
 
     Stormpath.init.then(function initSuccess(){
+      $scope.organizationNameKey = Stormpath.getOrganizationNameKey();
+      $scope.showOrganizationField = Stormpath.client.jwtPayload.sof;
+      $scope.disableOrganizationField = $scope.organizationNameKey !== '';
       $scope.canRegister = !!Stormpath.idSiteModel.passwordPolicy;
       $scope.providers = Stormpath.providers;
       $scope.ready = true;
@@ -51,7 +56,11 @@ angular.module('stormpathIdpApp')
 
     function showError(err){
       if(err.status===400){
-        $scope.errors.badLogin = true;
+        if(err.code && err.code===2014){
+          $scope.errors.organizationNameKeyInvalid = true;
+        }else{
+          $scope.errors.badLogin = true;
+        }
       }
       else if(err.status===404){
         $scope.errors.notFound = true;
@@ -72,9 +81,26 @@ angular.module('stormpathIdpApp')
 
     $scope.submit = function(){
       clearErrors();
-      if($scope.username && $scope.password){
+      if($scope.showOrganizationField && !$scope.organizationNameKey){
+        $scope.errors.organizationNameKeyRequired = true;
+      }
+      else if($scope.username && $scope.password){
         $scope.submitting = true;
-        Stormpath.login($scope.username.trim(),$scope.password.trim(),errHandler);
+        var data = {
+          login: $scope.username.trim(),
+          password: $scope.password.trim()
+        };
+        if($scope.organizationNameKey){
+          data.accountStore = {
+            nameKey: $scope.organizationNameKey
+          };
+        }
+        if(Stormpath.client.jwtPayload.ash){
+          data.accountStore = {
+            href: Stormpath.client.jwtPayload.ash
+          };
+        }
+        Stormpath.login(data,errHandler);
       }
     };
 

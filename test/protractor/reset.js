@@ -64,7 +64,7 @@ var ResetPasswordPageObject = function(){
 };
 
 
-describe('Reset password view', function() {
+describe.skip('Reset password view', function() {
 
   var pageObj = new ResetPasswordPageObject();
 

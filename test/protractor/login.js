@@ -8,180 +8,173 @@ var expect = chai.expect;
 
 var util = require('./util');
 
-var uuid = require('node-uuid');
+var LoginForm = require('./page-objects/login-form');
 
-var LoginForm = function(){
-  this.typeInField = function(field,value){
-    return element(by.css('.login-form input[name='+field+']')).sendKeys(value);
-  };
-  this.submit = function(){
-    return element(by.css('button')).submit();
-  };
-  this.isShowingInvalidLogin = function(){
-    return element(by.css('.bad-login')).isDisplayed();
-  };
-  this.isShowingNotFound = function(){
-    return element(by.css('.not-found')).isDisplayed();
-  };
-  this.isShowingRegistrationLink = function(){
-    return element(by.css('[wd-can-register]')).isDisplayed();
-  };
-  this.hasFacebookButton = function(){
-    return element(by.css('.btn-facebook')).isPresent();
-  };
-  this.hasGoogleButton = function(){
-    return element(by.css('.btn-google')).isPresent();
-  };
-  this.isShowingSocialArea = function(){
-    return element(by.css('.social-area')).isDisplayed();
-  };
-  this.hasSocialArea = function(){
-    return browser.isElementPresent(by.css('.social-area'));
-  };
-  this.submitWithValidCredentials = function submitWithValidCredentials(){
-    this.typeInField('username','robert@stormpath.com');
-    this.typeInField('password','robert@stormpath.com');
-    this.submit();
-  };
-  this.submitWithInvalidCredentials = function submitWithInvalidCredentials(){
-    this.typeInField('username','robert@stormpath.com');
-    this.typeInField('password','1');
-    this.submit();
-  };
-  this.submitWithUnknownCredentials = function submitWithUnknownCredentials(){
-    this.typeInField('username',uuid());
-    this.typeInField('password',uuid());
-    this.submit();
-  };
-};
+var IdSiteApp = require('./page-objects/idsite-app');
 
-var LoginApp = require('./page-objects/login-app');
+describe('Login Flow', function() {
+  var app = new IdSiteApp();
+  var form = new LoginForm();
 
-describe('Login view', function() {
-  var app = new LoginApp();
-  describe('when loaded', function() {
-
-    before(function(){
-      app.arriveWithFacebookAndGoogleIntegrations();
-    });
-    it('should have the correct page title', function() {
-      expect(app.pageTitle()).to.eventually.equal('Login');
-    });
-    it('should show the logo image', function() {
-      expect(app.isShowingLogoImage()).to.eventually.equal(true);
+  beforeEach(function(done){
+    app.arriveWithJwt('',function(){
+      form.waitForForm();
+      done();
     });
   });
 
-  describe('when loaded with sso config 1 (fb and google)', function() {
-    var form;
+  describe.only('If a password-based directory is mapped', function() {
 
-    before(function(){
-      browser.get(
-        browser.params.appUrl + '#' + util.fakeAuthParams('1')
-      );
-      form = new LoginForm();
-    });
-    it('should be showing both social buttons', function() {
-      expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.hasFacebookButton()).to.eventually.equal(true);
-      expect(form.hasGoogleButton()).to.eventually.equal(true);
-      expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
-    });
-  });
+    describe('without the default account store flag',function(){
 
-  describe('when loaded with sso config 2 (no social buttons, no logo url)', function() {
-    var form;
+      var mapping;
 
-    before(function(){
-      app.arriveWithNoSocialIntegrations();
-      form = new LoginForm();
-    });
-    it('should not show the social area', function() {
-      expect(form.isShowingSocialArea()).to.eventually.equal(false);
-    });
-    it('should not show the logo image', function() {
-      expect(app.isShowingLogoImage()).to.eventually.equal(false);
-    });
-  });
+      before(function(done) {
+        util.mapDirectory(util.resources.application,util.resources.directory,false,function(asm){
+          mapping = asm;
+          done();
+        });
+      });
 
-  describe('when loaded with sso config 3 (just the FB button)', function() {
-    var form;
+      after(function(done) {
+        util.deleteResource(mapping,done);
+      });
 
-    before(function(){
-      app.arriveWithOnlyFacebookIntegration();
-      form = new LoginForm();
-    });
-    it('should have the social area and just the FB button', function() {
-      expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.hasFacebookButton()).to.eventually.equal(true);
-      expect(form.hasGoogleButton()).to.eventually.equal(false);
-      expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
-    });
-  });
+      it('should have the correct page title', function() {
+        expect(app.pageTitle()).to.eventually.equal('Login');
+      });
 
-  describe('when loaded with sso config 4 (just the Google button)', function() {
-    var form;
+      it('should show the logo image', function() {
+        expect(app.logoImageUrl()).to.eventually.equal(browser.params.logoUrl);
+      });
 
-    before(function(){
-      app.arriveWithOnlyGoogleIntegration();
-      form = new LoginForm();
-    });
-    it('should have the social area and just the Google button', function() {
-      expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.hasFacebookButton()).to.eventually.equal(false);
-      expect(form.hasGoogleButton()).to.eventually.equal(true);
-      expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
-    });
-  });
+      it('should show the login form', function() {
+        expect(form.isPresent()).to.eventually.equal(true);
+      });
 
-  describe('when loaded with sso config 5 (no password policy, has google login)', function() {
-    var form;
+      it('should not show the social login area',function(){
+        expect(form.isShowingSocialArea()).to.eventually.equal(false);
+      });
 
-    before(function(){
-      app.arriveWithoutDefaultAccountStore();
-      form = new LoginForm();
-    });
-    it('should have the social area and just the Google button', function() {
-      expect(form.isShowingSocialArea()).to.eventually.equal(true);
-      expect(form.hasFacebookButton()).to.eventually.equal(false);
-      expect(form.hasGoogleButton()).to.eventually.equal(true);
-      expect(form.isShowingRegistrationLink()).to.eventually.equal(false);
-    });
-  });
+      it('should not show the registration link',function() {
+        expect(form.isShowingRegistrationLink()).to.eventually.equal(false);
+      });
 
-  describe('as a user who is registered with the SP who provides valid credentials', function() {
-    var form = new LoginForm();
-    before(function(){
-      app.arriveWithFacebookAndGoogleIntegrations();
-      form.submitWithValidCredentials();
-    });
-    it('should take me to the service provider after login', function() {
-      browser.sleep(4000);
-      util.getCurrentUrl(function(url){
-        expect(url).to.have.string('https://stormpath.com');
+      it('should allow me to submit the form', function(){
+        form.login(util.getLoginAccount());
+        app.waitForUrlChange();
+        expect(browser.driver.getCurrentUrl()).to.eventually.contain(browser.params.callbackUri);
+      });
+
+      it('should disable the form while submitting',function(){
+        form.login({email:'me@stormpath.com',password:'b'});
+        // assert that it becomes disabled
+        expect(form.submitIsDisabled()).to.eventually.equal('true');
+        // then wait for, and assert, that it becomes enabled
+        // after the network request is complete
+        form.waitForLoginAttempt();
+        expect(form.submitIsDisabled()).to.eventually.equal(null);
+      });
+
+      it('should show me an error if I enter invalid credentials',function(){
+        form.login({email:'me@stormpath.com',password:'b'});
+        form.waitForLoginAttempt();
+        expect(form.isShowingInvalidLogin()).to.eventually.equal(true);
       });
     });
+
+    describe('with the default account store flag', function() {
+
+      var mapping;
+
+      before(function(done) {
+        util.mapDirectory(util.resources.application,util.resources.directory,true,function(asm){
+          mapping = asm;
+          done();
+        });
+      });
+
+      after(function(done) {
+        util.deleteResource(mapping,done);
+      });
+
+
+      it('should show the registration link',function() {
+        expect(form.isShowingRegistrationLink()).to.eventually.equal(true);
+      });
+
+    });
   });
 
-  describe('as a user who is registered with the SP wh provides INVALID credentials', function() {
-    var form = new LoginForm();
-    before(function(){
-      app.arriveWithFacebookAndGoogleIntegrations();
-      form.submitWithInvalidCredentials();
+
+
+  describe.skip('if an organization name is required',function(){
+    it('should show the organization name field',function() {
+
     });
-    it('should warn me if I entered the wrong login credentials', function() {
-      expect(form.isShowingInvalidLogin()).to.eventually.equal(true);
+    it('should show error when an invalid organization name is given',function() {
+
+    });
+    it('should log me in if a valid organization and username and password is given',function() {
+
     });
   });
 
-  describe('as a user who is not registered with the SP', function() {
-    var form = new LoginForm();
-    before(function(){
-      app.arriveWithFacebookAndGoogleIntegrations();
-      form.submitWithUnknownCredentials();
+  describe('If a google directory is mapped to the application',function() {
+    var mapping;
+    before(function(done) {
+      util.mapDirectory(util.resources.application,util.resources.googleDirectory,false,function(asm){
+        mapping = asm;
+        done();
+      });
     });
-    it('should tell me that i ned to register if I try to login', function() {
-      expect(form.isShowingNotFound()).to.eventually.equal(true);
+    after(function(done) {
+      util.deleteResource(mapping,done);
+    });
+    it('should show the google login button',function() {
+      expect(form.hasGoogleButton()).to.eventually.equal(true);
+
+    });
+  });
+
+  describe('If a facebook directory is mapped to the application',function() {
+    var mapping;
+    before(function(done) {
+      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,false,function(asm){
+        mapping = asm;
+        done();
+      });
+    });
+    after(function(done) {
+      util.deleteResource(mapping,done);
+    });
+    it('should show the facebook login button',function() {
+      expect(form.hasFacebookButton()).to.eventually.equal(true);
+    });
+  });
+
+  describe('If only social providers are mapped to the application',function() {
+
+    var mapping;
+    before(function(done) {
+      util.mapDirectory(util.resources.application,util.resources.facebookDirectory,false,function(asm){
+        mapping = asm;
+        done();
+      });
+    });
+    beforeEach(function() {
+      form.waitForForm();
+    });
+    after(function(done) {
+      util.deleteResource(mapping,done);
+    });
+    it('should not show the registration link',function() {
+      expect(form.isShowingRegistrationLink()).to.eventually.equal(false);
+    });
+
+    // TODO !
+    it.skip('should not show the login form',function() {
+      expect(form.hasFacebookButton()).to.eventually.equal(true);
     });
   });
 

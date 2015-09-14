@@ -55,14 +55,15 @@ angular.module('stormpathIdpApp')
       });
     }
 
-    this.login = function login(username,password,cb){
-      client.login({
-        login: username,
-        password: password
-      },function(err,response){
+    this.login = function login(data,cb){
+      client.login(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
-            cb(err);
+            if(err.redirectUrl){
+              redirect(err.redirectUrl);
+            }else{
+              cb(err);
+            }
           }else{
             redirect(response.redirectUrl);
           }
@@ -74,7 +75,11 @@ angular.module('stormpathIdpApp')
       client.register(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
-            cb(err);
+            if(err.redirectUrl){
+              redirect(err.redirectUrl);
+            }else{
+              cb(err);
+            }
           }else if(response.redirectUrl){
             redirect(response.redirectUrl);
           }else{
@@ -116,6 +121,10 @@ angular.module('stormpathIdpApp')
           cb(err,resp);
         });
       });
+    };
+
+    this.getOrganizationNameKey = function getOrganizationNameKey(){
+      return client.jwtPayload.asnk || '';
     };
 
     this.getProvider = function getProvider(providerId){

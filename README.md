@@ -131,6 +131,32 @@ the branch.
 In this situation, you'll likely want to use `grunt build:debug` to create a
 non-obfuscated build output (which will make in-browser debugging easier).
 
+
+### Testing
+
+To run the Selenium tests, you need to install Protractor:
+
+```
+npm install -g protractor
+```
+
+Start the development server by running `grunt serve`,
+then run Protractor with the config file in this repo:
+
+```
+protractor protractor.conf.js
+```
+
+**WARNING**: This will modify the ID Site Configuration of the Stormpath Tenant
+that is defined by these environment variables:
+
+```
+STORMPATH_CLIENT_APIKEY_ID
+STORMPATH_CLIENT_APIKEY_SECRET
+```
+Alas, you must ensure that you are using a tenant that is not used by your
+production application!
+
 ## Copyright
 
 Copyright &copy; 2014 Stormpath, Inc. and contributors.

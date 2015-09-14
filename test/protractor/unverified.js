@@ -8,7 +8,7 @@ var expect = chai.expect;
 
 var util = require('./util');
 
-describe('Verification view', function() {
+describe.skip('Verification view', function() {
 
   describe('if I arrive here directly', function() {
 
