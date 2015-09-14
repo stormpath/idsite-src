@@ -460,7 +460,7 @@ module.exports = function (grunt) {
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
-      // 'karma:liveunit', // liveunit tests disabled until I can fix the test cases
+      // 'karma:liveunit',  // disabled until karama test runner is fixed
       'watch'
     ]);
   });
