@@ -42,7 +42,7 @@ that is defined by these environment variables:
 STORMPATH_CLIENT_APIKEY_ID
 STORMPATH_CLIENT_APIKEY_SECRET
 ```
-Alas, you must ensure that you are using a tenant that is not userd with your
+Alas, you must ensure that you are using a tenant that is not used by your
 production application!
 
 ### Contributing
