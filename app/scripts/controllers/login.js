@@ -115,7 +115,7 @@ angular.module('stormpathIdpApp')
         scope: 'email',
         cookiepolicy: 'single_host_origin',
         callback: function(authResult){
-          if (!googleIsSignedIn && authResult.status.signed_in) {
+          if (!googleIsSignedIn && authResult.status.signed_in && authResult.status.method === 'PROMPT') {
             googleIsSignedIn = true;
             Stormpath.register({
               providerData: {
