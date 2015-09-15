@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 
   // Define the configuration for all the tasks
   grunt.initConfig({
-
+    pkg: grunt.file.readJSON('package.json'),
     hostname: process.env.SSO_DEV_HOST || 'localhost',
     port: process.env.SSO_DEV_PORT || 9000,
 
@@ -430,9 +430,20 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // concat: {
-    //   dist: {}
-    // },
+    concat: {
+      dist: {
+        options: {
+          banner: '/*\n' +
+            ' Stormpath ID Site v<%= pkg.version %>\n' +
+            ' (c) 2014-2015 Stormpath, Inc. http://stormpath.com\n'+
+            ' License: Apache 2.0\n' +
+            '*/\n',
+        },
+        files: {
+          'dist/scripts/app.js': ['dist/scripts/app.js']
+        }
+      }
+    },
 
     // Test settings
 
@@ -492,8 +503,9 @@ module.exports = function (grunt) {
       'cssmin',
       'uglify',
       // 'rev',
-      'usemin'
+      'usemin',
       // 'htmlmin'
+      'concat:dist'
     ]
   );
 
@@ -509,7 +521,8 @@ module.exports = function (grunt) {
     'cdnify',
     'cssmin',
     'usemin',
-    'copy:debug'
+    'copy:debug',
+    'concat:dist'
   ]);
 
   grunt.registerTask('default', [
