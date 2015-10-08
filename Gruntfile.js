@@ -440,7 +440,8 @@ module.exports = function (grunt) {
             '*/\n',
         },
         files: {
-          'dist/scripts/app.js': ['dist/scripts/app.js']
+          'dist/scripts/app.js': ['dist/scripts/app.js'],
+          'dist/scripts/vendor.js': ['dist/scripts/vendor.js']
         }
       }
     },
