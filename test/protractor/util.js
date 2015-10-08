@@ -1,12 +1,11 @@
 'use strict';
 
-var request = require('request');
-
-var uuid = require('node-uuid');
-
-var stormpath = require('stormpath');
-
 var async = require('async');
+var express = require('express');
+var path = require('path');
+var request = require('request');
+var stormpath = require('stormpath');
+var uuid = require('node-uuid');
 
 require('colors');
 
@@ -197,7 +196,15 @@ function mapDirectory(application,directory,isDefaultAccountStore,cb) {
   });
 }
 
+function startAppServer(done){
+  var app = express();
+  app.use(express.static(path.join(__dirname, '..','..','dist')));
+  console.log('Starting Asset Server');
+  app.listen(3000,done);
+}
+
 async.parallel({
+  app: startAppServer,
   googleDirectory: createGoogleDirectory.bind(null,client),
   facebookDirectory: createFacebookDirectory.bind(null,client),
   application: createApplication.bind(null,client),

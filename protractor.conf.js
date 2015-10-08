@@ -14,7 +14,7 @@ exports.config = {
   },
   params:{
     // The location of the ID Site application that you are developing
-    appHost: 'http://localhost:9000',
+    appHost: 'http://localhost:3000',
     // The location of the app that is initiating the redict to ID Site
     callbackUri: 'https://stormpath.com',
     // The configurable logo URL for ID Site, to assert that it works
