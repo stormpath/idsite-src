@@ -22,7 +22,7 @@ module.exports = function (grunt) {
     pkg: grunt.file.readJSON('package.json'),
     hostname: process.env.SSO_DEV_HOST || 'localhost',
     port: process.env.SSO_DEV_PORT || 9000,
-
+    year: new Date().getFullYear(),
     // Project settings
     yeoman: {
       // configurable paths
@@ -435,7 +435,7 @@ module.exports = function (grunt) {
         options: {
           banner: '/*\n' +
             ' Stormpath ID Site v<%= pkg.version %>\n' +
-            ' (c) 2014-2015 Stormpath, Inc. http://stormpath.com\n'+
+            ' (c) 2014-<%= year %> Stormpath, Inc. http://stormpath.com\n'+
             ' License: Apache 2.0\n' +
             '*/\n',
         },
