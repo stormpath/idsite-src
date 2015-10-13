@@ -6,7 +6,7 @@
     "protractor": "^2.1.0"
   },
   "devDependencies": {
-    "async": "^1.3.0",
+    "async": "^1.4.2",
     "chai": "^1.9.1",
     "chai-as-promised": "^4.1.1",
     "colors": "^1.1.2",
