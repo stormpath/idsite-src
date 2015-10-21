@@ -82,7 +82,7 @@ angular.module('stormpathIdpApp')
             }else{
               cb(err);
             }
-          }else if(response.serviceProviderCallbackUrl){
+          }else if(response && response.serviceProviderCallbackUrl){
             ssoEndpointRedirect(response.serviceProviderCallbackUrl);
           }else{
             self.isRegistered = true;
