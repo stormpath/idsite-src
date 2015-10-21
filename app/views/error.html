@@ -1,15 +1,25 @@
 <div class="view error-view">
   <div class="row">
     <div class="col-sm-12">
+    <p>&nbsp;</p>
+    <h2>Sorry! There was a problem.</h2>
+    <hr>
       <div class="alert alert-warning">
-        <p>Sorry, there is a problem.  The error is:</p>
-        <br/>
-        <p class="alert alert-danger" ng-repeat="e in errors">
-          <span>{{e}}</span>
+        <p>
+          Please use your browser's back button to return to the previous page, then try again.
         </p>
-        <br/>
-        <p>Please use your browser's back button to return to the previous page, then try again.</p>
       </div>
+
+      <p class="alert">
+        If this problem persists, please provide this error information to your support team:
+      </p>
+
+      <div class="well text-center">
+        <div class="" ng-repeat="e in errors">
+          <strong>{{e}}</strong>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

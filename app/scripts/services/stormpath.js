@@ -21,11 +21,8 @@ angular.module('stormpathIdpApp')
     function showError(error){
       var msg = error.userMessage || error.developerMessage || error.message || 'Unknown';
       if(self.errors.indexOf(msg)===-1){
-        self.errors.push(error.status === 401 ? 'This link has expired' : msg);
+        self.errors.push(msg);
       }
-      setTimeout(function(){
-        throw error;
-      },1);
     }
 
     function ssoEndpointRedirect (serviceProviderCallbackUrl) {
