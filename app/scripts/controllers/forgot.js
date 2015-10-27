@@ -38,8 +38,10 @@ angular.module('stormpathIdpApp')
           href: Stormpath.client.jwtPayload.ash
         };
       }
+      $scope.submitting = true;
       Stormpath.sendPasswordResetEmail(data,function(){
         $scope.sent = true;
+        $scope.submitting = false;
       });
     };
   });

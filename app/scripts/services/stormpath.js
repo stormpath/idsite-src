@@ -21,16 +21,18 @@ angular.module('stormpathIdpApp')
     function showError(error){
       var msg = error.userMessage || error.developerMessage || error.message || 'Unknown';
       if(self.errors.indexOf(msg)===-1){
-        self.errors.push(error.status === 401 ? 'This link has expired' : msg);
+        self.errors.push(msg);
       }
-      setTimeout(function(){
-        throw error;
-      },1);
     }
 
-    function redirect(url){
-      $window.location = client.baseurl + 'sso/?jwtResponse=' + url.split('jwtResponse=')[1];
+    function ssoEndpointRedirect (serviceProviderCallbackUrl) {
+      $window.location = client.baseurl + 'sso/?jwtResponse=' + serviceProviderCallbackUrl.split('jwtResponse=')[1];
     }
+
+    function serviceProviderRedirect (serviceProviderCallbackUrl) {
+      $window.location = serviceProviderCallbackUrl;
+    }
+
 
     function initialize(){
       if(ieMatch && ieMatch[1]){
@@ -59,13 +61,13 @@ angular.module('stormpathIdpApp')
       client.login(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
-            if(err.redirectUrl){
-              redirect(err.redirectUrl);
+            if(err.serviceProviderCallbackUrl){
+              serviceProviderRedirect(err.serviceProviderCallbackUrl);
             }else{
               cb(err);
             }
           }else{
-            redirect(response.redirectUrl);
+            ssoEndpointRedirect(response.serviceProviderCallbackUrl);
           }
         });
       });
@@ -75,13 +77,13 @@ angular.module('stormpathIdpApp')
       client.register(data,function(err,response){
         $rootScope.$apply(function(){
           if(err){
-            if(err.redirectUrl){
-              redirect(err.redirectUrl);
+            if(err.serviceProviderCallbackUrl){
+              serviceProviderRedirect(err.serviceProviderCallbackUrl);
             }else{
               cb(err);
             }
-          }else if(response.redirectUrl){
-            redirect(response.redirectUrl);
+          }else if(response && response.serviceProviderCallbackUrl){
+            ssoEndpointRedirect(response.serviceProviderCallbackUrl);
           }else{
             self.isRegistered = true;
             $location.path('/unverified');

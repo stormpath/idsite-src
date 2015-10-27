@@ -3,8 +3,11 @@
 var util = require('../util');
 var uuid = require('node-uuid');
 
+var SubmitForm = require('./submit-form');
+
 var RegistrationForm = function(){
-  var cssRoot = '.registration-form ';
+  var cssRoot = this.cssRoot = '.registration-form ';
+  SubmitForm.call(this);
   this.typeInField = function(field,value){
     return element(by.css(cssRoot+'input[name='+field+']')).sendKeys(value);
   };
@@ -19,9 +22,6 @@ var RegistrationForm = function(){
   this.clearField = function(field){
     return element(by.css(cssRoot+'input[name='+field+']')).clear();
   };
-  this.submit = function(){
-    return element(by.css(cssRoot+'button')).submit();
-  };
   this.isShowingInvalidEmail = function(){
     return element(by.css(cssRoot+'.group-email .validation-error')).isDisplayed();
   };
@@ -34,9 +34,6 @@ var RegistrationForm = function(){
   this.isPresent = function(){
     return element(by.css('.registration-view')).isDisplayed();
   };
-  this.submitIsDisabled = function() {
-    return element(by.css('.registration-view button[type=submit]')).getAttribute('disabled');
-  };
   this.waitForForm = function(){
     /*
       TODO - implenet something in the stormpath.js client
@@ -47,14 +44,6 @@ var RegistrationForm = function(){
     var self = this;
     return browser.driver.wait(function(){
       return self.isPresent();
-    },10000);
-  };
-  this.waitForSubmitResult = function(){
-    var self = this;
-    browser.driver.wait(function(){
-      return self.submitIsDisabled().then(function(value) {
-        return value === null;
-      });
     },10000);
   };
   this.fillWithValidInformation = function(){

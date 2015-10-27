@@ -23,7 +23,7 @@ describe('Login Flow', function() {
     });
   });
 
-  describe.only('If a password-based directory is mapped', function() {
+  describe('If a password-based directory is mapped', function() {
 
     describe('without the default account store flag',function(){
 
