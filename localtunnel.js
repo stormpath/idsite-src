@@ -106,6 +106,13 @@ tunnel.on('error', function (err) {
 
 tunnel.on('close', cleanup);
 
+process.on('SIGTERM', function() {
+  console.log('\nCaught termination signal');
+  cleanup(function (){
+    process.exit();
+  });
+});
+
 process.on('SIGINT', function() {
   console.log('\nCaught interrupt signal');
   cleanup(function (){
