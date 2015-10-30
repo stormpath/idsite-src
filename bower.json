@@ -1,6 +1,6 @@
 {
   "name": "stormpath-idp",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "dependencies": {
     "angular": "1.2.15",
     "json3": "~3.2.6",
