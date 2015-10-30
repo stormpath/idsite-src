@@ -101,6 +101,8 @@ angular.module('stormpathIdpApp')
           };
         }
         Stormpath.login(data,errHandler);
+      }else{
+        $scope.errors.emailPasswordRequired = true;
       }
     };
 
