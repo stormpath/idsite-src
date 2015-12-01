@@ -112,7 +112,15 @@ angular.module('stormpathIdpApp')
     this.sendPasswordResetEmail = function sendPasswordResetEmail(email,cb){
       client.sendPasswordResetEmail(email,function(err) {
         $rootScope.$apply(function(){
-          cb(err);
+          if(err){
+            if(err.serviceProviderCallbackUrl){
+              serviceProviderRedirect(err.serviceProviderCallbackUrl);
+            }else{
+              cb(err);
+            }
+          }else{
+            cb();
+          }
         });
       });
     };
