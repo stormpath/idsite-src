@@ -31,7 +31,7 @@
     "grunt-karma": "^0.8.3",
     "grunt-newer": "~0.6.1",
     "grunt-ngmin": "~0.0.2",
-    "grunt-protractor-runner": "^0.2.4",
+    "grunt-protractor-runner": "^2.1.1",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~0.2.0",
     "grunt-usemin": "git://github.com/yeoman/grunt-usemin.git#4bf6bace5e96c63a21ec838d4c13e3d88e5f79a4",
