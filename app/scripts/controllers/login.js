@@ -20,7 +20,7 @@ angular.module('stormpathIdpApp')
       $scope.canRegister = !!Stormpath.idSiteModel.passwordPolicy;
       $scope.providers = Stormpath.providers;
       $scope.ready = true;
-      $scope.hasSocial = $scope.providers.length > 0;
+      $scope.hasProviders = $scope.providers.length > 0;
       if(Stormpath.getProvider('facebook')){
         initFB();
       }
@@ -152,12 +152,17 @@ angular.module('stormpathIdpApp')
 
     };
 
-    $scope.providerLogin = function(providerId){
+    $scope.samlLogin = function(provider){
+      Stormpath.samlLogin(provider.accountStore,errHandler);
+    };
+
+    $scope.providerLogin = function(provider){
+      var providerId = provider.providerId;
       var fn = $scope[providerId+'Login'];
       if(typeof fn!=='function'){
         console.error('provider login function \'' + providerId + '\' is not implemented');
       }else{
-        fn();
+        fn(provider);
       }
     };
 

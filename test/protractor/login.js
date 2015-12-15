@@ -53,7 +53,7 @@ describe('Login Flow', function() {
       });
 
       it('should not show the social login area',function(){
-        expect(form.isShowingSocialArea()).to.eventually.equal(false);
+        expect(form.isShowingProviderArea()).to.eventually.equal(false);
       });
 
       it('should not show the registration link',function() {
