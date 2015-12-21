@@ -137,7 +137,7 @@ describe('Login Flow', function() {
     });
   });
 
-  describe('If a facebook directory is mapped to the application',function() {
+  describe('If a Facebook directory is mapped to the application',function() {
     var mapping;
     before(function(done) {
       util.mapDirectory(util.resources.application,util.resources.facebookDirectory,false,function(asm){
@@ -150,6 +150,22 @@ describe('Login Flow', function() {
     });
     it('should show the facebook login button',function() {
       expect(form.hasFacebookButton()).to.eventually.equal(true);
+    });
+  });
+
+  describe('If a SAML directory is mapped to the application',function() {
+    var mapping;
+    before(function(done) {
+      util.mapDirectory(util.resources.application,util.resources.samlDirectory,false,function(asm){
+        mapping = asm;
+        done();
+      });
+    });
+    after(function(done) {
+      util.deleteResource(mapping,done);
+    });
+    it('should show the SAML login button',function() {
+      expect(form.hasSamlButton()).to.eventually.equal(true);
     });
   });
 

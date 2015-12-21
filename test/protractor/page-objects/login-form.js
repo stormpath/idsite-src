@@ -22,6 +22,9 @@ var LoginForm = function(){
   this.hasGoogleButton = function(){
     return element(by.css('.btn-google')).isPresent();
   };
+  this.hasSamlButton = function(){
+    return element(by.css('.btn-saml')).isPresent();
+  };
   this.isShowingProviderArea = function(){
     return element(by.css('.provider-area')).isDisplayed();
   };
