@@ -156,10 +156,6 @@ angular.module('stormpathIdpApp')
       return client.jwtPayload.asnk || '';
     };
 
-    this.getRequestState = function getRequestState(){
-      return client.jwtPayload.state || '';
-    };
-
     this.getProvider = function getProvider(providerId){
       var r = self.providers.filter(function(p){
         return p.providerId === providerId;
