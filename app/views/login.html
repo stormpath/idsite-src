@@ -66,7 +66,7 @@
     <div class="provider-area  col-xs-12 col-sm-4" ng-show="hasProviders">
       <div class="header">&nbsp;</div>
       <label>Easy 1-click login:</label>
-      <button ng-repeat="provider in providers" class="btn btn-social btn-{{provider.providerId}}" ng-click="providerLogin(provider)">{{provider.accountStore ? provider.accountStore.name : p.providerId}}</button>
+      <button ng-repeat="provider in providers" class="btn btn-social btn-{{provider.providerId}}" ng-click="providerLogin(provider)">{{provider.accountStore ? provider.accountStore.name : provider.providerId}}</button>
     </div>
 
   </div>
