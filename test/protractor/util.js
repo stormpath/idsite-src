@@ -63,7 +63,7 @@ function createGoogleDirectory(client,cb) {
       providerId: 'google',
       clientId: uuid(),
       clientSecret: uuid(),
-      redirectUri: uuid(),
+      redirectUri: uuid()
     }
   };
   createDirectory(client,directoryConfig,cb);
@@ -76,10 +76,24 @@ function createFacebookDirectory(client,cb) {
       providerId: 'facebook',
       clientId: uuid(),
       clientSecret: uuid(),
-      redirectUri: uuid(),
+      redirectUri: uuid()
     }
   };
   createDirectory(client,directoryConfig,cb);
+}
+
+function createSamlDirectory(client, cb) {
+  var directoryData = {
+    name:'protractor-test-id-site-'+uuid(),
+    provider: {
+      providerId: 'saml',
+      ssoLogoutUrl: 'https://stormpathsaml-dev-ded.my.salesforce.com/idp/endpoint/HttpRedirect',
+      ssoLoginUrl: 'https://stormpathsaml-dev-ded.my.salesforce.com/idp/endpoint/HttpRedirect',
+      encodedX509SigningCert: '-----BEGIN CERTIFICATE-----\nMIIErDCCA5SgAwIBAgIOAVGSh6YMAAAAAHJWVEswDQYJKoZIhvcNAQELBQAwgZAx\nKDAmBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzExRGVjMjAxNV8xOTMyMjExGDAWBgNV\nBAsMDzAwRDE1MDAwMDAwR1lzVTEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAU\nBgNVBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0Ew\nHhcNMTUxMjExMTkzMjIyWhcNMTcxMjExMTIwMDAwWjCBkDEoMCYGA1UEAwwfU2Vs\nZlNpZ25lZENlcnRfMTFEZWMyMDE1XzE5MzIyMTEYMBYGA1UECwwPMDBEMTUwMDAw\nMDBHWXNVMRcwFQYDVQQKDA5TYWxlc2ZvcmNlLmNvbTEWMBQGA1UEBwwNU2FuIEZy\nYW5jaXNjbzELMAkGA1UECAwCQ0ExDDAKBgNVBAYTA1VTQTCCASIwDQYJKoZIhvcN\nAQEBBQADggEPADCCAQoCggEBAJ5wNURCyRpekSFKMVZ95hDvLxOdxvb+YlP6b+Xj\nY5TdRVGlJ7JL5vMtOKfcJmP9uDEwN//Iv/CC2+LDwNrwmoPxvcL7IZHRAYkLLKZu\nRtv54DzIQkJ26sQ4hHvXDF5Rb+eus+JhEebN+gbwmfcSlbXOQ5/se1xeTZFkYGDj\n9Myk8im3FQISbU1viuXqC199RsnQbPcOiLcauPvPBlm/WX335ful25Ebtj+4eecV\nFslLXXPtPkXgNlteeS/Ez70viHYhK8TE6dQOFm6Xk6m5mogX8d1h3IXe3NB81NVI\nGhdQog7pSBBlfYbST8PEX0+KsWXV/HZTU+2Jg+tbTRhMBRcCAwEAAaOCAQAwgf0w\nHQYDVR0OBBYEFESEZhu31Qufyz+0oCDTBCZIRi/UMA8GA1UdEwEB/wQFMAMBAf8w\ngcoGA1UdIwSBwjCBv4AURIRmG7fVC5/LP7SgINMEJkhGL9ShgZakgZMwgZAxKDAm\nBgNVBAMMH1NlbGZTaWduZWRDZXJ0XzExRGVjMjAxNV8xOTMyMjExGDAWBgNVBAsM\nDzAwRDE1MDAwMDAwR1lzVTEXMBUGA1UECgwOU2FsZXNmb3JjZS5jb20xFjAUBgNV\nBAcMDVNhbiBGcmFuY2lzY28xCzAJBgNVBAgMAkNBMQwwCgYDVQQGEwNVU0GCDgFR\nkoemDAAAAAByVlRLMA0GCSqGSIb3DQEBCwUAA4IBAQAWgBu9o6lXwr82waBMI8AA\ne+75j+gLXiOdKQK9KXw4XVCSZQsJeaiMapCDIPCCORXfsnQjQUxdN1vKwHM/rV6x\n5GFrWrVfabM5n/p/qTWz3qlawTxPZv1WyTF6UeLCAmsdfBZE29E5GgFZ9LYHW1qh\n09yT+vksFYM4caQPT12eXiEC6uKH9un3D3qhos3LxczER64OkBV1D/IP2H20n9nn\nsuXL6rHgRs3Aii4xmjc6CU9YIRkQ7gE0oYsOujPAHslD/ej6mjJn2XXnjgDB/T5d\nlM/sEIxEPbc4J1Hca8bDNoY+siunoYgqMye+xYobMJCfXACIvzOBx4kjvohVM43U\n-----END CERTIFICATE-----',
+      requestSignatureAlgorithm: 'RSA-SHA256'
+    }
+  }
+  createDirectory(client,directoryData,cb);
 }
 
 function createApplication(client,cb){
@@ -166,7 +180,14 @@ function cleanup(cb){
     return resources[key];
   });
 
-  async.each(toDelete,deleteResource,function(err){
+  // Sort the application resource to the end, as it should be deleted last
+  toDelete.sort(function(a,b){
+    var _a = a.href.match(/applications/);
+    var _b = b.href.match(/applications/);
+    return ( _a === _b ) ? 0 : ( _a ? 1 : -1);
+  });
+
+  async.eachSeries(toDelete,deleteResource,function(err){
     if(err){
       throw err;
     }else{
@@ -207,6 +228,7 @@ async.parallel({
   app: startAppServer,
   googleDirectory: createGoogleDirectory.bind(null,client),
   facebookDirectory: createFacebookDirectory.bind(null,client),
+  samlDirectory: createSamlDirectory.bind(null,client),
   application: createApplication.bind(null,client),
   directory: createDirectory.bind(null,client,{name:'protractor-test-id-site-'+uuid()})
 },function(err,results) {
@@ -217,6 +239,7 @@ async.parallel({
     resources.facebookDirectory = results.facebookDirectory;
     resources.application = results.application;
     resources.directory = results.directory;
+    resources.samlDirectory = results.samlDirectory;
 
     async.parallel({
       idSiteModel: prepeareIdSiteModel.bind(null,client,browser.params.appHost,browser.params.callbackUri),

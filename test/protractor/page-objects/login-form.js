@@ -22,14 +22,14 @@ var LoginForm = function(){
   this.hasGoogleButton = function(){
     return element(by.css('.btn-google')).isPresent();
   };
-  this.isShowingSocialArea = function(){
-    return element(by.css('.social-area')).isDisplayed();
+  this.hasSamlButton = function(){
+    return element(by.css('.btn-saml')).isPresent();
+  };
+  this.isShowingProviderArea = function(){
+    return element(by.css('.provider-area')).isDisplayed();
   };
   this.isShowingUsernameField = function(){
     return element(by.css('.login-form input[name=username]')).isDisplayed();
-  };
-  this.hasSocialArea = function(){
-    return browser.isElementPresent(by.css('.social-area'));
   };
   this.isPresent = function(){
     return element(by.css('.login-view')).isDisplayed();

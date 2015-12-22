@@ -57,6 +57,25 @@ angular.module('stormpathIdpApp')
       });
     }
 
+    this.samlLogin = function samlLogin(accountStore, cb){
+      var xhrRequest = {
+        method: 'GET',
+        url: self.client.appHref + '/saml/sso/idpRedirect?accountStore.href=' + accountStore.href
+      };
+
+      self.client.requestExecutor.execute(xhrRequest, function(err,response) {
+        if(err){
+          if(err.serviceProviderCallbackUrl){
+            serviceProviderRedirect(err.serviceProviderCallbackUrl);
+          }else{
+            cb(err);
+          }
+        }else{
+          $window.location = response.serviceProviderCallbackUrl;
+        }
+      });
+    };
+
     this.login = function login(data,cb){
       client.login(data,function(err,response){
         $rootScope.$apply(function(){
