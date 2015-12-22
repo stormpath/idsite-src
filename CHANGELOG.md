@@ -1,3 +1,8 @@
+## 0.3.0
+
+Adding SAML support. The ID Site model is used to provide the SAML providers and
+we render buttons for them in the right side bar, along the social providers.
+
 ## 0.2.4
 
 Password reset callback will redirect the user to the callback URL if there is
