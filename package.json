@@ -26,7 +26,7 @@
     "grunt-contrib-less": "^0.11.0",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-watch": "~0.5.2",
-    "grunt-google-cdn": "~0.2.0",
+    "grunt-google-cdn": "~0.4.3",
     "grunt-includes": "^0.4.4",
     "grunt-karma": "^0.8.3",
     "grunt-newer": "~0.6.1",
