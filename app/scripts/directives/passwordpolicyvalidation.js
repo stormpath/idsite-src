@@ -22,6 +22,10 @@ angular.module('stormpathIdpApp')
           scope.clearErrors();
           var v = element.val();
 
+          if (!Stormpath.idSiteModel.passwordPolicy) {
+            return;
+          }
+
           var tests =  [
             ['minLength' , function(){return v.length < Stormpath.idSiteModel.passwordPolicy.minLength;}],
             ['maxLength' , function(){ return v.length > Stormpath.idSiteModel.passwordPolicy.maxLength;}],
