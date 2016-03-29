@@ -5,17 +5,34 @@ angular.module('stormpathIdpApp')
 
     $scope.fields = {};
 
+    var accountFields = [
+      'username',
+      'email',
+      'password',
+      'givenName',
+      'middleName',
+      'surname',
+      'status',
+      'password',
+      'customData'
+    ];
+
     $scope.submit = function(){
       $scope.unknownError = false;
       var inError = Object.keys($scope.fields).filter(function(f){
         var field = $scope.fields[f];
         return field.validate();
       });
-      var data = Object.keys($scope.fields).reduce(function(acc,f){
-        acc[f] = $scope.fields[f].value;
+      var data = Object.keys($scope.fields).reduce(function(acc,field){
+        var value = $scope.fields[field].value;
+        if (accountFields.indexOf(field) === -1) {
+          acc.customData[field] = value;
+        }else{
+          acc[field] = value;
+        }
         return acc;
-      },{});
-      delete data.passwordConfirm;
+      },{customData: {}});
+      delete data.customData.passwordConfirm;
       if(inError.length===0){
         $scope.submitting = true;
         Stormpath.register(data,function(err){
