@@ -31,7 +31,7 @@
     "grunt-karma": "^0.8.3",
     "grunt-newer": "~0.6.1",
     "grunt-ngmin": "~0.0.2",
-    "grunt-protractor-runner": "^0.2.4",
+    "grunt-protractor-runner": "^3.2.0",
     "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~0.2.0",
     "grunt-usemin": "^3.1.1",
