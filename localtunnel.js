@@ -28,6 +28,7 @@ function prepeareIdSiteModel(client, idSiteApplicationHost, callbckUri, cb) {
 
       if (idSiteModel.authorizedOriginUris.indexOf(idSiteApplicationHost) === -1) {
         idSiteModel.authorizedOriginUris.push(idSiteApplicationHost);
+        idSiteModel.authorizedOriginUris.push(idSiteApplicationHost.replace('https','http'));
       }
 
       if (idSiteModel.authorizedRedirectUris.indexOf(callbckUri) === -1) {
@@ -56,6 +57,10 @@ function revertIdSiteModel(client, idSiteApplicationHost, callbckUri, cb) {
 
       idSiteModel.authorizedOriginUris = idSiteModel.authorizedOriginUris.filter(function(uri) {
         return !uri.match(idSiteApplicationHost);
+      });
+
+      idSiteModel.authorizedOriginUris = idSiteModel.authorizedOriginUris.filter(function(uri) {
+        return !uri.match(idSiteApplicationHost.replace('https','http'));
       });
 
       idSiteModel.authorizedRedirectUris = idSiteModel.authorizedRedirectUris.filter(function(uri) {
