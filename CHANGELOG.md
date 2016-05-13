@@ -1,3 +1,9 @@
+## 0.4.1
+
+* Upgrade to `stormpath.js@0.6.2` for Enterprise/PD bug fix.
+
+* Upgrade to `stormpath@0.18.2` for local testing.
+
 ## 0.4.0
 
 * The initial JWT is now pulled from the URL, and persisted in a cookie.  This
