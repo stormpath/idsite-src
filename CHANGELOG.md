@@ -1,3 +1,14 @@
+## 0.4.0
+
+* The initial JWT is now pulled from the URL, and persisted in a cookie.  This
+allows the page to be refreshed, without breaking the authentication session.
+
+* If an Organization context is specified, the ID Site model is now requested
+from the Organization, rather than the parent application.
+
+To support these features, the [Stormpath.js][] dependency has been updated to
+0.6.0.
+
 ## 0.3.0
 
 Adding SAML support. The ID Site model is used to provide the SAML providers and
@@ -27,3 +38,5 @@ Updating Stormpath.js to 0.3.1, to get organization support and base64 fixes.
 
 Adding support for Organizations, as configured by the ID Site Builder in the
 service provider.
+
+[Stormpath.js]: https://github.com/stormpath/stormpath.js
