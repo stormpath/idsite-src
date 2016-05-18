@@ -1,3 +1,7 @@
+## 0.4.2
+
+Fix "Back to login" link, on registration view, to include trailing slash.
+
 ## 0.4.1
 
 * Upgrade to `stormpath.js@0.6.2` for Enterprise/PD bug fix.
