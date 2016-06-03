@@ -17,6 +17,16 @@ If you are not using Angular, you can build your own ID Site from scratch
 but you will need to use [Stormpath.js][] in order to communicate with our API
 from your custom ID Site application.
 
+## Browser Support
+
+ID Site will work in the following web browser environments:
+
+* Chrome (all versions)
+* Internet Explorer 10+
+* Firefox 23+
+* Safari 8+
+* Android Browser, if Android version is 4.1 (Jellybean) or greater
+
 ## Installation
 
 It is assumed that you have the following tools installed on your computer
