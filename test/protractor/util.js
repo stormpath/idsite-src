@@ -220,6 +220,9 @@ function mapDirectory(application,directory,isDefaultAccountStore,cb) {
 function startAppServer(done){
   var app = express();
   app.use(express.static(path.join(__dirname, '..','..','dist')));
+  app.get('/stormpathCallback', function(req,res){
+    res.json(req.query || {});
+  });
   console.log('Starting Asset Server');
   app.listen(3000,done);
 }
