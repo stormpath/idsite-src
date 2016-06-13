@@ -24,7 +24,7 @@ angular.module('stormpathIdpApp')
             if(err.status===409){
               $scope.fields.email.setError('duplicateUser', true);
             }else{
-              $scope.unknownError = String(err.userMessage || err.developerMessage || err);
+              $scope.unknownError = String(err.message || err.userMessage || err.developerMessage || err);
             }
           }
         });
