@@ -1,0 +1,45 @@
+html
+  head
+    link(rel="stylesheet", type="text/css", href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
+  body
+    div.container
+      if !account
+          p &nbsp;
+          p &nbsp;
+          include login-form
+
+
+      if account
+        h2 You are loggen in
+        hr
+        p
+          | You have a cookie-based session, tied to this server.  You can now do one of the following:
+        table.table.table-bordered
+          tr
+            td
+              p
+                | If your SSO cookie is still valid you will be immediately redirected back here.
+                | If your SSO cookie has expired you will be presented with the ID Site login application
+              include login-form
+
+          tr
+            td
+              p
+                | This will send you to the ID Site with a logout request.
+                | You will return to this application and your session will be destroyed
+              div.panel.panel-default
+                div.panel-heading Logout Request
+                div.panel-body
+                  center
+                    a.btn.btn-primary(href='/logout') Logout
+        .panel.panel-default
+          .panel-heading
+            h3.panel-title Account of current session:
+          .panel-body
+            pre=accountJson
+      if lastJwt
+        div.panel.panel-default
+          div.panel-heading
+            h3.panel-title Last seen JWT:
+          div.panel-body
+            pre=lastJwt
