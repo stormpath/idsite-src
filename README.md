@@ -43,6 +43,8 @@ npm install
 bower install
 ```
 
+![tunnel](https://github.com/stormpath/idsite-src/blob/media/docs_images/idsite_tunnel_dev.png)
+
 ## Setup an HTTPS proxy
 
 Because ID Site only works with HTTPS, you will need to setup a local tunnel
