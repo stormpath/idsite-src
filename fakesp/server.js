@@ -7,7 +7,7 @@ var url = require('url');
 
 var IS_PRODUCTION = process.env.NODE_ENV==='production';
 var PORT = process.env.PORT || 8001;
-var DOMAIN = process.env.DOMAIN || 'stormpath.localhost';
+var DOMAIN = process.env.DOMAIN || 'localhost';
 var ID_SITE_PATH = process.env.ID_SITE_PATH || '';
 var CB_URI = process.env.CB_URI || ('http://' + DOMAIN + ':' + PORT + '/idSiteCallback' );
 
@@ -190,4 +190,3 @@ function getApplication(then){
 client.on('ready',function(){
   getApplication(startServer);
 });
-

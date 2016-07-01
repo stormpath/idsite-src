@@ -36,64 +36,48 @@ It is assumed that you have the following tools installed on your computer
 * [Node.JS][]
 * [Localtunnel.me][]
 
-You should clone this repository and these tasks within the repository:
+You should clone this repository and then run this within the repository:
 
 ```sh
 npm install
 bower install
 ```
 
-![tunnel](https://github.com/stormpath/idsite-src/blob/media/docs_images/idsite_tunnel_dev.png)
+## Using `ez_dev`
 
-## Setup an HTTPS proxy
+Within this repository, there's a script called `ez_dev.sh`. This will setup a complete development environment for you
+to be able to work on your ID Site Content.
 
-Because ID Site only works with HTTPS, you will need to setup a local tunnel
-which will serve your your local ID Site from a secure connection.  With the
-local tunnel tool you must do this:
+Before we get into running the script, let's take a step back to see what `ez_dev` sets up.
 
-> lt --port 9000
+A typical flow for using ID Site is the following:
 
-It will fetch a URL and tell you something like this:
+1. You make a request of the `/login` endpoint of your application in the browser.
+2. Your application redirects to Stormapth (api.stormpath.com)
+3. Stormpath redirects to the ID Site configured in the Stormpath Admin Console
+4. ID Site responds to your browser with the `login` view
 
-> your url is: https://wqdkeiseuj.localtunnel.me
+When developing locally, you need an application that will connect to ID Site. And, in particular, ID Site being served
+locally from the `idsite-src` repo that you cloned so that you can rapidly make changes and see them in action in real
+time. And, there's a requirement that the traffic SSL encrypted.
 
-You must take that URL and configure your ID Site accordingly.  Please login
-to the [Stormpath Admin Console][] and set these options on your ID Site
-Configuration:
+The `ez_dev` script sets up the necessary architecture needed. The components are:
 
-| Configuration Option                   | Should be set to                                                                    |
-|----------------------------------------|-------------------------------------------------------------------------------------|
-| **Domain Name**                        | your local tunnel URL   |
-| **Authorized Javascript Origin URLs**  |  your local tunnel URL should be in this list  |
-| **Authorized Redirect URLs**           |  the endpoint on your server application which will receive the user after ID site (read below) |
+1. `fakesp` - A minimal application that will connect to ID Site
+2. `localtunnel.me` - A free service that sets up an HTTPS proxy from the public internet to a locally running server.
+3. `grunt serve` - A locally running instance of ID Site.
 
-## Your Service Provider (required)
+Once this is all running, you browser will automatically open up to: `http://localhost:8001` and you will be able to see the
+updated ID Site content you are working on. Any saved changes to the ID Site content are immediately reflected in your browser
+when you go to an ID Site view (such as `/login`).
 
-The application (typically, your server) that sends the user to ID Site is known
-as the Service Provider (SP).  You send the user to ID Site by constructing a
-redirect URL with one of our SDKs.  For example, [createIdSiteUrl()][] in our
-Node.js SDK.
+Here's a visual representation of what is setup and the flow of the requests.
 
-After the user authenticates at ID Site, the user is redirected back to your
-application.  Your application must have a callback URL which receives the user
-and validates the `jwtResponse` parameter in the URL (our SDK does this work
-for you).
+![tunnel architecture][tunnel_image]
 
-If you haven't built your service provider we have a simple service provider
-application which you can use for testing purposes, see: [Fake SP][]
-
-
-## Startup
-
-Once you have setup the environment (the steps above) you are ready to start
-the development tasks.  Run the following command to start the server:
-
-> grunt serve
-
-This will open the application your browser.  Because the application does not
-have a JWT request, you will see the JWT error.  At this point you should use
-your service provider to redirect the user to your ID Site.
-
+Note: The `ez_dev` script alters the ID Site settings in your Stormpath Admin Console. When you are done working on
+ID Site, it is recommended that you go back to your Admin Console and revert the `Domain Name`,
+`Authorized Javascript Origin URLs`, and `Authorized Redirect URLs` settings.
 
 ## Development Process - Stormpath Tenants
 
@@ -185,3 +169,4 @@ License](http://www.apache.org/licenses/LICENSE-2.0).
 [Node.JS]: http://nodejs.org
 [Stormpath Admin Console]: https://api.stormpath.com
 [Stormpath.js]: https://github.com/stormpath/stormpath.js
+[tunnel_image]: https://github.com/stormpath/idsite-src/blob/media/docs_images/idsite_tunnel_dev.png
