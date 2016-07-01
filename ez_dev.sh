@@ -26,7 +26,6 @@ fi
 
 [ -z "${STORMPATH_APPLICATION_HREF}" ] && read -e -p "Enter your Stormpath Application HREF and press [ENTER] (default: default Stormpath Application): " STORMPATH_APPLICATION_HREF
 
-read -e -p "Enter local domain and press [ENTER] (default: localhost): " DOMAIN
 [ -z "${DOMAIN}" ] && DOMAIN=localhost
 
 export STORMPATH_CLIENT_APIKEY_ID STORMPATH_CLIENT_APIKEY_SECRET STORMPATH_APPLICATION_HREF DOMAIN
