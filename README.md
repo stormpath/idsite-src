@@ -43,12 +43,13 @@ npm install
 bower install
 ```
 
-## Using `ez_dev`
+## `ez_dev`
 
 Within this repository, there's a script called `ez_dev.sh`. This will setup a complete development environment for you
 to be able to work on your ID Site Content.
 
-Before we get into running the script, let's take a step back to see what `ez_dev` sets up.
+Before we get into running the script, let's take a step back to see what `ez_dev` sets up. If you want to jump right
+in, go to the [running ez_dev](#running-ez_dev) section.
 
 A typical flow for using ID Site is the following:
 
@@ -74,6 +75,39 @@ when you go to an ID Site view (such as `/login`).
 Here's a visual representation of what is setup and the flow of the requests.
 
 ![tunnel architecture][tunnel_image]
+
+### Running `ez_dev`
+
+`ez_dev` needs to know the following:
+
+1. Your Stormpath API Key ID
+2. Your Stormpath API Key secret
+3. Your Stormpath Application HREF
+
+The script will look for some common environment variables and file locations in this order:
+
+1. If `STORMPATH_API_KEY_FILE` is set, it will get the API Key ID and API Key Secret from that file
+2. If `~/.stormpath/apiKey.properties` exists, it will get the API Key ID and API Key Secret from that file
+3. If `STORMPATH_APPLICATION_HREF` is set, it will use that value for the Stormpath Application to connect to
+
+If neither 1. or 2. above is met, you will be asked to provide the API Key ID and the API Key Secret to the script
+
+If 3. above is not met, you will be asked to provide the Application HREF. *Note*: You can leave this value blank if
+you only have the default application (`My Application`) defined in your Stormpath tenant from when it was first setup.
+If you have any other Applications defined, then you must specify the Application HREF.
+
+Here are a few run scenarios:
+
+```
+./ez_dev.sh # may be asked to provide additional information
+```
+
+```
+# explicit settings - you will not be asked for any additional information
+STORMPATH_API_KEY_FILE=~/.stormpath/apiKey.mytenant.properties \
+STORMPATH_APPLICATION_HREF=https://api.stormpath.com/v1/applications/stormpathidentifier123456 \
+./ez_dev.sh
+```
 
 Note: The `ez_dev` script alters the ID Site settings in your Stormpath Admin Console. When you are done working on
 ID Site, it is recommended that you go back to your Admin Console and revert the `Domain Name`,
