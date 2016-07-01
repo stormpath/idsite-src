@@ -1,7 +1,10 @@
 var localtunnel = require('localtunnel');
 var stormpath = require('stormpath');
 
-var callbckUri = 'http://stormpath.localhost:8001/idSiteCallback';
+var DOMAIN = process.env.DOMAIN || 'localhost';
+var PORT = process.env.PORT || 8001;
+
+var callbckUri = process.env.CB_URI || ('http://' + DOMAIN + ':' + PORT + '/idSiteCallback' );
 var client = new stormpath.Client();
 var doCleanup = false;
 var previousDomainName = null;
