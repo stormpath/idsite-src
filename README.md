@@ -6,20 +6,19 @@ intuitive API and expert support make it easy for developers to authenticate,
 manage, and secure users and roles in any application.
 
 This is the development environment for the Stormpath hosted ID Site.  You can
-use this repository to build the same single page application (SPA) that
-Stormpath provides by default.  The SPA uses Angular and Browserify and it is
-built using Grunt and Yeoman.
+fork this repository and use it to build the same single page application (SPA)
+that Stormpath provides by default, and you can make any changes that you
+require for your custom version.
 
-If you want to build your own ID Site and are comfortable with Angular, you should
-use this repository.
-
-If you are not using Angular, you can build your own ID Site from scratch
-but you will need to use [Stormpath.js][] in order to communicate with our API
-from your custom ID Site application.
+This default application is built with Angular and has default views and styling.
+If you need to make significant changes that don't fit within this application,
+you may want to use [Stormpath.js][] instead.  That is a smaller library that
+gives you the necessary Stormpath APIs to do user management, but does not come
+with pre-built views or styling.
 
 ## Browser Support
 
-ID Site will work in the following web browser environments:
+This ID Site application will work in the following web browser environments:
 
 * Chrome (all versions)
 * Internet Explorer 10+
@@ -43,28 +42,31 @@ npm install
 bower install
 ```
 
-## `ez_dev`
+## Getting started with `ez_dev`
 
 Within this repository, there's a script called `ez_dev.sh`. This will setup a complete development environment for you
-to be able to work on your ID Site Content.
+to be able to work on your ID Site application.
 
 Before we get into running the script, let's take a step back to see what `ez_dev` sets up. If you want to jump right
 in, go to the [running ez_dev](#running-ez_dev) section.
 
 A typical flow for using ID Site is the following:
 
-1. You make a request of the `/login` endpoint of your application in the browser.
-2. Your application redirects to Stormapth (api.stormpath.com)
-3. Stormpath redirects to the ID Site configured in the Stormpath Admin Console
-4. ID Site responds to your browser with the `login` view
+1. Your make a request of the `/login` endpoint of your application in the browser.
+2. Your application redirects the browser to Stormapth (api.stormpath.com/sso).
+3. Stormpath redirects the browser to your ID Site, as configured in the Stormpath Admin Console.
+4. The ID Site application loads in your browser and presents the login form.
+5. After login or registration, your browser is directed back to the server from step 1.
 
-When developing locally, you need an application that will connect to ID Site. And, in particular, ID Site being served
-locally from the `idsite-src` repo that you cloned so that you can rapidly make changes and see them in action in real
-time. And, there's a requirement that the traffic SSL encrypted.
+When customizing ID Site on your local machine, you need:
+
+* A web server to handle steps 1 and 5
+* A web server to serve the assets at step 4, that would usually be handled by Stormpath.
+* SSL encryption for step 3, as required by Stormpath.
 
 The `ez_dev` script sets up the necessary architecture needed. The components are:
 
-1. `fakesp` - A minimal application that will connect to ID Site
+1. `fakesp` - A web server that will handle steps 1 and 5.
 2. `localtunnel.me` - A free service that sets up an HTTPS proxy from the public internet to a locally running server.
 3. `grunt serve` - A locally running instance of ID Site.
 
