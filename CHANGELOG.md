@@ -1,3 +1,10 @@
+## 0.5.1
+
+* Fixed: the password input fields were not enforcing symbol requirements, if
+required by directory configuration.  The result was an error from the REST API
+that was un-recoverable by the end-user.  This has been fixed and the
+requirements are now enforced client-side, before making a call to the REST API.
+
 ## 0.5.0
 
 * Registration attempts now post to the Organization, if an Organization is
