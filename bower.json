@@ -7,7 +7,7 @@
     "es5-shim": "~2.1.0",
     "angular-route": "~1.5.5",
     "bootstrap": "~3.1.1",
-    "stormpath.js": "0.7.0"
+    "stormpath.js": "0.7.1"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

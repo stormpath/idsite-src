@@ -32,6 +32,7 @@ angular.module('stormpathIdpApp')
             ['requireLowerCase' , function(){ return Stormpath.idSiteModel.passwordPolicy.requireLowerCase && !(/[a-z]/).test(v);}],
             ['requireUpperCase' , function(){ return Stormpath.idSiteModel.passwordPolicy.requireUpperCase && !(/[A-Z]/).test(v);}],
             ['requireNumeric' , function(){ return Stormpath.idSiteModel.passwordPolicy.requireNumeric && !(/[0-9]/).test(v);}],
+            ['requireSymbol' , function(){ return Stormpath.idSiteModel.passwordPolicy.requireSymbol && !(/[!-\/:-@\[-`{-~]/).test(v);}],
             ['requireDiacritical' , function(){ return Stormpath.idSiteModel.passwordPolicy.requireDiacritical && !(/[\u00C0-\u017F]/).test(v);}]
           ];
 

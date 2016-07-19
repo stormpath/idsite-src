@@ -3,10 +3,15 @@
 angular.module('stormpathIdpApp')
   .controller('RegistrationFormCtrl', function ($scope,Stormpath) {
 
+    function errorParser(errObject){
+      var err = errObject || {};
+      return String(err.message || err.userMessage || err.developerMessage || err);
+    }
+
     $scope.fields = {};
 
     $scope.submit = function(){
-      $scope.unknownError = false;
+      $scope.knownError = $scope.unknownError = false;
       var inError = Object.keys($scope.fields).filter(function(f){
         var field = $scope.fields[f];
         return field.validate();
@@ -23,8 +28,10 @@ angular.module('stormpathIdpApp')
           if(err){
             if(err.status===409){
               $scope.fields.email.setError('duplicateUser', true);
+            }else if (err.code){
+              $scope.knownError = errorParser(err);
             }else{
-              $scope.unknownError = String(err.message || err.userMessage || err.developerMessage || err);
+              $scope.unknownError = errorParser(err);
             }
           }
         });
