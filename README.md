@@ -33,7 +33,8 @@ It is assumed that you have the following tools installed on your computer
 * [Bower][]
 * [Grunt][]
 * [Node.JS][]
-* [Localtunnel.me][]
+
+**Note**: At this time, only node version `4.x` is supported.
 
 You should clone this repository and then run this within the repository:
 
@@ -201,7 +202,6 @@ License](http://www.apache.org/licenses/LICENSE-2.0).
 [Fake SP]: https://github.com/robertjd/fakesp
 [Grunt]: http://gruntjs.com
 [ID Site Repository]: https://github.com/stormpath/idsite
-[Localtunnel.me]: http://localtunnel.me/
 [Node.JS]: http://nodejs.org
 [Stormpath Admin Console]: https://api.stormpath.com
 [Stormpath.js]: https://github.com/stormpath/stormpath.js

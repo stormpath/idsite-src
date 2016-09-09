@@ -2,7 +2,7 @@
   "name": "stormpathidp",
   "version": "0.5.0",
   "devDependencies": {
-    "localtunnel": "^1.7.0",
+    "ngrok": "^2.2.2",
     "stormpath": "^0.18.2"
   },
   "engines": {
