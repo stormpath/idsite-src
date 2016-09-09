@@ -6,3 +6,4 @@ app/bower_components
 coverage
 .env
 *.log
+kill_ez_dev.pids

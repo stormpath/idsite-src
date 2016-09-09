@@ -95,10 +95,28 @@ eval $EXPR
 NGROK_PID=$!
 cd ..
 
+echo "Running grunt serve..."
+EXPR="grunt serve > grunt_serve.log 2>&1 &"
+eval $EXPR
+GRUNT_SERVE_PID=$!
+
+echo
+echo "fakesp PID: $FAKESP_PID, ngrok PID: $NGROK_PID, grunt PID: $GRUNT_SERVE_PID"
+echo
+
+echo $FAKESP_PID > kill_ez_dev.pids
+echo $NGROK_PID >> kill_ez_dev.pids
+echo $GRUNT_SERVE_PID >> kill_ez_dev.pids
+
+echo "Tail the logs for more information:"
+echo -e "\tfakesp.log"
+echo -e "\tngrok.log"
+echo -e "\tgrunt_serve.log"
+echo
+
+echo "run: ./kill_ez_dev.sh to kill ez dev"
+echo
+
 echo "Launching browser..."
 sleep 1
 open http://localhost:8001
-
-echo
-echo "Running grunt serve..."
-grunt serve
