@@ -7,12 +7,34 @@ function get_property
   sed '/^\#/d' $FILE | grep $PROPERTY  | tail -n 1 | cut -d "=" -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//'
 }
 
+function wait_on_service
+{
+  URL=$1
+  for i in {1..10}; do
+    STATUS=`curl -s -I $URL | head -n1 | cut -d$' ' -f2`
+    if [ "$STATUS" == "" ]; then
+      STATUS=0
+    fi
+    if [ $STATUS == "200" ]; then
+      break
+    fi
+    sleep 1
+  done
+  if [ $STATUS != "200" ]; then
+    echo "Unable to connect to $URL."
+    exit 1
+  fi
+}
+    
+
+
 echo "Setting up..."
 echo
 
 hash npm 2>/dev/null || { echo >&2 "npm is required, but it's not installed. Install via: https://github.com/tj/n"; exit 1; }
 hash bower 2>/dev/null || { echo >&2 "bower is required, but it's not installed. Install via: npm install -g bower"; exit 1; }
 hash grunt 2>/dev/null || { echo >&2 "grunt is required, but it's not installed. Install via: npm install -g grunt-cli"; exit 1; }
+hash curl 2> /dev/null || { echo >&2 "curl is required, but it's not installed. Install via: brew install curl (on mac)"; exit 1; }
 
 if [ -n "${STORMPATH_API_KEY_FILE}" ]; then
   STORMPATH_CLIENT_APIKEY_ID=`get_property ${STORMPATH_API_KEY_FILE} "apiKey.id"`
@@ -88,6 +110,17 @@ eval $EXPR
 FAKESP_PID=$!
 cd ..
 
+echo "Waiting for fakesep to be available..."
+wait_on_service localhost:8001
+
+echo "Running grunt serve..."
+EXPR="grunt serve > grunt_serve.log 2>&1 &"
+eval $EXPR
+GRUNT_SERVE_PID=$!
+
+echo "Waiting for grunt server to be available..."
+wait_on_service localhost:9000
+
 echo "Running ngrok..."
 cd ngrok
 EXPR="node ngrok.js > ../ngrok.log 2>&1 &"
@@ -95,10 +128,20 @@ eval $EXPR
 NGROK_PID=$!
 cd ..
 
-echo "Running grunt serve..."
-EXPR="grunt serve > grunt_serve.log 2>&1 &"
-eval $EXPR
-GRUNT_SERVE_PID=$!
+echo "Waiting for ngrok to be available..."
+URL=""
+for i in {1..10}; do
+  URL=`head -n1 ngrok.log`
+  if [[ "$URL" == *"ngrok.io"* ]]; then
+    break
+  fi
+  sleep 1
+done
+if [ "$URL" == "" ]; then
+  echo "Unable to connect with ngrok."
+  exit 1
+fi
+wait_on_service $URL
 
 echo
 echo "fakesp PID: $FAKESP_PID, ngrok PID: $NGROK_PID, grunt PID: $GRUNT_SERVE_PID"
