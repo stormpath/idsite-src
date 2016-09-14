@@ -6,20 +6,19 @@ intuitive API and expert support make it easy for developers to authenticate,
 manage, and secure users and roles in any application.
 
 This is the development environment for the Stormpath hosted ID Site.  You can
-use this repository to build the same single page application (SPA) that
-Stormpath provides by default.  The SPA uses Angular and Browserify and it is
-built using Grunt and Yeoman.
+fork this repository and use it to build the same single page application (SPA)
+that Stormpath provides by default, and you can make any changes that you
+require for your custom version.
 
-If you want to build your own ID Site and are comfortable with Angular, you should
-use this repository.
-
-If you are not using Angular, you can build your own ID Site from scratch
-but you will need to use [Stormpath.js][] in order to communicate with our API
-from your custom ID Site application.
+This default application is built with Angular and has default views and styling.
+If you need to make significant changes that don't fit within this application,
+you may want to use [Stormpath.js][] instead.  That is a smaller library that
+gives you the necessary Stormpath APIs to do user management, but does not come
+with pre-built views or styling.
 
 ## Browser Support
 
-ID Site will work in the following web browser environments:
+This ID Site application will work in the following web browser environments:
 
 * Chrome (all versions)
 * Internet Explorer 10+
@@ -34,64 +33,88 @@ It is assumed that you have the following tools installed on your computer
 * [Bower][]
 * [Grunt][]
 * [Node.JS][]
-* [Localtunnel.me][]
 
-You should clone this repository and these tasks within the repository:
+**Note**: At this time, only node version `4.x` is supported.
+
+You should clone this repository and then run this within the repository:
 
 ```sh
 npm install
 bower install
 ```
 
-## Setup an HTTPS proxy
+## Getting started with `ez_dev`
 
-Because ID Site only works with HTTPS, you will need to setup a local tunnel
-which will serve your your local ID Site from a secure connection.  With the
-local tunnel tool you must do this:
+Within this repository, there's a script called `ez_dev.sh`. This will setup a complete development environment for you
+to be able to work on your ID Site application.
 
-> lt --port 9000
+Before we get into running the script, let's take a step back to see what `ez_dev` sets up. If you want to jump right
+in, go to the [running ez_dev](#running-ez_dev) section.
 
-It will fetch a URL and tell you something like this:
+A typical flow for using ID Site is the following:
 
-> your url is: https://wqdkeiseuj.localtunnel.me
+1. Your make a request of the `/login` endpoint of your application in the browser.
+2. Your application redirects the browser to Stormapth (api.stormpath.com/sso).
+3. Stormpath redirects the browser to your ID Site, as configured in the Stormpath Admin Console.
+4. The ID Site application loads in your browser and presents the login form.
+5. After login or registration, your browser is directed back to the server from step 1.
 
-You must take that URL and configure your ID Site accordingly.  Please login
-to the [Stormpath Admin Console][] and set these options on your ID Site
-Configuration:
+When customizing ID Site on your local machine, you need:
 
-| Configuration Option                   | Should be set to                                                                    |
-|----------------------------------------|-------------------------------------------------------------------------------------|
-| **Domain Name**                        | your local tunnel URL   |
-| **Authorized Javascript Origin URLs**  |  your local tunnel URL should be in this list  |
-| **Authorized Redirect URLs**           |  the endpoint on your server application which will receive the user after ID site (read below) |
+* A web server to handle steps 1 and 5
+* A web server to serve the assets at step 4, that would usually be handled by Stormpath.
+* SSL encryption for step 3, as required by Stormpath.
 
-## Your Service Provider (required)
+The `ez_dev` script sets up the necessary architecture needed. The components are:
 
-The application (typically, your server) that sends the user to ID Site is known
-as the Service Provider (SP).  You send the user to ID Site by constructing a
-redirect URL with one of our SDKs.  For example, [createIdSiteUrl()][] in our
-Node.js SDK.
+1. `fakesp` - A web server that will handle steps 1 and 5.
+2. `localtunnel.me` - A free service that sets up an HTTPS proxy from the public internet to a locally running server.
+3. `grunt serve` - A locally running instance of ID Site.
 
-After the user authenticates at ID Site, the user is redirected back to your
-application.  Your application must have a callback URL which receives the user
-and validates the `jwtResponse` parameter in the URL (our SDK does this work
-for you).
+Once this is all running, you browser will automatically open up to: `http://localhost:8001` and you will be able to see the
+updated ID Site content you are working on. Any saved changes to the ID Site content are immediately reflected in your browser
+when you go to an ID Site view (such as `/login`).
 
-If you haven't built your service provider we have a simple service provider
-application which you can use for testing purposes, see: [Fake SP][]
+Here's a visual representation of what is setup and the flow of the requests.
 
+![tunnel architecture][tunnel_image]
 
-## Startup
+### Running `ez_dev`
 
-Once you have setup the environment (the steps above) you are ready to start
-the development tasks.  Run the following command to start the server:
+`ez_dev` needs to know the following:
 
-> grunt serve
+1. Your Stormpath API Key ID
+2. Your Stormpath API Key secret
+3. Your Stormpath Application HREF
 
-This will open the application your browser.  Because the application does not
-have a JWT request, you will see the JWT error.  At this point you should use
-your service provider to redirect the user to your ID Site.
+The script will look for some common environment variables and file locations in this order:
 
+1. If `STORMPATH_API_KEY_FILE` is set, it will get the API Key ID and API Key Secret from that file
+2. If `~/.stormpath/apiKey.properties` exists, it will get the API Key ID and API Key Secret from that file
+3. If `STORMPATH_APPLICATION_HREF` is set, it will use that value for the Stormpath Application to connect to
+
+If neither 1. or 2. above is met, you will be asked to provide the API Key ID and the API Key Secret to the script
+
+If 3. above is not met, you will be asked to provide the Application HREF. *Note*: You can leave this value blank if
+you only have the default application (`My Application`) defined in your Stormpath tenant from when it was first setup.
+If you have any other Applications defined, then you must specify the Application HREF.
+
+Here are a few run scenarios:
+
+```
+./ez_dev.sh # may be asked to provide additional information
+```
+
+```
+# explicit settings - you will not be asked for any additional information
+STORMPATH_API_KEY_FILE=~/.stormpath/apiKey.mytenant.properties \
+STORMPATH_APPLICATION_HREF=https://api.stormpath.com/v1/applications/stormpathidentifier123456 \
+./ez_dev.sh
+```
+
+Note: The `ez_dev` script alters the ID Site settings in your Stormpath Admin Console. When you are done working on
+ID Site, it is recommended that you go back to your Admin Console and revert the `Domain Name`,
+`Authorized Javascript Origin URLs`, and `Authorized Redirect URLs` settings.
 
 ## Development Process - Stormpath Tenants
 
@@ -179,7 +202,7 @@ License](http://www.apache.org/licenses/LICENSE-2.0).
 [Fake SP]: https://github.com/robertjd/fakesp
 [Grunt]: http://gruntjs.com
 [ID Site Repository]: https://github.com/stormpath/idsite
-[Localtunnel.me]: http://localtunnel.me/
 [Node.JS]: http://nodejs.org
 [Stormpath Admin Console]: https://api.stormpath.com
 [Stormpath.js]: https://github.com/stormpath/stormpath.js
+[tunnel_image]: https://github.com/stormpath/idsite-src/blob/media/docs_images/idsite_tunnel_dev.png

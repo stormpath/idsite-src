@@ -80,7 +80,6 @@ module.exports = function (grunt) {
       },
       livereload: {
         options: {
-          open: 'http://<%=hostname %>:<%=port %>',
           base: [
             '.tmp',
             '<%= yeoman.app %>'

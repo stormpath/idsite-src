@@ -1,7 +1,10 @@
-var localtunnel = require('localtunnel');
+var ngrok = require('ngrok');
 var stormpath = require('stormpath');
 
-var callbckUri = 'http://stormpath.localhost:8001/idSiteCallback';
+var DOMAIN = process.env.DOMAIN || 'localhost';
+var PORT = process.env.PORT || 8001;
+
+var callbckUri = process.env.CB_URI || ('http://' + DOMAIN + ':' + PORT + '/idSiteCallback' );
 var client = new stormpath.Client();
 var doCleanup = false;
 var previousDomainName = null;
@@ -84,14 +87,12 @@ function cleanup(cb){
   }
 }
 
-console.log(process.env.PORT);
-
-var tunnel = localtunnel(process.env.PORT || 9000, function(err, tunnel) {
+ngrok.connect(process.env.PORT || 9000, function(err, url) {
   if (err) {
     console.error(err);
     return process.exit(1);
   }
-  host = tunnel.url;
+  host = url;
   console.log(host);
   prepeareIdSiteModel(client,host,callbckUri,function(err){
     if (err) {
@@ -104,12 +105,12 @@ var tunnel = localtunnel(process.env.PORT || 9000, function(err, tunnel) {
 
 });
 
-tunnel.on('error', function (err) {
+ngrok.on('error', function (err) {
   console.error(err);
   cleanup();
 });
 
-tunnel.on('close', cleanup);
+ngrok.on('disconnect', cleanup);
 
 process.on('SIGTERM', function() {
   console.log('\nCaught termination signal');
