@@ -46,7 +46,7 @@
     "load-grunt-tasks": "~0.4.0",
     "localtunnel": "^1.7.0",
     "mocha": "^2.2.5",
-    "protractor": "^0.22.0",
+    "protractor": "^2.5.1",
     "q": "^1.4.1",
     "request": "^2.58.0",
     "stormpath": "^0.18.2",
