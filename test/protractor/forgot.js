@@ -14,11 +14,7 @@ describe('Forgot password form', function() {
   var app = new IdSiteApp();
   beforeEach(function(done){
     app.arriveWithJwt('/#/forgot',function(){
-      form.waitForForm();
-      // apparently we need some time to let the password policy value appear
-      // in the scope of the registration controller
-      browser.sleep(1000);
-      done();
+      form.waitForForm().finally(done);
     });
   });
 
