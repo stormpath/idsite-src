@@ -3,7 +3,7 @@
   "version": "0.5.1",
   "dependencies": {
     "node-uuid": "^1.4.1",
-    "protractor": "^2.1.0"
+    "protractor": "^3.3.0"
   },
   "devDependencies": {
     "async": "^1.3.0",
