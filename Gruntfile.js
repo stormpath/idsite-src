@@ -49,7 +49,7 @@ module.exports = function (grunt) {
       },
       styles: {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{less,css}'],
-        tasks: ['less','autoprefixer']
+        tasks: ['less','postcss']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -146,9 +146,11 @@ module.exports = function (grunt) {
     },
 
     // Add vendor prefixed styles
-    autoprefixer: {
+    postcss: {
       options: {
-        browsers: ['last 3 versions']
+        processors: [
+          require('autoprefixer')({browsers: ['last 3 versions']})
+        ]
       },
       dist: {
         files: [{
@@ -276,7 +278,7 @@ module.exports = function (grunt) {
     // ngmin tries to make the code safe for minification automatically by
     // using the Angular long form for dependency injection. It doesn't work on
     // things like resolve or inject so those have to be done manually.
-    ngmin: {
+    ngAnnotate: {
       dist: {
         files: [{
           expand: true,
@@ -470,7 +472,7 @@ module.exports = function (grunt) {
       'clean:server',
       'bowerInstall',
       'concurrent:server',
-      'autoprefixer',
+      'postcss',
       'connect:livereload',
       // 'karma:liveunit',  // disabled until karama test runner is fixed
       'watch'
@@ -485,7 +487,7 @@ module.exports = function (grunt) {
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
-    'autoprefixer',
+    'postcss',
     'connect:test',
     'karma'
   ]);
@@ -496,9 +498,9 @@ module.exports = function (grunt) {
       'bowerInstall',
       'useminPrepare:dist',
       'concurrent:dist',
-      'autoprefixer',
+      'postcss',
       'concat',
-      'ngmin',
+      'ngAnnotate',
       'copy:dist',
       'cdnify',
       'cssmin',
@@ -515,9 +517,9 @@ module.exports = function (grunt) {
     'bowerInstall',
     'useminPrepare:debug',
     'concurrent:dist',
-    'autoprefixer',
+    'postcss',
     'concat',
-    'ngmin',
+    'ngAnnotate',
     'copy:dist',
     'cdnify',
     'cssmin',
