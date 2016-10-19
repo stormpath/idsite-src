@@ -23,11 +23,7 @@ describe('Registration view', function() {
   });
   beforeEach(function(done){
     app.arriveWithJwt('/#/register',function(){
-      form.waitForForm();
-      // apparently we need some time to let the password policy value appear
-      // in the scope of the registration controller
-      browser.sleep(1000);
-      done();
+      form.waitForForm().finally(done);
     });
   });
 

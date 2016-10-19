@@ -18,8 +18,7 @@ describe('Login Flow', function() {
 
   beforeEach(function(done){
     app.arriveWithJwt('',function(){
-      form.waitForForm();
-      done();
+      form.waitForForm().finally(done);
     });
   });
 
@@ -189,7 +188,8 @@ describe('Login Flow', function() {
     });
 
     // TODO !
-    it.skip('should not show the login form',function() {
+    it('should not show the login form',function() {
+      this.skip();
       expect(form.hasFacebookButton()).to.eventually.equal(true);
     });
   });

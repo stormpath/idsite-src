@@ -45,7 +45,7 @@ var LoginForm = function(){
       a common "wait for client" function.
      */
     var self = this;
-    return browser.driver.wait(function(){
+    return browser.wait(function(){
       return self.isPresent();
     },10000);
   };
