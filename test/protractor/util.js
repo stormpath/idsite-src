@@ -2,6 +2,7 @@
 
 var async = require('async');
 var express = require('express');
+var ngrok = require('ngrok');
 var path = require('path');
 var request = require('request');
 var stormpath = require('stormpath');
@@ -111,10 +112,10 @@ function createApplication(client,cb){
 }
 
 
-function prepeareIdSiteModel(client,currentHost,callbckUri,cb){
+function prepeareIdSiteModel(client,currentHost,callbackUri,cb){
   console.log('WARNING! I am modifying your ID Site Configuration'.yellow);
-  console.log('\tI am adding ', (browser.params.appHost+'').green , ' to your ',  'authorizedOriginUris'.yellow);
-  console.log('\tI am adding ', (browser.params.callbackUri+'').green , ' to your ', 'authorizedRedirectUris'.yellow);
+  console.log('\tI am adding ', (resources.appHost+'').green , ' to your ',  'authorizedOriginUris'.yellow);
+  console.log('\tI am adding ', (callbackUri).green , ' to your ', 'authorizedRedirectUris'.yellow);
   console.log('\tI am adding ', (browser.params.logoUrl+'').green , ' to your ', 'logoUrl'.yellow);
   console.log('You want to remove these values from your ID Site Configuration before you launch a production application'.yellow);
   console.log('If you need a sandbox environment for testing ID Site, please contact support'.yellow);
@@ -130,9 +131,10 @@ function prepeareIdSiteModel(client,currentHost,callbckUri,cb){
           if(idSiteModel.authorizedOriginUris.indexOf(currentHost) === -1){
             idSiteModel.authorizedOriginUris.push(currentHost);
           }
-          if(idSiteModel.authorizedRedirectUris.indexOf(callbckUri) === -1){
-            idSiteModel.authorizedRedirectUris.push(callbckUri);
+          if(idSiteModel.authorizedRedirectUris.indexOf(callbackUri) === -1){
+            idSiteModel.authorizedRedirectUris.push(callbackUri);
           }
+
           idSiteModel.logoUrl = browser.params.logoUrl;
           idSiteModel.save(function(err){
             if(err){
@@ -148,8 +150,10 @@ function prepeareIdSiteModel(client,currentHost,callbckUri,cb){
 }
 
 function getJwtUrl(path,cb){
+  var uri = resources.appHost + '/stormpathCallback';
+
   var url = resources.application.createIdSiteUrl({
-    callbackUri: browser.params.callbackUri,
+    callbackUri: uri,
     path: path
   });
 
@@ -162,7 +166,7 @@ function getJwtUrl(path,cb){
       throw new Error(body&&body.message || JSON.stringify(body||'Unknown error'));
     }else{
       var fragment = res.headers.location.split('/#')[1];
-      var url = browser.params.appHost + '#' + fragment;
+      var url = resources.appHost + '#' + fragment;
       cb(url);
     }
   });
@@ -176,9 +180,13 @@ function deleteResource(resource,cb){
 function cleanup(cb){
   console.log('Begin Cleanup'.blue);
 
-  var toDelete = Object.keys(resources).map(function(key){
-    return resources[key];
-  });
+  var toDelete = Object.keys(resources)
+    .filter(function(key){
+      return !!resources[key].href; // only pull our resources that we created
+    })
+    .map(function(key){
+      return resources[key];
+    });
 
   // Sort the application resource to the end, as it should be deleted last
   toDelete.sort(function(a,b){
@@ -224,7 +232,16 @@ function startAppServer(done){
     res.json(req.query || {});
   });
   console.log('Starting Asset Server');
-  app.listen(3000,done);
+  var server = app.listen(0,function(){
+    console.log('Listening on port ' + server.address().port);
+
+    ngrok.connect(server.address().port, function(err, url) {
+      console.log(url)
+      resources.appHost = url;
+      done();
+    });
+
+  });
 }
 
 async.parallel({
@@ -245,7 +262,7 @@ async.parallel({
     resources.samlDirectory = results.samlDirectory;
 
     async.parallel({
-      idSiteModel: prepeareIdSiteModel.bind(null,client,browser.params.appHost,browser.params.callbackUri),
+      idSiteModel: prepeareIdSiteModel.bind(null,client,resources.appHost,resources.appHost + '/stormpathCallback'),
       account: createAccount.bind(null,resources.directory)
     },function(err,results) {
       if(err){

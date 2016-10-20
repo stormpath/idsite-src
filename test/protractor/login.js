@@ -61,18 +61,8 @@ describe('Login Flow', function() {
 
       it('should allow me to submit the form', function(){
         form.login(util.getLoginAccount());
-        app.waitForUrlChange();
-        expect(browser.driver.getCurrentUrl()).to.eventually.contain(browser.params.callbackUri);
-      });
-
-      it('should disable the form while submitting',function(){
-        form.login({email:'me@stormpath.com',password:'b'});
-        // assert that it becomes disabled
-        expect(form.submitIsDisabled()).to.eventually.equal('true');
-        // then wait for, and assert, that it becomes enabled
-        // after the network request is complete
-        form.waitForLoginAttempt();
-        expect(form.submitIsDisabled()).to.eventually.equal(null);
+        browser.sleep(5000);
+        expect(browser.driver.getCurrentUrl()).to.eventually.contain(util.resources.appHost + '/stormpathCallback');
       });
 
       it('should show me an error if I enter invalid credentials',function(){

@@ -39,14 +39,6 @@ describe('Registration view', function() {
     });
   });
 
-  describe('when I submit the form', function() {
-    it('should disable the button while waiting for the response', function() {
-      form.fillWithValidInformation();
-      form.submit();
-      expect(form.submitIsDisabled()).to.eventually.equal('true');
-    });
-  });
-
   describe('if I try to register a duplicate email address', function() {
     it('should show me the duplicate user error', function() {
       form.fillWithValidInformation();
@@ -72,8 +64,8 @@ describe('Registration view', function() {
       it('should take me to the service provider after form submission', function() {
         form.fillWithValidInformation();
         form.submit();
-        app.waitForUrlChange();
-        expect(browser.driver.getCurrentUrl()).to.eventually.contain(browser.params.callbackUri);
+        browser.sleep(5000);
+        expect(browser.driver.getCurrentUrl()).to.eventually.contain(util.resources.appHost + '/stormpathCallback');
       });
     });
   });

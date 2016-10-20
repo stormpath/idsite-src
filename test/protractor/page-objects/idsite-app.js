@@ -13,7 +13,8 @@ var IdSiteApp = function(){
   this.arriveWithJwt = function arriveWithJwt(path,done){
     util.getJwtUrl(path,function(url){
       browser.get(url);
-      done();
+      // Stormpath.js needs some time to load the ID Site model
+      browser.sleep(2000).then(done);
     });
   };
   this.clickRegistrationLink = function() {
@@ -24,14 +25,15 @@ var IdSiteApp = function(){
 
     var currentUrl;
 
-    browser.driver.wait(function() {
-      return browser.driver.getCurrentUrl().then(function(url) {
-        if(!currentUrl){
-          currentUrl = url;
-        }
-        return currentUrl !== url;
+    return browser.driver.getCurrentUrl().then(function storeCurrentUrl(url) {
+      currentUrl = url;
+    }).then(function waitForUrlToChangeTo() {
+      return browser.wait(function waitForUrlToChangeTo() {
+        return browser.driver.getCurrentUrl().then(function compareCurrentUrl(url) {
+          return url !== currentUrl;
+        });
       });
-    }, 10000);
+    });
 
   };
 };
