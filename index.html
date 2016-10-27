@@ -91,16 +91,7 @@
 
         </div>
 
-        <div class="row">
-          <a class="forgot" href="#forgot">Forgot Password?</a>
-        </div>
-        <div class="row">
-          <a class="sublink">Terms and Conditions</a>
-        </div>
-        <div class="row">
-          <a class="sublink">Privacy Policy</a>
-        </div>
-
+        <a class="forgot" href="#forgot">Forgot Password?</a>
       </div>
 
     </script>
@@ -372,6 +363,12 @@
       <div ng-show="inError" ng-include="'views/error.html'"></div>
       <div ng-hide="inError" ng-view="">
         <!-- this will be replaced a the view, as determined by the route config in app.js -->
+      </div>
+      <div class="row">
+        <a class="sublink">Terms and Conditions</a>
+      </div>
+      <div class="row">
+        <a class="sublink">Privacy Policy</a>
       </div>
     </div>
 
