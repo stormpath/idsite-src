@@ -17,6 +17,16 @@
     <script src="scripts/vendor.js"></script>
   </head>
   <body ng-app="stormpathIdpApp">
+    <div class="container">
+      <div class="row">
+        <h1>The INTER[action] 2016 appointments setting period is now closed.
+          You will receive your appointments via the mobile app next week. If
+          you did not get the opportunity to request appointments, the system
+          will schedule your allotted number of appointments on your
+          behalf.</h1>
+      </div>
+    </div>
+
     <script type="text/ng-template" id="views/login.html">
       <div class="view login-view" ng-show="ready">
         <div class="box row">
@@ -357,6 +367,7 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
+
     <div class="container" ng-controller="ErrorCtrl" ng-cloak>
       <div class="logo-container">
         <img ng-show="logoUrl" class="logo img-responsive" ng-src="{{logoUrl}}"/>
@@ -364,12 +375,6 @@
       <div ng-show="inError" ng-include="'views/error.html'"></div>
       <div ng-hide="inError" ng-view="">
         <!-- this will be replaced a the view, as determined by the route config in app.js -->
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="row">
-        <iframe src="https://player.vimeo.com/video/191487613?title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
       </div>
     </div>
 
