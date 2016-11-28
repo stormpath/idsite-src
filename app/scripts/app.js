@@ -32,6 +32,14 @@
         templateUrl: 'views/unverified.html',
         controller: 'UnverifiedCtrl'
       })
+      .when('/mfa/setup/:factor?', {
+        templateUrl: 'views/mfa-setup.html',
+        controller: 'MfaSetupCtrl'
+      })
+      .when('/mfa/verify/:factor?', {
+        templateUrl: 'views/mfa-verify.html',
+        controller: 'MfaVerifyCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });

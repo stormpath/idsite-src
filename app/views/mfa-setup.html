@@ -1,0 +1,104 @@
+<div class="view mfa-view" ng-show="status !== 'loading'" >
+  <div class="overview" ng-if="!factor">
+    <div class="box row">
+      <div class="col-sm-12">
+        <div class="header">
+          <span>Two-Factor Authentication Required</span>
+        </div>
+
+        <div class="sub-header">
+          <span>To protect your account from unauthorized access, we require that you set up an additional factor to verify your identity when logging in. Please choose a method to set up now:</span>
+        </div>
+
+        <div class="factors">
+          <div class="factor {{factor.id}}" ng-repeat="factor in factors" ng-click="selectFactor(factor.id)">
+            <p class="icon"><img src="/images/factors/{{factor.id}}.png" class="shrink-2x" /></p>
+            <p class="title">{{factor.title}}</p>
+            <p class="sub-title">{{factor.subTitle}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sms-factor" ng-if="factor.id === 'sms'">
+    <div class="box row">
+      <div class="col-sm-12">
+        <div class="header">
+          <span>Set Up SMS Authentication</span>
+        </div>
+
+        <div class="sub-header">
+          <span>Enter a phone number that you can receive SMS text messages at. You'll need to have access to this phone when logging into your account.</span>
+        </div>
+
+        <div ng-show="smsFactor.state == 'invalid_phone_number'" class="alert alert-danger">
+          Invalid phone number.
+        </div>
+
+        <div>
+          <input placeholder="(555) 123-1234" ng-model="smsFactor.phoneNumber">
+          <button ng-click="createSmsFactor()">Continue</button>
+        </div>
+      </div>
+    </div>
+    <div class="other-options">
+      <p><a href="/#/mfa/setup/">Choose a Different Method</a></p>
+    </div>
+  </div>
+  <div class="google-authenticator-factor" ng-if="factor.id === 'google-authenticator'">
+    <div class="box row">
+      <div class="col-sm-12">
+        <div class="header">
+          <span>Set Up Google Authenticator</span>
+        </div>
+
+        <div class="sub-step">
+          <div class="header">
+            <span class="number">1</span>
+            <span class="description">Install and open Google Authenticator on your mobile device.</span>
+          </div>
+
+          <div class="body">
+            <p><img src="/images/google-authenticator-logo.png"> Search the App Store or Play Store for "Google Authenticator".</p>
+          </div>
+
+          <hr>
+        </div>
+
+        <div class="sub-step">
+          <div class="header">
+            <span class="number">2</span>
+            <span class="description">Add this account to Google Authenticator.</span>
+          </div>
+
+          <div class="body">
+            <p><img src="/images/plus.png"> Tap the plus icon.</p>
+            <p><img src="/images/camera.png"> Scan this barcode.</p>
+            <p><img class="qr-code" data-ng-src="data:image/png;base64,{{googleAuthenticator.base64QRImage}}" /></p>
+          </div>
+
+          <hr>
+        </div>
+
+        <div class="sub-step">
+          <div class="header">
+            <span class="number">3</span>
+            <span class="description">Enter the code shown for Foo Application in Google Authenticator.</span>
+          </div>
+          <div class="body">
+            <div ng-show="googleAuthenticator.state == 'invalid_code'" class="alert alert-danger">
+              Invalid code. Check that you've entered the current code shown in Google Authenticator.
+            </div>
+            <div>
+              <input placeholder="6-digit code" ng-model="googleAuthenticator.code">
+              <button ng-click="verifyGoogleAuthenticatorCode()">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="other-options">
+      <p><a href="/#/mfa/setup/">Choose a Different Method</a></p>
+    </div>
+  </div>
+</div>

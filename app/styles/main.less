@@ -273,6 +273,140 @@ p{
   }
 }
 
+.mfa-view{
+  color: #4A4A4A;
+
+  a {
+    cursor: pointer;
+  }
+
+  .box{
+    padding-bottom: @boxGutter;
+    .header{
+      padding-bottom: 20px;
+    }
+  }
+
+  .sub-header {
+    margin-bottom: 20px;
+  }
+
+  img.shrink-2x {
+    -webkit-transform: scale(0.5);
+  }
+
+  .google-authenticator-factor {
+    .sub-step {
+      .number {
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        padding: 10px;
+        border: 1px solid #666;
+        color: #666;
+        text-align: center;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 10px;
+      }
+
+      .description {
+        font-size: 14px;
+        margin-left: 10px;
+      }
+
+      .body {
+        margin-left: 40px;
+
+        p {
+          font-size: 11px;
+        }
+
+        img.qr-code {
+          position: relative;
+          left: -10px;
+        }
+      }
+    }
+  }
+
+  .overview {
+    .factors .factor {
+      border: 2px solid #1275DA;
+      padding: 20px;
+      cursor: pointer;
+      user-select: none;
+
+      &:first-child {
+        margin-top: 30px;
+      }
+
+      &:not(:first-child) {
+        margin-top: 10px;
+      }
+
+      .icon {
+        position: relative;
+        display: inline-block;
+
+        float: left;
+        width: 50px;
+      }
+
+      &.google-authenticator .icon {
+        top: -15px;
+        left: -2px;
+      }
+
+      &.sms .icon {
+        top: -12px;
+        left: -15px;
+      }
+
+      & > p {
+        padding: 0px;
+        margin: 0px;
+      }
+
+      & .title {
+        font-weight: bold;
+        color: #1275DA;
+      }
+    }
+  }
+
+  .google-authenticator-factor {
+  }
+
+  .google-authenticator-factor, .sms-factor {
+    input, button {
+      height: 35px;
+      padding: 0px;
+      margin: 0px;
+      padding: 5px;
+      width: 270px;
+    }
+
+    button {
+      margin-left: 10px;
+      background-color: #1FCA71;
+      font-weight: bold;
+      font-size: 13px;
+      color: white;
+      border: 0px;
+      width: 150px;
+      height: 34px;
+    }
+  }
+
+  .sms-factor {
+    .other-options {
+      margin-top: 20px;
+      margin-left: 15px;
+    }
+  }
+}
+
 .login-view{
 
   & .box{

@@ -25,14 +25,17 @@ angular.module('stormpathIdpApp')
       }
     }
 
-    function ssoEndpointRedirect (serviceProviderCallbackUrl) {
-      $window.location = client.baseurl + 'sso/?jwtResponse=' + serviceProviderCallbackUrl.split('jwtResponse=')[1];
+    function getJwtFromCallbackUri(uri) {
+      return uri.split('jwtResponse=')[1];
     }
 
-    function serviceProviderRedirect (serviceProviderCallbackUrl) {
+    function ssoEndpointRedirect(jwt) {
+      $window.location = client.baseurl + 'sso/?jwtResponse=' + jwt;
+    }
+
+    function serviceProviderRedirect(serviceProviderCallbackUrl) {
       $window.location = serviceProviderCallbackUrl;
     }
-
 
     function initialize(){
       if(ieMatch && ieMatch[1]){
@@ -41,6 +44,7 @@ angular.module('stormpathIdpApp')
           return;
         }
       }
+
       client = self.client = new stormpath.Client(function(err,idSiteModel){
         $rootScope.$apply(function(){
           if(err){
@@ -77,7 +81,13 @@ angular.module('stormpathIdpApp')
     };
 
     this.login = function login(data,cb){
-      client.login(data,function(err,response){
+      var options = {};
+
+      if (client.requireMfa) {
+        options.redirect = false;
+      }
+
+      client.login(data, options, function (err, response) {
         $rootScope.$apply(function(){
           if(err){
             if(err.serviceProviderCallbackUrl){
@@ -85,9 +95,32 @@ angular.module('stormpathIdpApp')
             }else{
               cb(err);
             }
-          }else{
-            ssoEndpointRedirect(response.serviceProviderCallbackUrl);
+            return;
           }
+
+          if (response && response.serviceProviderCallbackUrl) {
+            var callbackJwt = getJwtFromCallbackUri(response.serviceProviderCallbackUrl);
+            return ssoEndpointRedirect(callbackJwt);
+          }
+
+          var sessionJwt = client.getSessionJwt();
+
+          if (!sessionJwt) {
+            return cb(new Error('Login failed. Did not receive a session JWT.'));
+          }
+
+          if (sessionJwt.body.require_mfa) {
+            var action = 'setup';
+
+            // If we have factors, then redirect to verification.
+            if (Object.keys(sessionJwt.body.scope.factor || {}).length > 0) {
+              action = 'verify';
+            }
+
+            return $location.path('/mfa/' + action);
+          }
+
+          ssoEndpointRedirect(sessionJwt.toString());
         });
       });
     };
@@ -101,12 +134,24 @@ angular.module('stormpathIdpApp')
             }else{
               cb(err);
             }
-          }else if(response && response.serviceProviderCallbackUrl){
-            ssoEndpointRedirect(response.serviceProviderCallbackUrl);
-          }else{
-            self.isRegistered = true;
-            $location.path('/unverified');
+            return;
           }
+
+          var sessionJwt = client.getSessionJwt();
+
+          if (sessionJwt && sessionJwt.body.require_mfa) {
+            return $location.path('/mfa/setup');
+          }
+
+          if(response && response.serviceProviderCallbackUrl){
+            var jwt = getJwtFromCallbackUri(response.serviceProviderCallbackUrl);
+            ssoEndpointRedirect(jwt);
+            return;
+          }
+
+          self.isRegistered = true;
+
+          $location.path('/unverified');
         });
       });
     };
@@ -148,6 +193,46 @@ angular.module('stormpathIdpApp')
       client.setAccountPassword(pwTokenVerification,newPassword,function(err, resp) {
         $rootScope.$apply(function(){
           cb(err,resp);
+        });
+      });
+    };
+
+    this.getFactors = function getFactors(account, callback){
+      client.getFactors(account, function (err, response) {
+        $rootScope.$apply(function () {
+          callback(err, response);
+        });
+      });
+    };
+
+    this.challengeFactor = function challengeFactor(factor, challenge, callback){
+      client.challengeFactor(factor, challenge, function (err, response) {
+        $rootScope.$apply(function () {
+          callback(err, response);
+        });
+      });
+    };
+
+    this.createFactor = function createFactor(account, data, callback){
+      client.createFactor(account, data, function (err, response) {
+        $rootScope.$apply(function () {
+          callback(err, response);
+        });
+      });
+    };
+
+    this.createChallenge = function createFactor(factor, callback){
+      client.createChallenge(factor, function (err, response) {
+        $rootScope.$apply(function () {
+          callback(err, response);
+        });
+      });
+    };
+
+    this.updateChallenge = function createFactor(challenge, data, callback){
+      client.updateChallenge(challenge, data, function (err, response) {
+        $rootScope.$apply(function () {
+          callback(err, response);
         });
       });
     };
