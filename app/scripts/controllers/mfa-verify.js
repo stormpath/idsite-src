@@ -1,17 +1,21 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('MfaVerifyCtrl', function ($window, $location, $scope, $routeParams, Stormpath) {
+  .controller('MfaVerifyCtrl', function ($location, $scope, $routeParams, Stormpath) {
+    $scope.account = Stormpath.getAccountFromSession();
     $scope.factor = null;
     $scope.factors = [];
     $scope.challenge = null;
+
+    $scope.factorId = $routeParams.factor;
+    $scope.isFirstVerification = $routeParams.firstVerification === 'true';
 
     $scope.verification = {
       code: null,
       state: null
     };
 
-    var supportedFactors = {
+    var factorMetaData = {
       'sms': {
         id: 'sms',
         title: 'Send a Text Message',
@@ -29,7 +33,7 @@ angular.module('stormpathIdpApp')
     };
 
     $scope.resendSmsCode = function () {
-      Stormpath.client.createChallenge($scope.factor.configuration, function (err, challenge) {
+      Stormpath.client.createChallenge($scope.factor, function (err, challenge) {
         if (err) {
           $scope.status = 'failed';
           $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
@@ -39,11 +43,6 @@ angular.module('stormpathIdpApp')
         $scope.verification.state = 'resent_code';
         $scope.challenge = challenge;
       });
-    };
-
-    $scope.changeSmsPhoneNumber = function () {
-      console.log('changeSmsPhoneNumber() called!');
-      return false;
     };
 
     $scope.verifyCode = function () {
@@ -63,65 +62,66 @@ angular.module('stormpathIdpApp')
           return;
         }
 
-        $window.location = result.serviceProviderCallbackUrl;
+        var source = $scope.isFirstVerification ? 'setup' : 'verification';
+
+        Stormpath.mfaRedirectFromCallbackUrl(source, result.serviceProviderCallbackUrl);
       });
     };
-
-    function getAccountFromSession() {
-      var sessionJwt = Stormpath.client.getSessionJwt();
-
-      // This should be set as body.sub, but for some reason isn't.
-      // So because of that, hack it up by building our own account href.
-      var accountScope = sessionJwt.body.scope.account;
-      var accountId = Object.keys(accountScope)[0];
-      var accountHref = 'https://api.stormpath.com/v1/accounts/' + accountId;
-
-      return {
-        href: accountHref
-      };
-    }
 
     $scope.status = 'loading';
 
     Stormpath.init.then(function initSuccess(){
-      $scope.factors = [];
+      var allowFactorMap = {};
 
-      Stormpath.client.requireMfa.forEach(function (factor) {
-        if (factor in supportedFactors) {
-          $scope.factors.push(supportedFactors[factor]);
-        }
+      Stormpath.client.requireMfa.forEach(function (factorId) {
+        allowFactorMap[factorId.toLowerCase()] = null;
       });
 
-      var account = getAccountFromSession();
-
-      Stormpath.getFactors(account, function (err, factors) {
+      Stormpath.getFactors($scope.account, function (err, factors) {
         if (err) {
           $scope.status = 'failed';
           $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
           return;
         }
 
-        factors.items.forEach(function (configuredFactor) {
-          $scope.factors.forEach(function (scopeFactor) {
-            if (scopeFactor.id === configuredFactor.type.toLowerCase()) {
-              scopeFactor.configuration = configuredFactor;
+        factors.items.forEach(function (remoteFactor) {
+          if (remoteFactor.status !== 'ENABLED' || (remoteFactor.verificationStatus !== 'VERIFIED' && !$scope.isFirstVerification)) {
+            return;
+          }
 
-              // Inject the phone number into the sms factor sub title.
-              if (scopeFactor.id === 'sms') {
-                scopeFactor.subTitle = scopeFactor.subTitle.replace('{{phoneNumber}}', configuredFactor.phone.number);
-              }
-            }
+          var factorId = remoteFactor.type.toLowerCase();
 
-            // If the route 'factor' parameter is the current factor, then set that in our scope.
-            if ($routeParams.factor === scopeFactor.id) {
-              $scope.factor = scopeFactor;
-            }
-          });
+          if (!(factorId in allowFactorMap)) {
+            return;
+          }
+
+          var factor = JSON.parse(JSON.stringify(factorMetaData[factorId]));
+
+          for (var key in remoteFactor) {
+            factor[key] = remoteFactor[key];
+          }
+
+          // Inject the phone number into the sms factor sub title.
+          if (factorId === 'sms') {
+            factor.subTitle = factor.subTitle.replace('{{phoneNumber}}', factor.phone.number);
+          }
+
+          // If the route 'factor' parameter is the current factor, then set that in our scope.
+          if ($scope.factorId === factor.id) {
+            $scope.factor = factor;
+          }
+
+          $scope.factors.push(factor);
         });
+
+        // If we don't have any factors, then redirect to the setup step.
+        if (!$scope.factors.length) {
+          return $location.path('/mfa/setup/');
+        }
 
         // If there's a factor selected, then create a new challenge.
         if ($scope.factor) {
-          Stormpath.client.createChallenge($scope.factor.configuration, function (err, challenge) {
+          Stormpath.client.createChallenge($scope.factor, function (err, challenge) {
             $scope.challenge = challenge;
           });
         }

@@ -36,9 +36,13 @@
         templateUrl: 'views/mfa-setup.html',
         controller: 'MfaSetupCtrl'
       })
-      .when('/mfa/verify/:factor?', {
+      .when('/mfa/verify/:factor?/:firstVerification?', {
         templateUrl: 'views/mfa-verify.html',
         controller: 'MfaVerifyCtrl'
+      })
+      .when('/mfa/redirect/:source?/:jwt?', {
+        templateUrl: 'views/mfa-redirect.html',
+        controller: 'MfaRedirectCtrl'
       })
       .otherwise({
         redirectTo: '/'

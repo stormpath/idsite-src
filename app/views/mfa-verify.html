@@ -11,7 +11,7 @@
         </div>
 
         <div class="factors">
-          <div class="factor {{factor.id}}" ng-repeat="factor in factors" ng-if="factor.configuration" ng-click="selectFactor(factor.id)">
+          <div class="factor {{factor.id}}" ng-repeat="factor in factors" ng-click="selectFactor(factor.id)">
             <p class="icon"><img src="/images/factors/{{factor.id}}.png" class="shrink-2x" /></p>
             <p class="title">{{factor.title}}</p>
             <p class="sub-title">{{factor.subTitle}}</p>
@@ -27,7 +27,7 @@
           <span>Verification Required</span>
         </div>
         <div class="sub-header">
-          <span>We just sent a code to {{factor.configuration.phone.number}}. Enter the code you recieve here.</span>
+          <span>We just sent a code to {{factor.phone.number}}. Enter the code you recieve here.</span>
         </div>
 
         <div ng-show="verification.state == 'invalid_code'" class="alert alert-danger">
@@ -39,14 +39,16 @@
         </div>
 
         <div>
-          <input placeholder="6-digit code" ng-model="verification.code">
-          <button ng-click="verifyCode(verification.code)">Continue</button>
+          <form ng-submit="verifyCode()">
+            <input placeholder="6-digit code" ng-model="verification.code" ng-focus>
+            <button type="submit">Continue</button>
+          </form>
         </div>
       </div>
     </div>
     <div class="other-options">
       <p><a ng-click="resendSmsCode()">Re-send Code</a></p>
-      <p><a ng-click="changeSmsPhoneNumber">Change Phone Number</a></p>
+      <p><a ng-click="changeSmsPhoneNumber" ng-if="isFirstVerification">Change Phone Number</a></p>
     </div>
   </div>
   <div class="google-authenticator-factor" ng-if="factor.id === 'google-authenticator'">
@@ -64,8 +66,10 @@
         </div>
 
         <div>
-          <input placeholder="6-digit code" ng-model="verification.code">
-          <button ng-click="verifyCode()">Continue</button>
+          <form ng-submit="verifyCode()">
+            <input placeholder="6-digit code" ng-model="verification.code" ng-focus>
+            <button type="submit">Continue</button>
+          </form>
         </div>
       </div>
     </div>

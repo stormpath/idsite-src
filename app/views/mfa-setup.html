@@ -36,8 +36,10 @@
         </div>
 
         <div>
-          <input placeholder="(555) 123-1234" ng-model="smsFactor.phoneNumber">
-          <button ng-click="createSmsFactor()">Continue</button>
+          <form ng-submit="createSmsFactor()">
+            <input placeholder="(555) 123-1234" ng-model="smsFactor.phoneNumber" ng-focus>
+            <button type="submit">Continue</button>
+          </form>
         </div>
       </div>
     </div>
@@ -52,20 +54,26 @@
           <span>Set Up Google Authenticator</span>
         </div>
 
-        <div class="sub-step">
+        <div class="sub-step step-1">
           <div class="header">
             <span class="number">1</span>
             <span class="description">Install and open Google Authenticator on your mobile device.</span>
           </div>
 
           <div class="body">
-            <p><img src="/images/google-authenticator-logo.png"> Search the App Store or Play Store for "Google Authenticator".</p>
+            <p class="screen-mobile">
+              <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605" target="blank"><img src="/images/app-store-button.png"></a><br><br>
+              <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="blank"><img src="/images/google-play-button.png"></a><br>
+            </p>
+            <p class="screen-desktop">
+              <img src="/images/google-authenticator-logo.png"> Search the App Store or Play Store<br>for "Google Authenticator".
+            </p>
           </div>
 
           <hr>
         </div>
 
-        <div class="sub-step">
+        <div class="sub-step step-2">
           <div class="header">
             <span class="number">2</span>
             <span class="description">Add this account to Google Authenticator.</span>
@@ -73,25 +81,35 @@
 
           <div class="body">
             <p><img src="/images/plus.png"> Tap the plus icon.</p>
-            <p><img src="/images/camera.png"> Scan this barcode.</p>
-            <p><img class="qr-code" data-ng-src="data:image/png;base64,{{googleAuthenticator.base64QRImage}}" /></p>
+            <div class="screen-desktop">
+              <p><img src="/images/camera.png"> Scan this barcode:</p>
+              <p><img class="qr-code" data-ng-src="data:image/png;base64,{{googleAuthenticator.base64QRImage}}" /></p>
+            </div>
+            <div class="screen-mobile">
+              <p><img src="/images/edit.png"> Paste in this code:</p>
+            </div>
+            <p class="secret">
+              {{factor.secret}}
+            </p>
           </div>
 
           <hr>
         </div>
 
-        <div class="sub-step">
+        <div class="sub-step step-3">
           <div class="header">
             <span class="number">3</span>
-            <span class="description">Enter the code shown for Foo Application in Google Authenticator.</span>
+            <span class="description">Enter the code shown in Google Authenticator.</span>
           </div>
           <div class="body">
             <div ng-show="googleAuthenticator.state == 'invalid_code'" class="alert alert-danger">
               Invalid code. Check that you've entered the current code shown in Google Authenticator.
             </div>
             <div>
-              <input placeholder="6-digit code" ng-model="googleAuthenticator.code">
-              <button ng-click="verifyGoogleAuthenticatorCode()">Continue</button>
+              <form ng-submit="verifyGoogleAuthenticatorCode()">
+                <input placeholder="6-digit code" ng-model="googleAuthenticator.code" ng-focus>
+                <button type="submit">Continue</button>
+              </form>
             </div>
           </div>
         </div>

@@ -31,12 +31,29 @@
 @screen-sm-max:              (@screen-md-min - 1);
 @screen-md-max:              (@screen-lg-min - 1);
 
-
 @boxBorderRadius: 3px;
 @inputHeight: 45px;
 @gray1: #f6f6f6;
 @baseFontSize: 14px;
 @boxGutter: 30px;
+
+@media (max-width: @screen-phone) {
+  .screen-mobile {
+    display: inherit;
+  }
+  .screen-desktop {
+    display: none;
+  }
+}
+
+@media (min-width: @screen-phone) {
+  .screen-mobile {
+    display: none;
+  }
+  .screen-desktop {
+    display: inherit;
+  }
+}
 
 html,body
 {
@@ -273,7 +290,28 @@ p{
   }
 }
 
-.mfa-view{
+.mfa-redirect {
+margin-top: 50px;
+  color: #4A4A4A;
+  text-align: center;
+
+  .header {
+    font-size: 16px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    font-size: 22px;
+  }
+
+  .description {
+    padding-top: 10px;
+  }
+
+  .spinner {
+    margin-top: 30px;
+  }
+}
+
+.mfa-view {
   color: #4A4A4A;
 
   a {
@@ -293,41 +331,6 @@ p{
 
   img.shrink-2x {
     -webkit-transform: scale(0.5);
-  }
-
-  .google-authenticator-factor {
-    .sub-step {
-      .number {
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        padding: 10px;
-        border: 1px solid #666;
-        color: #666;
-        text-align: center;
-        display: inline-block;
-        font-size: 18px;
-        line-height: 10px;
-      }
-
-      .description {
-        font-size: 14px;
-        margin-left: 10px;
-      }
-
-      .body {
-        margin-left: 40px;
-
-        p {
-          font-size: 11px;
-        }
-
-        img.qr-code {
-          position: relative;
-          left: -10px;
-        }
-      }
-    }
   }
 
   .overview {
@@ -376,6 +379,81 @@ p{
   }
 
   .google-authenticator-factor {
+    .sub-step {
+      margin-top: 20px;
+
+      .header {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      &.step-1 {
+        .body {
+          padding-bottom: 20px;
+
+          img {
+            float: left;
+            margin-right: 10px;
+          }
+        }
+      }
+
+      .number {
+        float: left;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        padding: 10px;
+        border: 1px solid #666;
+        color: #666;
+        text-align: center;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 10px;
+      }
+
+      .description {
+        font-size: 14px;
+        margin-left: 10px;
+      }
+
+      @media (max-width: @screen-xs-max) {
+        .description {
+          display: inline-block;
+          width: 170px;
+        }
+      }
+
+      .body {
+        margin-top: 20px;
+        margin-left: 40px;
+        margin-bottom: 20px;
+
+        p {
+          font-size: 11px;
+        }
+
+        img.qr-code {
+          position: relative;
+          left: -20px;
+        }
+
+        .secret {
+          display: inline-block;
+          width: 150px;
+          word-break: break-all;
+          font-weight: 600!important;
+        }
+      }
+    }
+
+    .sub-step:first-child {
+      margin-top: 0px;
+    }
+
+    hr {
+      border-color: #979797;
+    }
   }
 
   .google-authenticator-factor, .sms-factor {
@@ -388,6 +466,8 @@ p{
     }
 
     button {
+      float: none;
+      display: inline-block;
       margin-left: 10px;
       background-color: #1FCA71;
       font-weight: bold;
@@ -399,11 +479,9 @@ p{
     }
   }
 
-  .sms-factor {
-    .other-options {
-      margin-top: 20px;
-      margin-left: 15px;
-    }
+  .other-options {
+    margin-top: 20px;
+    margin-left: 15px;
   }
 }
 

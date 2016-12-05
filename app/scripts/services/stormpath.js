@@ -29,10 +29,6 @@ angular.module('stormpathIdpApp')
       return uri.split('jwtResponse=')[1];
     }
 
-    function ssoEndpointRedirect(jwt) {
-      $window.location = client.baseurl + 'sso/?jwtResponse=' + jwt;
-    }
-
     function serviceProviderRedirect(serviceProviderCallbackUrl) {
       $window.location = serviceProviderCallbackUrl;
     }
@@ -61,6 +57,20 @@ angular.module('stormpathIdpApp')
       });
     }
 
+    this.ssoEndpointRedirect = function ssoEndpointRedirect(jwt) {
+      $window.location = client.baseurl + 'sso/?jwtResponse=' + jwt;
+    };
+
+    this.ssoEndpointRedirectFromUrl = function ssoEndpointRedirectFromUrl(url) {
+      var jwt = getJwtFromCallbackUri(url);
+      self.ssoEndpointRedirect(jwt);
+    };
+
+    this.mfaRedirectFromCallbackUrl = function mfaRedirectFromCallbackUrl(source, url) {
+      var jwt = getJwtFromCallbackUri(url);
+      $location.path('/mfa/redirect/' + encodeURIComponent(source) + '/' + encodeURIComponent(jwt));
+    };
+
     this.samlLogin = function samlLogin(accountStore, cb){
       var xhrRequest = {
         method: 'GET',
@@ -78,6 +88,20 @@ angular.module('stormpathIdpApp')
           $window.location = response.serviceProviderCallbackUrl;
         }
       });
+    };
+
+    this.getAccountFromSession = function getAccountFromSession() {
+      var sessionJwt = client.getSessionJwt();
+
+      // This should be set as body.sub, but for some reason isn't.
+      // So because of that, hack it up by building our own account href.
+      var accountScope = sessionJwt.body.scope.account;
+      var accountId = Object.keys(accountScope)[0];
+      var accountHref = 'https://api.stormpath.com/v1/accounts/' + accountId;
+
+      return {
+        href: accountHref
+      };
     };
 
     this.login = function login(data,cb){
@@ -100,7 +124,7 @@ angular.module('stormpathIdpApp')
 
           if (response && response.serviceProviderCallbackUrl) {
             var callbackJwt = getJwtFromCallbackUri(response.serviceProviderCallbackUrl);
-            return ssoEndpointRedirect(callbackJwt);
+            return self.ssoEndpointRedirect(callbackJwt);
           }
 
           var sessionJwt = client.getSessionJwt();
@@ -109,7 +133,7 @@ angular.module('stormpathIdpApp')
             return cb(new Error('Login failed. Did not receive a session JWT.'));
           }
 
-          if (sessionJwt.body.require_mfa) {
+          if (client.requireMfa) {
             var action = 'setup';
 
             // If we have factors, then redirect to verification.
@@ -120,7 +144,7 @@ angular.module('stormpathIdpApp')
             return $location.path('/mfa/' + action);
           }
 
-          ssoEndpointRedirect(sessionJwt.toString());
+          self.ssoEndpointRedirect(sessionJwt.toString());
         });
       });
     };
@@ -140,13 +164,12 @@ angular.module('stormpathIdpApp')
           var sessionJwt = client.getSessionJwt();
 
           if (sessionJwt && sessionJwt.body.require_mfa) {
-            return $location.path('/mfa/setup');
+            return $location.path('/mfa/setup/');
           }
 
           if(response && response.serviceProviderCallbackUrl){
             var jwt = getJwtFromCallbackUri(response.serviceProviderCallbackUrl);
-            ssoEndpointRedirect(jwt);
-            return;
+            return self.ssoEndpointRedirect(jwt);
           }
 
           self.isRegistered = true;
@@ -221,8 +244,8 @@ angular.module('stormpathIdpApp')
       });
     };
 
-    this.createChallenge = function createFactor(factor, callback){
-      client.createChallenge(factor, function (err, response) {
+    this.createChallenge = function createFactor(factor, data, callback){
+      client.createChallenge(factor, data, function (err, response) {
         $rootScope.$apply(function () {
           callback(err, response);
         });

@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('stormpathIdpApp')
-  .controller('MfaSetupCtrl', function ($window, $location, $scope, $routeParams, Stormpath) {
+  .controller('MfaSetupCtrl', function ($location, $scope, $routeParams, Stormpath) {
+
+    $scope.account = Stormpath.getAccountFromSession();
     $scope.factor = null;
     $scope.factors = [];
     $scope.challenge = null;
@@ -18,7 +20,7 @@ angular.module('stormpathIdpApp')
       phoneNumber: null
     };
 
-    var supportedFactors = {
+    var factorMetaData = {
       'sms': {
         id: 'sms',
         title: 'SMS Text Messages',
@@ -35,26 +37,12 @@ angular.module('stormpathIdpApp')
       $location.path('/mfa/setup/' + factor);
     };
 
-    function getAccountFromSession() {
-      var sessionJwt = Stormpath.client.getSessionJwt();
-
-      // This should be set as body.sub, but for some reason isn't.
-      // So because of that, hack it up by building our own account href.
-      var accountScope = sessionJwt.body.scope.account;
-      var accountId = Object.keys(accountScope)[0];
-      var accountHref = 'https://api.stormpath.com/v1/accounts/' + accountId;
-
-      return {
-        href: accountHref
-      };
-    }
-
     $scope.verifyGoogleAuthenticatorCode = function () {
       var data = {
         code: $scope.googleAuthenticator.code
       };
 
-      Stormpath.updateChallenge($scope.challenge, data, function (err, result) {
+      Stormpath.createChallenge($scope.factor, data, function (err, result) {
         if (err) {
           $scope.status = 'failed';
           $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
@@ -66,13 +54,11 @@ angular.module('stormpathIdpApp')
           return;
         }
 
-        $window.location = result.serviceProviderCallbackUrl;
+        Stormpath.mfaRedirectFromCallbackUrl('setup', result.serviceProviderCallbackUrl);
       });
     };
 
     $scope.createSmsFactor = function () {
-      var account = getAccountFromSession();
-
       var data = {
         type: 'sms',
         phone: {
@@ -80,55 +66,54 @@ angular.module('stormpathIdpApp')
         }
       };
 
-      Stormpath.createFactor(account, data, function (err) {
+      Stormpath.createFactor($scope.account, data, function (err) {
         if (err) {
           $scope.smsFactor.state = 'invalid_phone_number';
           return;
         }
 
-        $location.path('/mfa/verify/sms');
+        $location.path('/mfa/verify/sms/true');
       });
     };
 
     $scope.status = 'loading';
 
     Stormpath.init.then(function initSuccess(){
-      $scope.factors = [];
+      Stormpath.client.requireMfa.forEach(function (factorId) {
+        factorId = factorId.toLowerCase();
 
-      $scope.factor = supportedFactors[$routeParams.factor];
-
-      Stormpath.client.requireMfa.forEach(function (factor) {
-        if (factor in supportedFactors) {
-          $scope.factors.push(supportedFactors[factor]);
+        if (!(factorId in factorMetaData)) {
+          return;
         }
+
+        var newFactor = JSON.parse(JSON.stringify(factorMetaData[factorId]));
+
+        if (factorId === $routeParams.factor) {
+          $scope.factor = newFactor;
+        }
+
+        $scope.factors.push(newFactor);
       });
 
       if ($scope.factor && $scope.factor.id === 'google-authenticator') {
-        var account = getAccountFromSession();
-
         var data = {
           type: 'google-authenticator'
         };
 
-        return Stormpath.createFactor(account, data, function (err, factor) {
+        return Stormpath.createFactor($scope.account, data, function (err, remoteFactor) {
           if (err) {
             $scope.status = 'failed';
             $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
             return;
           }
 
-          Stormpath.createChallenge(factor, function (err, challenge) {
-            if (err) {
-              $scope.status = 'failed';
-              $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
-              return;
-            }
+          for (var key in remoteFactor) {
+            $scope.factor[key] = remoteFactor[key];
+          }
 
-            $scope.googleAuthenticator.factor = factor;
-            $scope.googleAuthenticator.base64QRImage = factor.base64QRImage;
-            $scope.challenge = challenge;
-            $scope.status = 'loaded';
-          });
+          $scope.googleAuthenticator.factor = remoteFactor;
+          $scope.googleAuthenticator.base64QRImage = remoteFactor.base64QRImage;
+          $scope.status = 'loaded';
         });
       }
 
