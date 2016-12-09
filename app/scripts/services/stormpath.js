@@ -97,7 +97,7 @@ angular.module('stormpathIdpApp')
       // So because of that, hack it up by building our own account href.
       var accountScope = sessionJwt.body.scope.account;
       var accountId = Object.keys(accountScope)[0];
-      var accountHref = 'https://api.stormpath.com/v1/accounts/' + accountId;
+      var accountHref = client.baseurl + '/v1/accounts/' + accountId;
 
       return {
         href: accountHref
