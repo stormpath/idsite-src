@@ -68,8 +68,11 @@ angular.module('stormpathIdpApp')
 
       Stormpath.createFactor($scope.account, data, function (err) {
         if (err) {
-          $scope.smsFactor.state = 'invalid_phone_number';
-          return;
+          if (err.code === 13105) {
+            return $scope.smsFactor.state = 'duplicate_phone_number';
+          }
+
+          return $scope.smsFactor.state = 'invalid_phone_number';
         }
 
         $location.path('/mfa/verify/sms/true');

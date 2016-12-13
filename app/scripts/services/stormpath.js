@@ -52,6 +52,11 @@ angular.module('stormpathIdpApp')
             self.providers = self.providers.concat(m.providers);
             $rootScope.logoUrl = m.logoUrl;
             init.resolve();
+            // If the initial JWT has account scope, it means that the user
+            // is already logged in, but must complete MFA verification
+            if (self.getAccountFromSession()) {
+              $location.path('/mfa/verify')
+            }
           }
         });
       });
@@ -93,9 +98,12 @@ angular.module('stormpathIdpApp')
     this.getAccountFromSession = function getAccountFromSession() {
       var sessionJwt = client.getSessionJwt();
 
-      // This should be set as body.sub, but for some reason isn't.
-      // So because of that, hack it up by building our own account href.
       var accountScope = sessionJwt.body.scope.account;
+
+      if (!accountScope) {
+        return null;
+      }
+
       var accountId = Object.keys(accountScope)[0];
       var accountHref = client.baseurl + '/v1/accounts/' + accountId;
 

@@ -48,7 +48,8 @@
     </div>
     <div class="other-options">
       <p><a ng-click="resendSmsCode()">Re-send Code</a></p>
-      <p><a ng-click="changeSmsPhoneNumber" ng-if="isFirstVerification">Change Phone Number</a></p>
+      <p><a ng-click="changeSmsPhoneNumber()" ng-if="isFirstVerification">Change Phone Number</a></p>
+      <p ng-if="otherFactorsAvailable"><a href="/#/mfa/setup/">Choose a Different Method</a></p>
     </div>
   </div>
   <div class="google-authenticator-factor" ng-if="factor.id === 'google-authenticator'">

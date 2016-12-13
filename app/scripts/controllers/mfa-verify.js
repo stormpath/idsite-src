@@ -6,6 +6,7 @@ angular.module('stormpathIdpApp')
     $scope.factor = null;
     $scope.factors = [];
     $scope.challenge = null;
+    $scope.otherFactorsAvailable = false;
 
     $scope.factorId = $routeParams.factor;
     $scope.isFirstVerification = $routeParams.firstVerification === 'true';
@@ -32,8 +33,12 @@ angular.module('stormpathIdpApp')
       $location.path('/mfa/verify/' + factor);
     };
 
+    $scope.changeSmsPhoneNumber = function () {
+      $location.path('/mfa/setup/sms');
+    }
+
     $scope.resendSmsCode = function () {
-      Stormpath.client.createChallenge($scope.factor, function (err, challenge) {
+      Stormpath.createChallenge($scope.factor, null, function (err, challenge) {
         if (err) {
           $scope.status = 'failed';
           $scope.error = String(err.userMessage || err.developerMessage || err.message || err);
@@ -76,6 +81,8 @@ angular.module('stormpathIdpApp')
       Stormpath.client.requireMfa.forEach(function (factorId) {
         allowFactorMap[factorId.toLowerCase()] = null;
       });
+
+      $scope.otherFactorsAvailable = Stormpath.client.requireMfa.length > 1;
 
       Stormpath.getFactors($scope.account, function (err, factors) {
         if (err) {

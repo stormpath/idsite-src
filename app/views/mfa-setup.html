@@ -35,6 +35,10 @@
           Invalid phone number.
         </div>
 
+        <div ng-show="smsFactor.state == 'duplicate_phone_number'" class="alert alert-danger">
+          That phone number has already been setup for this account.
+        </div>
+
         <div>
           <form ng-submit="createSmsFactor()">
             <input placeholder="(555) 123-1234" ng-model="smsFactor.phoneNumber" ng-focus>
@@ -43,7 +47,7 @@
         </div>
       </div>
     </div>
-    <div class="other-options">
+    <div class="other-options" ng-if="factors.length > 1">
       <p><a href="/#/mfa/setup/">Choose a Different Method</a></p>
     </div>
   </div>
@@ -115,7 +119,7 @@
         </div>
       </div>
     </div>
-    <div class="other-options">
+    <div class="other-options" ng-if="factors.length > 1">
       <p><a href="/#/mfa/setup/">Choose a Different Method</a></p>
     </div>
   </div>
