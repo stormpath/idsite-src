@@ -100,7 +100,8 @@ angular.module('stormpathIdpApp')
 
       if ($scope.factor && $scope.factor.id === 'google-authenticator') {
         var data = {
-          type: 'google-authenticator'
+          type: 'google-authenticator',
+          issuer: Stormpath.makeId()
         };
 
         return Stormpath.createFactor($scope.account, data, function (err, remoteFactor) {

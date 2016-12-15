@@ -59,7 +59,11 @@
           <span>Verification Required</span>
         </div>
         <div class="sub-header">
-          <span>Open your Google Authenticator app on your mobile device and enter the code shown for your account.</span>
+          <span>
+            Open your Google Authenticator app on your mobile device and enter the code shown for entry
+            <strong>{{factor.issuer}}</strong>
+            (<span>{{factor.accountName}}</span>).
+          </span>
         </div>
 
         <div ng-show="verification.state == 'invalid_code'" class="alert alert-danger">
