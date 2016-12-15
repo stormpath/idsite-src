@@ -1,3 +1,10 @@
+## 0.6.0
+
+Added Multi-Factor Authentication functionality.  You can now require a user to enroll or verify a second factor on a per-session basis.  Please see the new
+`require_mfa` option in this documentation:
+
+https://docs.stormpath.com/rest/product-guide/latest/idsite.html#idsite-auth-jwt
+
 ## 0.5.1
 
 * Fixed: the password input fields were not enforcing symbol requirements, if
