@@ -1,0 +1,625 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300italic,300,400italic,400,600italic,600,700italic,700,800italic,800" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/main.css">
+
+    <script src="scripts/vendor.js"></script>
+  </head>
+  <body ng-app="stormpathIdpApp">
+    <script type="text/ng-template" id="views/login.html">
+      <div class="view login-view" ng-show="ready">
+        <div class="box row">
+          <div class="email-password-area  col-xs-12" ng-class="[hasProviders ? 'small col-sm-8' : 'large col-sm-12']">
+            <div class="header">
+              <span>Log In</span>
+
+            </div>
+            <div class="alert alert-danger bad-login" ng-show="errors.badLogin">
+              Invalid username or password.
+            </div>
+            <div class="alert alert-danger not-found" ng-show="errors.notFound">
+              <span>Account does not exist. Do you need to </span>
+              <a href="#/register">create an account</a>
+              <span>?</span>
+            </div>
+            <div class="alert alert-danger" ng-show="errors.unknown">An unkown error has occurred</div>
+            <div class="alert alert-danger" ng-show="errors.emailPasswordRequired">Please enter your email and password.</div>
+            <div class="alert alert-danger" ng-show="errors.userMessage">
+              <strong>Sorry, an error occured.  Please return to the previous page and try again.</strong>
+              <br/>
+              <br/>
+              <p>{{errors.userMessage}}</p>
+            </div>
+            <form class="login-form form-horizontal" role="form" ng-submit="submit()">
+              <div class="form-group group-email" ng-show="showOrganizationField" ng-class="{'has-error': (errors.organizationNameKeyInvalid || errors.organizationNameKeyRequired)}">
+                <label ng-class="[hasProviders ? 'col-sm-12' : 'col-sm-4']">Organization</label>
+                <div ng-class="[hasProviders ? 'col-sm-12' : 'col-sm-8']">
+                  <input class="form-control" type="text" name="organizationNameKey" ng-model="organizationNameKey" placeholder="Organization" ng-disabled="disableOrganizationField"/>
+
+                  <span ng-if="errors.organizationNameKeyRequired" class="help-block">
+                    An organization name is required.
+                  </span>
+                  <span ng-if="errors.organizationNameKeyInvalid" class="help-block">
+                    Invalid Organization Name.
+                  </span>
+                </div>
+              </div>
+              <div class="form-group group-email">
+                <label ng-class="[hasProviders ? 'col-sm-12' : 'col-sm-4']">Email</label>
+                <div ng-class="[hasProviders ? 'col-sm-12' : 'col-sm-8']">
+                  <input class="form-control" type="email" name="username" ng-model="username" placeholder="Email"/>
+                </div>
+              </div>
+              <div class="form-group group-password">
+                <label ng-class="[hasProviders ? 'col-sm-12' : 'col-sm-4']">Password</label>
+                <div ng-class="[hasProviders ? 'col-sm-12' : 'col-sm-8']">
+                  <input class="form-control" type="password" name="password" ng-model="password" placeholder="Password"/>
+                </div>
+              </div>
+              <div class="form-group group-remember-me">
+                <div class="col-sm-8" ng-class="[hasProviders ? '' : 'col-sm-offset-4']">
+                  <input type="checkbox" id="remember">
+                  <label for="remember">Remember me</label>
+                </div>
+              </div>
+              <div>
+                <button class="login btn btn-login btn-sp-green" type="submit" ng-disabled="submitting">Log In</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="provider-area  col-xs-12 col-sm-4" ng-show="hasProviders">
+            <div class="header">&nbsp;</div>
+            <label>Easy 1-click login:</label>
+            <button ng-repeat="provider in providers" class="btn btn-social btn-{{provider.providerId}}" ng-click="providerLogin(provider)">{{provider.accountStore ? provider.accountStore.name : provider.providerId}}</button>
+          </div>
+
+        </div>
+      </div>
+
+    </script>
+    <script type="text/ng-template" id="views/registration.html">
+      <div class="view registration-view">
+        <div class="box row">
+          <div class="col-sm-12">
+            <div class="header">
+              <span>Create an Account</span>
+            </div>
+            <form class="registration-form form-horizontal sp-form" role="form" ng-controller="RegistrationFormCtrl" ng-submit="submit()">
+              <div class="alert alert-danger" ng-show="unknownError">
+                <strong>Sorry, an error occured.  The message was:</strong>
+                <br/>
+                <br/>
+                <p>{{unknownError}}</p>
+              </div>
+              <div class="alert alert-danger" ng-show="knownError">
+                <p>{{knownError}}</p>
+              </div>
+              <div class="form-group group-first-name" form-group>
+                <label class="col-sm-4">First Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="givenName" form-control name-validation validate-on-blur/>
+                  <small class="help-block" ng-show="validationError">First name is required</small>
+                </div>
+              </div>
+
+              <div class="form-group group-last-name" form-group>
+                <label class="col-sm-4">Last Name</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="surname" form-control name-validation validate-on-blur/>
+                  <small class="help-block" ng-show="validationError">Last name is required</small>
+                </div>
+              </div>
+
+              <div class="form-group group-email" form-group>
+                <label class="col-sm-4">Email</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" name="email" form-control email-validation validate-on-blur/>
+                  <small class="help-block duplicate-user" ng-show="errors.duplicateUser">Email address is already registered</small>
+                  <small class="help-block validation-error" ng-show="validationError">Invalid email address</small>
+                </div>
+              </div>
+
+              <div class="form-group group-password" form-group>
+                <label class="col-sm-4">Password</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" name="password" form-control password-policy-validation validate-on-blur/>
+                  <div ng-include="'views/password-error-messages.html'"></div>
+                </div>
+              </div>
+
+              <div class="form-group group-confirm-password" form-group>
+                <label class="col-sm-4">Confirm Password</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" name="passwordConfirm" form-control password-match-validation validate-on-blur/>
+                  <small class="help-block" ng-show="validationError">Password does not match</small>
+                </div>
+              </div>
+
+              <button class="btn btn-register btn-sp-green" type="submit" ng-disabled="submitting">Create Account</button>
+
+            </form>
+          </div>
+        </div>
+        <a class="to-login" href="#/">Back to Log In</a>
+      </div>
+    </script>
+    <script type="text/ng-template" id="views/forgot.html">
+      <div class="view forgot-view" ng-show="ready">
+        <div class="box row">
+          <div class="col-sm-12">
+            <div class="header">
+              <span ng-show="!sent && !retry">Password Reset</span>
+              <span ng-show="retry">Reset link has expired</span>
+              <span ng-show="sent">Please check your mail.</span>
+
+            </div>
+            <div class="wd-sent" ng-show="sent">
+              <p>
+                <span>We've sent a password reset link to </span>
+                <strong>{{fields.email.value}}</strong>.
+              </p>
+              <p>&nbsp;</p>
+            </div>
+            <form class="forgot-form form-horizontal sp-form" role="form" ng-submit="submit()" ng-show='!sent'>
+
+              <div class="form-group group-email" ng-show="showOrganizationField" ng-class="{'has-error': (errors.organizationNameKeyInvalid || errors.organizationNameKeyRequired)}">
+                <label class="col-sm-6">Organization</label>
+                <div class="col-sm-6">
+                  <input class="form-control" type="text" name="organizationNameKey" ng-model="organizationNameKey" placeholder="Organization" ng-disabled="disableOrganizationField"/>
+
+                  <span ng-if="errors.organizationNameKeyRequired" class="help-block">
+                    An organization name is required.
+                  </span>
+                  <span ng-if="errors.organizationNameKeyInvalid" class="help-block">
+                    Invalid Organization Name.
+                  </span>
+                </div>
+              </div>
+
+              <div class="form-group group-email" ng-class="{'has-error':notFound}" form-group>
+                <label class="col-sm-6" ng-hide="retry">Send password reset instructions to:</label>
+                <label class="col-sm-6" ng-show="retry">Send new password reset email to:</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control" name="email" placeholder="Email" form-control email-validation validate-on-blur/>
+                  <small class="help-block wd-invalid-email" ng-show="validationError">Invalid email address</small>
+                  <small class="help-block wd-not-found" ng-show="notFound"><span>Account does not exist.</span></small>
+                </div>
+              </div>
+              <div class="alert alert-danger" ng-show="unknownError">
+                <strong>Sorry, an error occured.  Please return to the previous page and try again.</strong>
+                <br/>
+                <br/>
+                <p>{{unknownError}}</p>
+              </div>
+              <button class="btn btn-forgot btn-sp-green" ng-disabled="submitting" type="submit">Reset Password</button>
+            </form>
+          </div>
+        </div>
+        <a ng-show="!sent" class="to-login" href="#/" wd-back-to-login>Back to Log In</a>
+      </div>
+    </script>
+    <script type="text/ng-template" id="views/reset.html">
+      <div class="view reset-view" ng-show="status!=='loading'">
+        <div class="box row">
+          <div class="col-sm-12">
+            <div class="header">
+              <span ng-show="status=='verified'">Password Reset</span>
+              <span ng-show="status=='failed'">Sorry! Something went wrong.</span>
+              <span ng-show="status=='success'">You have successfully changed your password.</span>
+            </div>
+            <div ng-show="status=='failed'">
+              <p>
+                <span>You will need to make a new password reset request.</span>
+                <a href="#/forgot">Click here to try again</a>
+              </p>
+              <p>&nbsp;</p>
+            </div>
+            <div wd-success ng-show="status==='success'">
+              <p>
+                <span>You may now </span>
+                <a href="#/">log in</a>
+              </p>
+              <p>&nbsp;</p>
+            </div>
+            <div ng-show="error" class="alert alert-danger">
+              <p><strong>The error was:</strong></p>
+              <p>{{error}}</p>
+            </div>
+
+            <form class="reset-form form-horizontal sp-form" role="form" ng-show="status=='verified'" ng-submit="submit()">
+              <div class="form-group group-password" form-group>
+                <label class="col-sm-4">New Password</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" name="password" form-control password-policy-validation validate-on-blur/>
+                  <div ng-include="'views/password-error-messages.html'"></div>
+                </div>
+              </div>
+
+              <div class="form-group group-confirm-password" form-group>
+                <label class="col-sm-4">Confirm Password</label>
+                <div class="col-sm-8">
+                  <input type="password" class="form-control" name="passwordConfirm" form-control password-match-validation validate-on-blur/>
+                  <small wd-pw-mismatch class="help-block" ng-show="validationError">Password does not match</small>
+                </div>
+              </div>
+              <div class="alert alert-danger" ng-show="unknownError">
+                <strong>Sorry, an error occured.  Please return to the previous page and try again.</strong>
+                <br/>
+                <br/>
+                <p>{{unknownError}}</p>
+              </div>
+              <button class="btn btn-reset btn-sp-green" type="submit" ng-disabled="submitting">Submit</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </script>
+    <script type="text/ng-template" id="views/verify.html">
+      <div class="view verify-view" ng-show="status!=='loading'">
+        <div class="box row">
+          <div class="col-sm-12">
+            <div class="header">
+              <span ng-show="status=='verified'">Your account has been successfully created</span>
+              <span ng-show="status=='failed'">Sorry, there was an error while verifying your account</span>
+            </div>
+            <div class="verified" ng-show="status=='verified'">
+              <p>
+                <span>Success!  Your account is ready, please </span>
+                <a href="#/">log in</a>
+              </p>
+            </div>
+            <div ng-show="error" class="alert alert-danger">
+                <strong>{{error}}</strong>
+            </div>
+            <div class="verification-failed" ng-show="status=='failed'">
+              <p>
+                <span>Please try again by clicking on the verification link that was sent to your email address.</span>
+              </p>
+              <p>
+                <span>If you continue to have problems you may need to</span>
+                <a href="#/register">register</a>
+                <span>again.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="views/unverified.html">
+      <div class="view unverified-view">
+        <div class="box row">
+          <div class="col-sm-12">
+            <div class="header">
+              <span>Check Your Email</span>
+            </div>
+            <p>Your account has been successfully created!  Check your email and activate your account.</p>
+          </div>
+        </div>
+      </div>
+    </script>
+    <script type="text/ng-template" id="views/mfa-setup.html">
+      <div class="view mfa-view" ng-show="status !== 'loading'" >
+        <div class="overview" ng-if="!factor">
+          <div class="box row">
+            <div class="col-sm-12">
+              <div class="header">
+                <span>Two-Factor Authentication Required</span>
+              </div>
+
+              <div class="sub-header">
+                <span>To protect your account from unauthorized access, we require that you set up an additional factor to verify your identity when logging in. Please choose a method to set up now:</span>
+              </div>
+
+              <div class="factors">
+                <div class="factor {{factor.id}}" ng-repeat="factor in factors" ng-click="selectFactor(factor.id)">
+                  <p class="icon"><img src="/images/factors/{{factor.id}}.png" class="shrink-2x" /></p>
+                  <p class="title">{{factor.title}}</p>
+                  <p class="sub-title">{{factor.subTitle}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sms-factor" ng-if="factor.id === 'sms'">
+          <div class="box row">
+            <div class="col-sm-12">
+              <div class="header">
+                <span>Set Up SMS Authentication</span>
+              </div>
+
+              <div class="sub-header">
+                <span>Enter a phone number that you can receive SMS text messages at. You'll need to have access to this phone when logging into your account.</span>
+              </div>
+
+              <div ng-show="smsFactor.state == 'invalid_phone_number'" class="alert alert-danger">
+                Invalid phone number.
+              </div>
+
+              <div ng-show="smsFactor.state == 'duplicate_phone_number'" class="alert alert-danger">
+                That phone number has already been setup for this account.
+              </div>
+
+              <div>
+                <form ng-submit="createSmsFactor()">
+                  <input placeholder="(555) 123-1234" ng-model="smsFactor.phoneNumber" ng-focus>
+                  <button type="submit">Continue</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="other-options" ng-if="factors.length > 1">
+            <p><a href="/#/mfa/setup/">Choose a Different Method</a></p>
+          </div>
+        </div>
+        <div class="google-authenticator-factor" ng-if="factor.id === 'google-authenticator'">
+          <div class="box row">
+            <div class="col-sm-12">
+              <div class="header">
+                <span>Set Up Google Authenticator</span>
+              </div>
+
+              <div class="sub-step step-1">
+                <div class="header">
+                  <span class="number">1</span>
+                  <span class="description">Install and open Google Authenticator on your mobile device.</span>
+                </div>
+
+                <div class="body">
+                  <p class="screen-mobile">
+                    <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605" target="blank"><img src="/images/app-store-button.png"></a><br><br>
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="blank"><img src="/images/google-play-button.png"></a><br>
+                  </p>
+                  <p class="screen-desktop">
+                    <img src="/images/google-authenticator-logo.png"> Search the App Store or Play Store<br>for "Google Authenticator".
+                  </p>
+                </div>
+
+                <hr>
+              </div>
+
+              <div class="sub-step step-2">
+                <div class="header">
+                  <span class="number">2</span>
+                  <span class="description">Add this account to Google Authenticator.</span>
+                </div>
+
+                <div class="body">
+                  <p><img src="/images/plus.png"> Tap the plus icon.</p>
+                  <div class="screen-desktop">
+                    <p><img src="/images/camera.png"> Scan this barcode:</p>
+                    <p><img class="qr-code" data-ng-src="data:image/png;base64,{{googleAuthenticator.base64QRImage}}" /></p>
+                  </div>
+                  <div class="screen-mobile">
+                    <p><img src="/images/edit.png"> Paste in this code:</p>
+                  </div>
+                  <p class="secret">
+                    {{factor.secret}}
+                  </p>
+                </div>
+
+                <hr>
+              </div>
+
+              <div class="sub-step step-3">
+                <div class="header">
+                  <span class="number">3</span>
+                  <span class="description">Enter the code shown in Google Authenticator.</span>
+                </div>
+                <div class="body">
+                  <div ng-show="googleAuthenticator.state == 'invalid_code'" class="alert alert-danger">
+                    Invalid code. Check that you've entered the current code shown in Google Authenticator.
+                  </div>
+                  <div>
+                    <form ng-submit="verifyGoogleAuthenticatorCode()">
+                      <input placeholder="6-digit code" ng-model="googleAuthenticator.code" ng-focus>
+                      <button type="submit">Continue</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="other-options" ng-if="factors.length > 1">
+            <p><a href="/#/mfa/setup/">Choose a Different Method</a></p>
+          </div>
+        </div>
+      </div>
+
+    </script>
+    <script type="text/ng-template" id="views/mfa-verify.html">
+      <div class="view mfa-view" ng-show="status !== 'loading'" >
+        <div class="overview" ng-if="!factor">
+          <div class="box row">
+            <div class="col-sm-12">
+              <div class="header">
+                <span>Verification Required</span>
+              </div>
+
+              <div class="sub-header">
+                <span>Choose a method to verify access to your account:</span>
+              </div>
+
+              <div class="factors">
+                <div class="factor {{factor.id}}" ng-repeat="factor in factors" ng-click="selectFactor(factor.id)">
+                  <p class="icon"><img src="/images/factors/{{factor.id}}.png" class="shrink-2x" /></p>
+                  <p class="title">{{factor.title}}</p>
+                  <p class="sub-title">{{factor.subTitle}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sms-factor" ng-if="factor.id === 'sms'">
+          <div class="box row">
+            <div class="col-sm-12">
+              <div class="header">
+                <span>Verification Required</span>
+              </div>
+              <div class="sub-header">
+                <span>We just sent a code to {{factor.phone.number}}. Enter the code you recieve here.</span>
+              </div>
+
+              <div ng-show="verification.state == 'invalid_code'" class="alert alert-danger">
+                Invalid code. Check that you've entered it correctly.
+              </div>
+
+              <div ng-show="verification.state == 'resent_code'" class="alert alert-info">
+                Replacement code sent.
+              </div>
+
+              <div>
+                <form ng-submit="verifyCode()">
+                  <input placeholder="6-digit code" ng-model="verification.code" ng-focus>
+                  <button type="submit">Continue</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="other-options">
+            <p><a ng-click="resendSmsCode()">Re-send Code</a></p>
+            <p><a ng-click="changeSmsPhoneNumber()" ng-if="isFirstVerification">Change Phone Number</a></p>
+            <p ng-if="otherFactorsAvailable"><a href="/#/mfa/setup/">Choose a Different Method</a></p>
+          </div>
+        </div>
+        <div class="google-authenticator-factor" ng-if="factor.id === 'google-authenticator'">
+          <div class="box row">
+            <div class="col-sm-12">
+              <div class="header">
+                <span>Verification Required</span>
+              </div>
+              <div class="sub-header">
+                <span>
+                  Open your Google Authenticator app on your mobile device and enter the code shown for entry
+                  <strong>{{factor.issuer}}</strong>
+                  (<span>{{factor.accountName}}</span>).
+                </span>
+              </div>
+
+              <div ng-show="verification.state == 'invalid_code'" class="alert alert-danger">
+                Invalid code. Check that you've entered the current code shown in Google Authenticator.
+              </div>
+
+              <div>
+                <form ng-submit="verifyCode()">
+                  <input placeholder="6-digit code" ng-model="verification.code" ng-focus>
+                  <button type="submit">Continue</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </script>
+    <script type="text/ng-template" id="views/mfa-redirect.html">
+      <div class="view mfa-redirect">
+        <div class="icon">
+          <img src="/images/success.png">
+        </div>
+        <div class="header">
+          <span ng-if="source === 'verification'">Verification Successful</span>
+          <span ng-if="source === 'setup'">Additional Factor Verified</span>
+        </div>
+        <p class="description">
+          <span ng-if="source === 'verification'">You'll be redirected to your application shortly.</span>
+          <span ng-if="source === 'setup'">You're all set. You'll be redirected to your application shortly.</span>
+        </p>
+        <p class="spinner">
+          <img src="/images/spinner.gif">
+        </p>
+      </div>
+
+    </script>
+    <script type="text/ng-template" id="views/error.html">
+      <div class="view error-view">
+        <div class="row">
+          <div class="col-sm-12">
+          <p>&nbsp;</p>
+          <h2 class="text-center">Sorry! There was a problem.</h2>
+          <hr>
+            <div class="alert alert-warning">
+              <p>
+                Please use your browser's back button to return to the previous page or <a href="https://gbt.stage.ai">click to go to the GBT Login</a>, then try again.
+              </p>
+            </div>
+
+            <p class="alert">
+              If this problem persists, please provide this error information to your support team:
+            </p>
+
+            <div class="well text-center">
+              <div class="" ng-repeat="e in errors">
+                <strong>{{e}}</strong>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </script>
+    <script type="text/ng-template" id="views/password-error-messages.html">
+      <small class="help-block" ng-show="errors.minLength" wd-minLength>Password is too short</small>
+      <small class="help-block" ng-show="errors.maxLength" wd-maxLength>Password is too long</small>
+      <small class="help-block" ng-show="errors.requireNumeric" wd-requireNumeric>Password requires a number</small>
+      <small class="help-block" ng-show="errors.requireSymbol" wd-requireSymbol>Password requires a symbol</small>
+      <small class="help-block" ng-show="errors.requireDiacritical" wd-requireDiacritical>Password requires a diacritical character</small>
+      <small class="help-block" ng-show="errors.requireUpperCase" wd-requireUpperCase>Password requires a uppercase letter</small>
+      <small class="help-block" ng-show="errors.requireLowerCase" wd-requireLowerCase>Password requires a lowercase letter</small>
+    </script>
+
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+
+    <div class="container" ng-controller="ErrorCtrl" ng-cloak>
+      <div class="logo-container">
+        <img ng-show="logoUrl" class="logo img-responsive" ng-src="{{logoUrl}}"/>
+      </div>
+      <div ng-show="inError" ng-include="'views/error.html'"></div>
+      <div ng-hide="inError" ng-view="">
+        <!-- this will be replaced a the view, as determined by the route config in app.js -->
+      </div>
+    </div>
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-XXXXX-X');
+      ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="scripts/iecompat.js"></script>
+    <![endif]-->
+
+    <script src="scripts/app.js"></script>
+
+
+    <script type="text/javascript">
+      (function() {
+       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+       po.src = 'https://apis.google.com/js/client:plusone.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+     })();
+    </script>
+  </body>
+</html>
