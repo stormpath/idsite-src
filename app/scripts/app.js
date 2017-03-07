@@ -9,8 +9,7 @@
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/login.html',
-        controller: 'LoginCtrl'
+        redirectTo: function(obj, requestedPath) {window.location.href="https://login.fashiontrade.com";}      
       })
       .when('/register', {
         templateUrl: 'views/registration.html',
