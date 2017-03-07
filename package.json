@@ -47,7 +47,7 @@
     "load-grunt-tasks": "^3.5.2",
     "localtunnel": "^1.7.0",
     "mocha": "^3.1.2",
-    "ngrok": "^2.2.3",
+    "ngrok": "^2.2.6",
     "protractor": "^4.0.9",
     "q": "^1.4.1",
     "request": "^2.75.0",
